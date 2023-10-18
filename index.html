@@ -169,40 +169,7 @@
     </div>
 
     <script>
-        // Função para calcular a variação patrimonial
-        function calcularVariacaoPatrimonial() {
-            const rendimentosTributaveis = parseFloat(document.getElementById('rendimentosTributaveis').value);
-            const rendimentosIsentos = parseFloat(document.getElementById('rendimentosIsentos').value);
-            const rendimentosTributacaoExclusiva = parseFloat(document.getElementById('rendimentosTributacaoExclusiva').value);
-            const deducoesTotais = parseFloat(document.getElementById('deducoesTotais').value);
-            const bensDireitosX1 = parseFloat(document.getElementById('bensDireitosX1').value);
-            const bensDireitosX2 = parseFloat(document.getElementById('bensDireitosX2').value);
-            const dividasX1 = parseFloat(document.getElementById('dividasX1').value);
-            const dividasX2 = parseFloat(document.getElementById('dividasX2').value);
-            const doacoes = parseFloat(document.getElementById('doacoes').value);
-
-            const totalRendimentosOrigens = rendimentosTributaveis + rendimentosIsentos + rendimentosTributacaoExclusiva;
-            const totalAplicacoes = bensDireitosX2 - bensDireitosX1 - dividasX2 + dividasX1 + deducoesTotais + doacoes;
-            const rendimentosXAplicacoes = totalRendimentosOrigens - totalAplicacoes;
-
-            const resultElement = document.getElementById('rendimentosXAplicacoes');
-            const totalRendimentosOrigensElement = document.getElementById('totalRendimentosOrigens');
-            const totalAplicacoesElement = document.getElementById('totalAplicacoes');
-            const alertaSonegacao = document.getElementById('alertaSonegacao');
-
-            totalRendimentosOrigensElement.textContent = totalRendimentosOrigens.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            totalAplicacoesElement.textContent = totalAplicacoes.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            if (rendimentosXAplicacoes >= 0) {
-                resultElement.textContent = rendimentosXAplicacoes.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                resultElement.classList.remove('negative-result');
-                alertaSonegacao.style.display = 'none';
-            } else {
-                resultElement.textContent = rendimentosXAplicacoes.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                resultElement.classList.add('negative-result');
-                alertaSonegacao.style.display = 'block'; // Mostrar o alerta de sonegação
-            }
-        }
+       function calcularVariacaoPatrimonial(){const t=parseFloat(document.getElementById("rendimentosTributaveis").value),e=parseFloat(document.getElementById("rendimentosIsentos").value),a=parseFloat(document.getElementById("rendimentosTributacaoExclusiva").value),n=parseFloat(document.getElementById("deducoesTotais").value),i=parseFloat(document.getElementById("bensDireitosX1").value),o=parseFloat(document.getElementById("bensDireitosX2").value),m=parseFloat(document.getElementById("dividasX1").value),l=t+e+a,s=o-i-parseFloat(document.getElementById("dividasX2").value)+m+n+parseFloat(document.getElementById("doacoes").value),c=l-s,d=document.getElementById("rendimentosXAplicacoes"),u=document.getElementById("totalRendimentosOrigens"),r=document.getElementById("totalAplicacoes"),g=document.getElementById("alertaSonegacao");u.textContent=l.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),r.textContent=s.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),c>=0?(d.textContent=c.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),d.classList.remove("negative-result"),g.style.display="none"):(d.textContent=c.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),d.classList.add("negative-result"),g.style.display="block")}
     </script>
 </body>
 </html>
