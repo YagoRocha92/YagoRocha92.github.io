@@ -44,7 +44,7 @@
     document.getElementById('totalvt').textContent = valetransporte.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalva').textContent = auxilioalimentacao.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalcustocolab').textContent = custocolab.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-    document.getElementById('totalPerc').textContent = totalPercentual.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: 2 });
+    document.getElementById('totalPerc').textContent = totalPercentual.toFixed(2) + '%';
     document.getElementById('totalDias').textContent = totalPorDia.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     
     // Adicione os outros campos calculados da mesma forma
