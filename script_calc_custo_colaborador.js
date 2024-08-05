@@ -17,9 +17,7 @@
     const fgtsAvisoPrevio = salariobase / 150;
     const multaFgts = salariobase * 0.02;
   
-    const custoTotal = fgts + ferias + provisaoAvisoTrab + umTercoFerias + decimoTerceiro + fgtsFerias
-    + fgtsUmTercoFerias + fgtsDecimoTerceiro + avisoPrevio + fgtsAvisoPrevio +  multaFgts 
-    + valetransporte + auxilioalimentacao;
+    const custoTotal = custocolab + totalProvisoes + valetransporte + auxilioalimentacao;
 
     const custocolab = fgts + ferias + provisaoAvisoTrab + umTercoFerias + decimoTerceiro + fgtsFerias
     + fgtsUmTercoFerias + fgtsDecimoTerceiro;
