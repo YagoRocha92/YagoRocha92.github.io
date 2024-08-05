@@ -16,8 +16,7 @@
     const avisoPrevio = salariobase / 12;
     const fgtsAvisoPrevio = salariobase / 150;
     const multaFgts = salariobase * 0.02;
-
-
+  
     const custoTotal = fgts + ferias + provisaoAvisoTrab + umTercoFerias + decimoTerceiro + fgtsFerias
     + fgtsUmTercoFerias + fgtsDecimoTerceiro + avisoPrevio + fgtsAvisoPrevio +  multaFgts 
     + valetransporte + auxilioalimentacao;
@@ -26,6 +25,10 @@
     + fgtsUmTercoFerias + fgtsDecimoTerceiro;
     
     const totalProvisoes = avisoPrevio + fgtsAvisoPrevio + multaFgts;
+
+    const totalPercentual = (custoTotal/salariobase) * 100;
+
+    const totalPorDia = (custoTotal/30);
 
     // Atualize o conteúdo das tags 'span' correspondentes com os valores calculados
     document.getElementById('fgts').textContent = fgts.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
@@ -43,6 +46,8 @@
     document.getElementById('totalvt').textContent = valetransporte.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalva').textContent = auxilioalimentacao.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalcustocolab').textContent = custocolab.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+    document.getElementById('totalPerc').textContent = totalPercentual.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: 2 });
+    
     // Adicione os outros campos calculados da mesma forma
 
     // Atualize o total
