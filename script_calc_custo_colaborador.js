@@ -28,6 +28,8 @@
 
     const custoTotal = custocolab + totalProvisoes + valetransporte + auxilioalimentacao;
 
+    const totalPorHora = (custoTotal/220);
+
 
     // Atualize o conteúdo das tags 'span' correspondentes com os valores calculados
     document.getElementById('fgts').textContent = fgts.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
@@ -45,8 +47,9 @@
     document.getElementById('totalvt').textContent = valetransporte.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalva').textContent = auxilioalimentacao.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalcustocolab').textContent = custocolab.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-    document.getElementById('totalPerc').textContent = totalPercentual.toFixed(2) + '%';
     document.getElementById('totalDias').textContent = totalPorDia.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'});
+    document.getElementById('totalHora').textContent = totalPorHora.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'});
+    document.getElementById('totalPerc').textContent = totalPercentual.toFixed(2) + '%';
     
     // Adicione os outros campos calculados da mesma forma
 
