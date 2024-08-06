@@ -17,8 +17,6 @@
     const fgtsAvisoPrevio = salariobase / 150;
     const multaFgts = salariobase * 0.02;
   
-    const custoTotal = custocolab + totalProvisoes + valetransporte + auxilioalimentacao;
-
     const custocolab = fgts + ferias + provisaoAvisoTrab + umTercoFerias + decimoTerceiro + fgtsFerias
     + fgtsUmTercoFerias + fgtsDecimoTerceiro;
     
@@ -27,6 +25,9 @@
     const totalPercentual = (custoTotal/salariobase) * 100;
 
     const totalPorDia = (custoTotal/30);
+
+    const custoTotal = custocolab + totalProvisoes + valetransporte + auxilioalimentacao;
+
 
     // Atualize o conteúdo das tags 'span' correspondentes com os valores calculados
     document.getElementById('fgts').textContent = fgts.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
