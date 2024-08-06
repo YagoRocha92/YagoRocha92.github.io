@@ -21,13 +21,11 @@
     + fgtsUmTercoFerias + fgtsDecimoTerceiro;
     
     const totalProvisoes = avisoPrevio + fgtsAvisoPrevio + multaFgts;
-
-    const totalPercentual = (custoTotal/salariobase) * 100;
-
-    const totalPorDia = (custoTotal/30);
-
+  
     const custoTotal = custocolab + totalProvisoes + valetransporte + auxilioalimentacao;
-
+  
+    const totalPercentual = (custoTotal/salariobase) * 100;
+    const totalPorDia = (custoTotal/30);
     const totalPorHora = (custoTotal/220);
 
 
