@@ -15,9 +15,8 @@
 
     </header>
 
-    <div class="container">
-
-        <h2 style="color: black; text-align: center">Cálculo de Custo e Provisão de Empregado</h2>
+   <div class="container">
+        <h2>Cálculo de Custo e Provisão de Empregado</h2>
 
         <label>Salário Base</label>
         <input class="input-field" id="salariobase" type="number" value="0.00">
@@ -28,45 +27,33 @@
         <label>Auxílio Alimentação</label>
         <input class="input-field" id="auxilioalimentacao" type="number" value="0.00">
 
-        <h2 style="text-align: center">CUSTO COLABORADOR</h2>
+        <h2>CUSTO COLABORADOR</h2>
 
         <h4>FGTS <span id="fgts" class="result">0.00</span></h4>
-
         <h4>Férias <span id="ferias" class="result">0.00</span></h4>
-    
         <h4>1/3 de Férias (1/12) <span id="umtercoferias" class="result">0.00</span></h4>
-
         <h4>13º Salário (1/12) <span id="decimoterceiro" class="result">0.00</span></h4>
-    
         <h4>FGTS sobre Férias (1/12) <span id="fgtsferias" class="result">0.00</span></h4>
-
         <h4>FGTS sobre 1/3 de Férias (1/12) <span id="fgtsumtercoferias" class="result">0.00</span></h4>
-
         <h4>FGTS 13º Salário (1/12) <span id="fgtsdecimoterceiro" class="result">0.00</span></h4>
 
-        <h2 style="text-align: center">PROVISÕES DISPENSA COLABORADOR</h2>
+        <h2>PROVISÕES DISPENSA COLABORADOR</h2>
 
         <h4>Aviso Prévio (1/12) - (Provisão) <span id="avisoprevio" class="result">0.00</span></h4>
-
         <h4>FGTS Aviso Prévio (1/12) - (Provisão) <span id="fgtsavisoprevio" class="result">0.00</span></h4>
-
         <h4>Multa FGTS Aviso Prévio (1/12) - (Provisão) <span id="multafgtsdecimoterceiro" class="result">0.00</span></h4>
-
         <h4>Aviso Dias Trabalhados - (Provisão) <span id="avisotrabalhado" class="result">0.00</span></h4>
 
-        <h2 style="text-align: center">Resultados</h2>
+        <h2>Resultados</h2>
 
-        <h4>Total Provisões <span id="totalprovisoes" class="result">0.00</span> </h4> 
-
-        <h4>Total Vale Transporte <span id="totalvt" class="result">0.00</span> </h4> 
-
-        <h4>Total Vale Alimentação <span id="totalva" class="result">0.00</span> </h4> 
-
-        <h4>Total Custo Colaborador <span id="totalcustocolab" class="result">0.00</span> </h4>
+        <h4>Total Provisões <span id="totalprovisoes" class="result">0.00</span></h4>
+        <h4>Total Vale Transporte <span id="totalvt" class="result">0.00</span></h4>
+        <h4>Total Vale Alimentação <span id="totalva" class="result">0.00</span></h4>
+        <h4>Total Custo Colaborador <span id="totalcustocolab" class="result">0.00</span></h4>
 
         <br>
 
-        <h2 style="text-align: center">Total Adicional</h2>
+        <h2>Total Adicional</h2>
 
         <div class="result-container">
             <div class="result-item">
@@ -87,7 +74,7 @@
             </div>
         </div>
 
-        <h2 style="text-align: center">Total Adicional + Valor Mensal</h2>
+        <h2>Total Adicional + Valor Mensal</h2>
 
         <div class="result-container">
             <div class="result-item">
@@ -95,25 +82,23 @@
                 <h3><span id="totalcustocolabGeral" class="result">0.00</span></h3>
             </div>
             <div class="result-item">
-                <h2>Por dia:</h2>
+                <h2>Por dia:</h3>
                 <h3><span id="totalDiasGeral" class="result">0.00</span></h3>
             </div>
             <div class="result-item">
                 <h2>Por Hora:</h2>
                 <h3><span id="totalHoraGeral" class="result">0.00</span></h3>
             </div>
-
         </div>
 
-        <br>
-        <br>
-        <br>
+        <br><br><br>
+
         <div style="margin: 0 auto; text-align: center;">
             <button onclick="calcularCustoColaborador()">Calcular Custo Colaborador</button>
         </div>
 
         <br>
-        
+
         <div style="text-align: center;">
             <button onclick="window.location.href='index.html'">Página Principal</button>
         </div>
