@@ -1,4 +1,4 @@
- // Função para calcular a variação patrimonial
+// Função para calcular a custo do colaborador
  function calcularCustoColaborador() {
 
     const salariobase = parseFloat(document.getElementById('salariobase').value);
@@ -16,18 +16,26 @@
     const avisoPrevio = salariobase / 12;
     const fgtsAvisoPrevio = salariobase / 150;
     const multaFgts = salariobase * 0.02;
-  
+
     const custocolab = fgts + ferias + provisaoAvisoTrab + umTercoFerias + decimoTerceiro + fgtsFerias
     + fgtsUmTercoFerias + fgtsDecimoTerceiro;
     
     const totalProvisoes = avisoPrevio + fgtsAvisoPrevio + multaFgts;
-  
-    const custoTotal = custocolab + totalProvisoes + valetransporte + auxilioalimentacao;
-  
-    const totalPercentual = (custoTotal/salariobase) * 100;
-    const totalPorDia = (custoTotal/30);
-    const totalPorHora = (custoTotal/220);
 
+    const custoTotal = custocolab + avisoPrevio + fgtsAvisoPrevio +  multaFgts 
+    + valetransporte + auxilioalimentacao;
+
+    const totalPercentual = (custoTotal/salariobase) * 100;
+
+    const totalPorDia = (custoTotal/30);
+
+    const totalPorHora = (custoTotal/220);
+    
+    const totalPorDiaGeral = (custoTotal+salariobase)/30;
+
+    const totalPorHoraGeral = (custoTotal+salariobase)/220;
+
+    const custocolabGeral = custoTotal+salariobase;
 
     // Atualize o conteúdo das tags 'span' correspondentes com os valores calculados
     document.getElementById('fgts').textContent = fgts.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
@@ -48,10 +56,16 @@
     document.getElementById('totalDias').textContent = totalPorDia.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalHora').textContent = totalPorHora.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'});
     document.getElementById('totalPerc').textContent = totalPercentual.toFixed(2) + '%';
+
+    document.getElementById('totalcustocolabGeral').textContent = custocolabGeral.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+    document.getElementById('totalDiasGeral').textContent = totalPorDiaGeral.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'});
+    document.getElementById('totalHoraGeral').textContent = totalPorHoraGeral.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'});
+
     
     // Adicione os outros campos calculados da mesma forma
 
     // Atualize o total
+
     const totalElement = document.getElementById('total');
     totalElement.textContent = custoTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 }
