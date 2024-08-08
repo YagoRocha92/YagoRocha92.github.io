@@ -19,14 +19,14 @@
         <h2>Cálculo de Custo e Provisão de Empregado</h2>
 
         <label>Salário Base</label>
-        <input class="input-field" id="salariobase" type="number" value="0.00">
+        <input class="input-field" id="salariobase" type="text" value="0.00" oninput="formatCurrency(this)">
 
         <label>Vale Transporte</label>
-        <input class="input-field" id="valetransporte" type="number" value="0.00">
+        <input class="input-field" id="valetransporte" type="text" value="0.00" oninput="formatCurrency(this)">
 
         <label>Auxílio Alimentação</label>
-        <input class="input-field" id="auxilioalimentacao" type="number" value="0.00">
-
+        <input class="input-field" id="auxilioalimentacao" type="text" value="0.00" oninput="formatCurrency(this)">
+       
         <h2>CUSTO COLABORADOR</h2>
 
         <h4>FGTS <span id="fgts" class="result">0.00</span></h4>
