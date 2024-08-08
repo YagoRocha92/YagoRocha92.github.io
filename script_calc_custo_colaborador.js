@@ -1,10 +1,10 @@
 // Função para calcular a custo do colaborador
  function calcularCustoColaborador() {
 
-    const salariobase = parseFloat(document.getElementById('salariobase').value);
-    const valetransporte = parseFloat(document.getElementById('valetransporte').value);
-    const auxilioalimentacao = parseFloat(document.getElementById('auxilioalimentacao').value);
-
+    const salariobase = parseFloat(formatValue(document.getElementById('salariobase').value));
+    const valetransporte = parseFloat(formatValue(document.getElementById('valetransporte').value));
+    const auxilioalimentacao = parseFloat(formatValue(document.getElementById('auxilioalimentacao').value));
+  
     const fgts = salariobase/12.5;
     const ferias =  salariobase/12;
     const provisaoAvisoTrab = salariobase * 0.0083;
@@ -69,3 +69,28 @@
     const totalElement = document.getElementById('total');
     totalElement.textContent = custoTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 }
+
+function formatCurrency(input) {
+    let value = input.value;
+
+    // Remove todos os caracteres que não são dígitos
+    value = value.replace(/\D/g, '');
+
+    // Divide por 100 para inserir os centavos
+    value = (parseInt(value) / 100).toFixed(2).toString();
+
+    // Substitui ponto por vírgula
+    value = value.replace('.', ',');
+
+    // Insere os pontos de milhar
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    // Adiciona o símbolo de Real
+    input.value = 'R$ ' + value;
+  }
+  
+  function formatValue(value) {
+    return value.replace(/[^0-9,-]+/g, "").replace(",", ".");
+}
+
+
