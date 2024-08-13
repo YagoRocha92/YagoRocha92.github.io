@@ -3,25 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>VR Moraes Assessoria Contábil</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #2d3748;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container img {
+            border-radius: 12px;
+            max-width: 100%;
+            height: auto;
+            max-width: 200px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #f3f4f6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1em;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #1a202c;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-weight: 700;
+            margin: 20px 0;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .intro p {
+            font-size: 1.2em;
+            color: #4a5568;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            color: #1a202c;
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .service-item {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 320px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-item img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .service-item h3 {
+            color: #1a202c;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .service-item p {
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        button {
+            background-color: #1a202c;
+            color: #ffffff;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2d3748;
+        }
+
+        footer {
+            background-color: #2d3748;
+            color: #f3f4f6;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="logo-container">
-            <img src="https://i.ibb.co/QNXyRy4/TIMBRE.png" alt="Logo do Seu Escritório" style="margin: 20px; border-radius: 10px; width: 100%; height: auto; max-width: 850px;">
-        </div>
-        <h1 style="color: black;">Bem vindo a VR MORAES ASSESSORIA CONTÁBIL</h1>
+        
+        <nav>
+            <a href="#sobre">Sobre Nós</a>
+            <a href="#servicos">Serviços</a>
+            <a href="#calculadoras">Calculadoras</a>
+            <a href="#clientes">Clientes</a>
+            <a href="#contato">Contato</a>
+        </nav>
     </header>
 
-    <div style="margin: 0 auto; text-align: center;">
-        <button onclick="window.location.href='calc_variacao_patrimonial.html'">Calculadora Variação Patrimonial</button>
-    </div>
-        <br>
-        <br>
-    <div style="margin: 0 auto; text-align: center;">
-        <button onclick="window.location.href='calc_custo_colaborador.html'">Calculadora Custo Colaborador</button>
-    </div>
+    <main>
+        <div class="intro">
+            <h1>VR Moraes Assessoria Contábil</h1>
+            <p>Oferecemos soluções contábeis personalizadas para o sucesso do seu negócio.</p>
+        </div>
+
+        <section id="sobre">
+            <div class="section-title">Sobre Nós</div>
+            <p>Bem-vindo(a) à VR Moraes Assessoria Contábil, onde oferecemos serviços contábeis de alta qualidade para empresas e profissionais autônomos. Nossa missão é garantir que você tenha a tranquilidade necessária para focar no crescimento do seu negócio, enquanto cuidamos da sua contabilidade com competência e dedicação.</p>
+        </section>
+
+        <section id="servicos">
+            <div class="section-title">Nossos Serviços</div>
+            <div class="services">
+                <div class="service-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Serviço de Contabilidade">
+                    <h3>Consultoria Contábil</h3>
+                    <p>Oferecemos consultoria especializada para ajudar sua empresa a manter-se em conformidade com as normas fiscais e otimizar processos financeiros.</p>
+                </div>
+                <div class="service-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Gestão Financeira">
+                    <h3>Gestão Financeira</h3>
+                    <p>Nossa equipe ajuda a planejar, organizar e monitorar suas finanças, proporcionando maior controle sobre seus recursos.</p>
+                </div>
+                <div class="service-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Serviço Fiscal">
+                    <h3>Planejamento Fiscal</h3>
+                    <p>Ajudamos sua empresa a realizar um planejamento fiscal eficaz, reduzindo a carga tributária de forma legal e estratégica.</p>
+                </div>
+                <div class="service-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Departamento Pessoal">
+                    <h3>Departamento Pessoal</h3>
+                    <p>Gerenciamos todos os processos de Departamento Pessoal, incluindo admissões, demissões, folha de pagamento e benefícios.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculadoras">
+            <div class="section-title">Nossas Calculadoras</div>
+            <div class="button-container">
+                <button onclick="window.location.href='calc_variacao_patrimonial.html'">Calculadora de Variação Patrimonial</button>
+                <button onclick="window.location.href='calc_custo_colaborador.html'">Calculadora de Custo de Colaborador</button>
+            </div>
+        </section>
+
+       
+    </main>
+
+    <footer>
+        <p>&copy; 2024 VR Moraes Assessoria Contábil - Todos os direitos reservados</p>
+        <p>Rua Padre Duarte, 3404 - Santa Angelina, Araraquara - SP - CEP 14802-205</p>
+        <p>Email: <a href="mailto:atendimento@vrmoraes.com" style="color: #f3f4f6;">atendimento@vrmoraes.com</a> | Telefone: <a href="tel:+5516997493579" style="color: #f3f4f6;">+55 16 99749-3579</a></p>
+    </footer>
 </body>
 </html>
-
