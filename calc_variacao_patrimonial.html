@@ -21,41 +21,41 @@
         <br>
         <h2 style="text-align: center">Rendimentos e Origens</h2>
         <label>Total dos Rendimentos Tributáveis</label>
-        <input class="input-field" id="rendimentosTributaveis" type="number" value="0.00">
+        <input class="input-field" id="rendimentosTributaveis" type="text" value="0.00" oninput="formatCurrency(this)">
 
         <label>Rendimentos Isentos e Não Tributáveis</label>
-        <input class="input-field" id="rendimentosIsentos" type="number" value="0.00">
+        <input class="input-field" id="rendimentosIsentos" type="text" value="0.00" oninput="formatCurrency(this)">
 
         <label>Rendimentos Sujeitos à Tributação Exclusiva</label>
-        <input class="input-field" id="rendimentosTributacaoExclusiva" type="number" value="0.00">
+        <input class="input-field" id="rendimentosTributacaoExclusiva" type="text" value="0.00" oninput="formatCurrency(this)">
 
         <h3>Total dos Rendimentos/Origens: <span id="totalRendimentosOrigens" class="result">0.00</span></h3>
 
         <h2 style="text-align: center">Deduções</h2>
         <label>Deduções Totais</label>
-        <input class="input-field" id="deducoesTotais" type="number" value="0.00">
+        <input class="input-field" id="deducoesTotais" type="text" value="0.00" oninput="formatCurrency(this)">
         <br>
 
         <h2 style="text-align: center">Bens e Direitos</h2>
         <label>Bens e Direitos em 31.12.X1</label>
-        <input class="input-field" id="bensDireitosX1" type="number" value="0.00">
+        <input class="input-field" id="bensDireitosX1" type="text" value="0.00" oninput="formatCurrency(this)">
         
         <label>Bens e Direitos em 31.12.X2</label>
-        <input class="input-field" id="bensDireitosX2" type="number" value="0.00">
+        <input class="input-field" id="bensDireitosX2" type="text" value="0.00" oninput="formatCurrency(this)">
         <br>
 
         <h2 style="text-align: center">Dívidas</h2>
         <label>Dívidas Existentes em 31.12.X1</label>
-        <input class="input-field" id="dividasX1" type="number" value="0.00">
+        <input class="input-field" id="dividasX1" type="text" value="0.00" oninput="formatCurrency(this)">
 
         <label>Dívidas Existentes em 31.12.X2</label>
-        <input class="input-field" id="dividasX2" type="number" value="0.00">
+        <input class="input-field" id="dividasX2" type="text" value="0.00" oninput="formatCurrency(this)">
         <br>
 
         <h2 style="text-align: center">Doações Efetuadas</h2>
 
         <label>Doações efetuadas </label>
-        <input class="input-field" id="doacoes" type="number" value="0.00">
+        <input class="input-field" id="doacoes" type="text" value="0.00" oninput="formatCurrency(this)">
         
         <h3>Total das Aplicações: <span id="totalAplicacoes" class="result">0.00</span></h3>
 
@@ -77,3 +77,4 @@
     </div>
 </body>
 </html>
+
