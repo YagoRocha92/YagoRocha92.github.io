@@ -229,6 +229,7 @@
         <div class="field" style="margin-bottom:10px">
           <label>Tipo de operação</label>
           <select id="perfil" class="calc-trigger">
+            <option value="opcao">Selecione uma opção:</option>
             <option value="saude_servico">Saúde — consultório / serviço intelectual</option>
             <option value="saude_hospitalar">Saúde — equiparação hospitalar (estrutura + ANVISA)</option>
             <option value="servico_fatorR">Serviços gerais sujeitos a Fator R</option>
@@ -282,7 +283,7 @@
           <label>Receita bruta acumulada — RBT12
             <span class="tip" data-tip="Soma da receita bruta dos últimos 12 meses. É ela que define a faixa e a alíquota efetiva do Simples (não o faturamento do mês × 12). Para início de atividade, deixe desmarcado.">i</span>
           </label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valRbt12" class="has-prefix calc-trigger" min="0" step="1000" value="720000"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valRbt12" class="has-prefix calc-trigger" min="0" step="1000" value="0"></div>
           <span class="hint">Define a faixa do Simples e o Fator R. Desmarcado = início de atividade (faturamento × 12).</span>
         </div>
         <div class="field" id="massa12Wrap" style="display:none">
@@ -295,7 +296,7 @@
         <div class="field-row">
           <div class="field">
             <label>Custos Operacionais</label>
-            <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valCustos" class="has-prefix calc-trigger" min="0" step="100" value="5000"></div>
+            <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valCustos" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
             <span class="hint">Aluguel, sistemas, etc.</span>
           </div>
           <div class="field">
