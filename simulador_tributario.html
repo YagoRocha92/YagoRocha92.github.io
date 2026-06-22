@@ -270,7 +270,7 @@
         <div class="card-header"><div class="card-title"><span class="dot"></span>Dados Financeiros (Mensal)</div></div>
         <div class="field">
           <label>Faturamento Bruto</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valFaturamento" class="has-prefix calc-trigger" min="0" step="100" value="60000"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valFaturamento" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
         </div>
         <div class="field" style="margin-bottom:6px">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
@@ -300,7 +300,7 @@
           </div>
           <div class="field">
             <label id="issLabel">Alíquota ISS (LP)</label>
-            <div class="input-wrap"><input type="number" id="valIss" class="has-suffix calc-trigger" min="0" step="0.1" value="2.0"><span class="suffix">%</span></div>
+            <div class="input-wrap"><input type="number" id="valIss" class="has-suffix calc-trigger" min="0" step="0.1" value="0"><span class="suffix">%</span></div>
             <span class="hint">Tributo municipal/estadual.</span>
           </div>
         </div>
@@ -356,7 +356,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title"><span class="dot"></span>Composição Societária (PF)</div>
-          <div class="header-actions"><label style="margin:0">Sócios:</label><input type="number" id="qtdSocios" value="2" min="1" max="10" onchange="renderSocios()"></div>
+          <div class="header-actions"><label style="margin:0">Sócios:</label><input type="number" id="qtdSocios" value="1" min="1" max="10" onchange="renderSocios()"></div>
         </div>
         <div id="containerSocios"></div>
       </div>
@@ -720,7 +720,7 @@ function renderSocios(){
   c.innerHTML='';
   const partPad=Math.round(100/q*100)/100;
   for(let i=1;i<=q;i++){
-    const vp=cur['p'+i]!==undefined?cur['p'+i]:(i<=2?5000:ANOS[anoAtual].salMin);
+    const vp=cur['p'+i]!==undefined?cur['p'+i]:0;
     const vd=cur['d'+i]!==undefined?cur['d'+i]:0;
     const vpt=cur['pt'+i]!==undefined?cur['pt'+i]:partPad;
     const vo=cur['o'+i]!==undefined?cur['o'+i]:0;
