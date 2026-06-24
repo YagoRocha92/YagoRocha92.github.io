@@ -269,6 +269,7 @@
         <div class="field" id="perfilUnicoWrap" style="margin-bottom:10px">
           <label>Tipo de operação</label>
           <select id="perfil" class="calc-trigger">
+            <option value="opcao" selected>Selecione uma opção</option>
             <option value="saude_servico">Saúde — consultório / serviço intelectual</option>
             <option value="saude_hospitalar">Saúde — equiparação hospitalar (estrutura + ANVISA)</option>
             <option value="servico_fatorR">Serviços gerais sujeitos a Fator R</option>
@@ -439,6 +440,7 @@
           <div class="line"><span class="k">CSLL</span><span class="v" id="outCsllLp">R$ 0,00</span></div>
           <div class="line"><span class="k">PIS + COFINS</span><span class="v" id="outPisLp">R$ 0,00</span></div>
           <div class="line"><span class="k" id="issLpK">ISS</span><span class="v" id="outIssLp">R$ 0,00</span></div>
+          <div class="line" id="lineIcmsLp" style="display:none"><span class="k">ICMS</span><span class="v" id="outIcmsLp">R$ 0,00</span></div>
           <div class="line" id="lineIpiLp" style="display:none"><span class="k">IPI (recolhido à parte)</span><span class="v" id="outIpiLp">R$ 0,00</span></div>
           <div class="line"><span class="k">Custos Operacionais</span><span class="v" id="outCustoLp">R$ 0,00</span></div>
           <div class="line"><span class="k">Custo CLT (salário+FGTS)</span><span class="v" id="outFolhaLp">R$ 0,00</span></div>
@@ -477,7 +479,7 @@
 
   <!-- ANATOMIA DA CARGA -->
   <div class="card">
-    <div class="card-header"><div class="card-title"><span class="dot"></span>Anatomia da Carga — para onde vai cada real do faturamento</div></div>
+    <div class="card-header"><div class="card-title"><span class="dot"></span>Comparativo por Categoria — Simples × Lucro Presumido</div></div>
     <div id="anatomia"></div>
     <div class="legend" id="anatomiaLeg"></div>
     <p class="disclaimer" id="anatomiaTxt"></p>
@@ -986,13 +988,30 @@ function memoriaHTML(R,ctx){
   sn+=memSociosHTML(R,A);
   sn+=`</div>`;
   /* Coluna LP */
-  let lp=`<div class="mem-col"><h5>Lucro Presumido</h5>
-    <div class="mem-block"><b>Tributos federais + consumo</b>
-    <div class="mem-row"><span>Base IRPJ${ctx.mista?' (presunções somadas)':' (presunção)'}</span><span class="vv">${fmtBRL.format(R.baseIR)}</span></div>
-    <div class="mem-row"><span>IRPJ 15%${R.adic>0?' + adicional 10%':''}</span><span class="vv">${fmtBRL.format(R.irpj+R.adic)}</span></div>
+  let lp=`<div class="mem-col"><h5>Lucro Presumido${ctx.mista?' — atividade mista':''}</h5>`;
+  if(ctx.mista && ctx.streams){
+    lp+=`<div class="mem-block"><b>Bases presumidas por atividade</b>`;
+    ctx.streams.forEach(s=>{ if(s.valor<=0) return;
+      const lbl=nomeAtividade(s.perfilKey);
+      lp+=`<div class="mem-row"><span>${lbl} · ${fmtBRL.format(s.valor)} × IRPJ ${fmtPct(s.presIR*100)} / CSLL ${fmtPct(s.presCSLL*100)}</span><span class="vv">IRPJ ${fmtBRL.format(s.valor*s.presIR)} · CSLL ${fmtBRL.format(s.valor*s.presCSLL)}</span></div>`;
+    });
+    lp+=`<div class="mem-formula">Base IRPJ total = ${fmtBRL.format(R.baseIR)} · Base CSLL total = ${fmtBRL.format(R.baseCSLL)}</div></div>`;
+  }
+  lp+=`<div class="mem-block"><b>Tributos federais + consumo</b>`;
+  if(!ctx.mista) lp+=`<div class="mem-row"><span>Base IRPJ (presunção)</span><span class="vv">${fmtBRL.format(R.baseIR)}</span></div>`;
+  lp+=`<div class="mem-row"><span>IRPJ 15% × base ${fmtBRL.format(R.baseIR)}</span><span class="vv">${fmtBRL.format(R.irpj)}</span></div>
+    ${R.adic>0?`<div class="mem-row"><span>Adicional 10% × (base − R$ 20.000)</span><span class="vv">${fmtBRL.format(R.adic)}</span></div>`:''}
     <div class="mem-row"><span>Base CSLL · CSLL 9%</span><span class="vv">${fmtBRL.format(R.csll)}</span></div>
-    <div class="mem-row"><span>PIS 0,65% + COFINS 3%</span><span class="vv">${fmtBRL.format(R.pisCofins)}</span></div>
-    <div class="mem-row"><span>${ctx.mista?'ISS + ICMS (consumo)':ctx.issLabel}</span><span class="vv">${fmtBRL.format(R.consumo)}</span></div>`;
+    <div class="mem-row"><span>PIS 0,65% + COFINS 3%</span><span class="vv">${fmtBRL.format(R.pisCofins)}</span></div>`;
+  if(ctx.mista && ctx.streams){
+    ctx.streams.forEach(s=>{ if(s.valor<=0) return;
+      if(s.issType==='ISS'){ if(!ctx.issFixoOn && s.rate>0) lp+=`<div class="mem-row"><span>ISS · ${fmtBRL.format(s.valor)} × ${fmtPct(s.rate*100)}</span><span class="vv">${fmtBRL.format(s.valor*s.rate)}</span></div>`; }
+      else if(s.rate>0){ lp+=`<div class="mem-row"><span>ICMS · ${fmtBRL.format(s.valor)} × ${fmtPct(s.rate*100)}</span><span class="vv">${fmtBRL.format(s.valor*s.rate)}</span></div>`; }
+    });
+    if(ctx.issFixoOn) lp+=`<div class="mem-row"><span>ISS fixo (município)</span><span class="vv">${fmtBRL.format(ctx.issFixo)}</span></div>`;
+  } else {
+    lp+=`<div class="mem-row"><span>${ctx.issLabel}</span><span class="vv">${fmtBRL.format(R.consumo)}</span></div>`;
+  }
   if(R.ipi>0) lp+=`<div class="mem-row"><span>IPI líquido</span><span class="vv">${fmtBRL.format(R.ipi)}</span></div>`;
   lp+=`</div>
     <div class="mem-block"><b>Encargo patronal</b><div class="mem-formula">20% × pró-labore (${fmtBRL.format(R.proTotal)}) = ${fmtBRL.format(R.proTotal*0.20)}${ctx.folha>0?'<br>+ '+fmtPct(ctx.patCltRate*100)+' × folha CLT':''}<br>total = ${fmtBRL.format(R.patLp)}</div></div>`;
@@ -1040,41 +1059,39 @@ function corVar(n){ return getComputedStyle(document.documentElement).getPropert
 function desenharAnatomia(R,ctx,fat,saidasSN,saidasLP){
   const host=document.getElementById('anatomia');
   if(fat<=0){ host.innerHTML=''; document.getElementById('anatomiaLeg').innerHTML=''; return; }
-  const segs=[
-    {k:'Impostos PJ',     c:corVar('--danger')},
-    {k:'Encargo patronal',c:corVar('--warning')},
-    {k:'INSS sócios',     c:'#2563eb'},
-    {k:'IRRF sócios',     c:'#7c3aed'},
-    {k:'Custos operac.',  c:corVar('--text-soft')},
-    {k:'Folha CLT',       c:corVar('--border-strong')},
-    {k:'Sobra dos sócios',c:corVar('--success')}
-  ];
-  const impPJ_SN=R.das;
+  const impPJ_SN=R.das+R.issFixoSN;
   const impPJ_LP=R.irpj+R.adic+R.csll+R.pisCofins+R.consumo+R.ipi;
-  const dados={
-    SN:[impPJ_SN, R.patSimples, R.inssPF, R.irrfPF, ctx.custosOp, ctx.folha+ctx.fgts, R.lucroSN],
-    LP:[impPJ_LP, R.patLp,      R.inssPF, R.irrfPF, ctx.custosOp, ctx.folha+ctx.fgts, R.lucroLP]
-  };
-  const W=720,padL=14,padR=14,barH=58,gap=58,topPad=24, innerW=W-padL-padR;
-  const H=topPad+2*barH+gap+10;
-  function barra(vals,y,nome,sobra){
-    let x=padL, out=`<text x="${padL}" y="${y-7}" font-size="12.5" font-weight="700" fill="${corVar('--text')}">${nome}</text>`;
-    out+=`<text x="${W-padR}" y="${y-7}" text-anchor="end" font-size="12" font-weight="700" fill="${corVar('--success-strong')}">sobra ${fmtBRL.format(sobra)} (${fmtPct(sobra/fat*100)})</text>`;
-    vals.forEach((v,i)=>{
-      if(v<=0) return;
-      const w=v/fat*innerW;
-      out+=`<rect x="${x.toFixed(1)}" y="${y}" width="${Math.max(0,w).toFixed(1)}" height="${barH}" fill="${segs[i].c}"><title>${segs[i].k}: ${fmtBRL.format(v)} (${fmtPct(v/fat*100)})</title></rect>`;
-      if(w>54){ const pct=v/fat*100; out+=`<text x="${(x+w/2).toFixed(1)}" y="${y+barH/2+4}" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">${pct.toFixed(0)}%</text>`; }
-      x+=w;
-    });
-    out+=`<rect x="${padL}" y="${y}" width="${innerW}" height="${barH}" fill="none" stroke="${corVar('--border')}" stroke-width="1" rx="4"/>`;
-    return out;
-  }
-  host.innerHTML=`<svg class="curve" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
-    ${barra(dados.SN, topPad, 'Simples Nacional', R.lucroSN)}
-    ${barra(dados.LP, topPad+barH+gap, 'Lucro Presumido', R.lucroLP)}
-  </svg>`;
-  document.getElementById('anatomiaLeg').innerHTML=segs.map(s=>`<span><i style="background:${s.c}"></i> ${s.k}</span>`).join('');
+  const retSoc=R.inssPF+R.irrfPF;
+  const custosFolha=ctx.custosOp+ctx.folha+ctx.fgts;
+  const cats=[
+    {k:'Impostos PJ',       sn:impPJ_SN,     lp:impPJ_LP},
+    {k:'Encargo patronal',  sn:R.patSimples, lp:R.patLp},
+    {k:'Retenções sócios',  sn:retSoc,       lp:retSoc},
+    {k:'Custos + folha',    sn:custosFolha,  lp:custosFolha},
+    {k:'Sobra dos sócios',  sn:R.lucroSN,    lp:R.lucroLP}
+  ];
+  const cSN=corVar('--primary'), cLP=corVar('--ibs'), cTx=corVar('--text'), cSoft=corVar('--text-soft'), cB=corVar('--border');
+  const maxV=Math.max(1,...cats.flatMap(c=>[c.sn,c.lp]));
+  const W=720,H=320,padL=52,padR=12,padT=18,padB=58, plotW=W-padL-padR, plotH=H-padT-padB;
+  const nG=cats.length, gw=plotW/nG, bw=Math.min(46,gw*0.30), gap2=8;
+  const sy=v=>padT+plotH*(1-v/maxV);
+  const fmtK=v=>v>=1000?(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})+'k':Math.round(v).toString();
+  let g='';
+  for(let i=0;i<=4;i++){ const vv=maxV*i/4, yy=sy(vv); g+=`<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="${cB}" stroke-width="1"/><text x="${padL-7}" y="${(yy+4).toFixed(1)}" text-anchor="end" font-size="10" fill="${cSoft}" font-family="monospace">${fmtK(vv)}</text>`; }
+  cats.forEach((c,i)=>{
+    const cx=padL+gw*i+gw/2;
+    const xSN=cx-bw-gap2/2, xLP=cx+gap2/2;
+    const hSN=Math.max(0,plotH*c.sn/maxV), hLP=Math.max(0,plotH*c.lp/maxV);
+    g+=`<rect x="${xSN.toFixed(1)}" y="${sy(c.sn).toFixed(1)}" width="${bw}" height="${hSN.toFixed(1)}" rx="3" fill="${cSN}"><title>Simples · ${c.k}: ${fmtBRL.format(c.sn)}</title></rect>`;
+    g+=`<rect x="${xLP.toFixed(1)}" y="${sy(c.lp).toFixed(1)}" width="${bw}" height="${hLP.toFixed(1)}" rx="3" fill="${cLP}"><title>Lucro Presumido · ${c.k}: ${fmtBRL.format(c.lp)}</title></rect>`;
+    if(c.sn>0) g+=`<text x="${(xSN+bw/2).toFixed(1)}" y="${(sy(c.sn)-4).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="600" fill="${cSN}">${fmtK(c.sn)}</text>`;
+    if(c.lp>0) g+=`<text x="${(xLP+bw/2).toFixed(1)}" y="${(sy(c.lp)-4).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="600" fill="${cLP}">${fmtK(c.lp)}</text>`;
+    const words=c.k.split(' ');
+    g+=`<text x="${cx.toFixed(1)}" y="${(H-padB+16)}" text-anchor="middle" font-size="10.5" fill="${cTx}">${words[0]}</text>`;
+    if(words[1]) g+=`<text x="${cx.toFixed(1)}" y="${(H-padB+29)}" text-anchor="middle" font-size="10.5" fill="${cTx}">${words.slice(1).join(' ')}</text>`;
+  });
+  host.innerHTML=`<svg class="curve" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${g}</svg>`;
+  document.getElementById('anatomiaLeg').innerHTML=`<span><i style="background:${cSN}"></i> Simples Nacional</span><span><i style="background:${cLP}"></i> Lucro Presumido</span><span style="color:var(--text-soft)">valores em R$ (k = mil)</span>`;
 }
 
 /* ======================= ATIVIDADE MISTA ======================= */
@@ -1091,6 +1108,8 @@ const MISTA_OPCOES=[
   ['transp_pass','Transporte passageiros']
 ];
 let mistaKeys=[1,2], mistaSeq=2;
+const NOME_ATIV={servico_fatorR:'Serviço',servico_III:'Serviço',servico_V:'Serviço',saude_servico:'Saúde (serviço)',saude_hospitalar:'Saúde hospitalar',servico_anexoIV:'Serviço',comercio:'Comércio',industria:'Indústria',transp_carga:'Transporte de cargas',transp_pass:'Transporte de passageiros'};
+function nomeAtividade(k){return NOME_ATIV[k]||k;}
 const mistaDefaults={1:{val:0,perfil:'servico_fatorR',rate:5},2:{val:0,perfil:'comercio',rate:0}};
 function renderMista(){
   const host=document.getElementById('mistaLines'); if(!host) return;
@@ -1194,7 +1213,18 @@ function recalc(){
   setTxt('outIrpjLp',fmtBRL.format(R.irpj+R.adic));
   setTxt('outCsllLp',fmtBRL.format(R.csll));
   setTxt('outPisLp',fmtBRL.format(R.pisCofins));
-  setTxt('outIssLp',fmtBRL.format(R.consumo));
+  if(ctx.mista && ctx.streams){
+    let issPart=0,icmsPart=0;
+    ctx.streams.forEach(s=>{ if(s.valor<=0) return; if(s.issType==='ISS'){ if(!ctx.issFixoOn) issPart+=s.valor*s.rate; } else icmsPart+=s.valor*s.rate; });
+    if(ctx.issFixoOn) issPart+=ctx.issFixo;
+    document.getElementById('issLpK').textContent='ISS';
+    setTxt('outIssLp',fmtBRL.format(issPart));
+    document.getElementById('lineIcmsLp').style.display = icmsPart>0?'flex':'none';
+    setTxt('outIcmsLp',fmtBRL.format(icmsPart));
+  } else {
+    setTxt('outIssLp',fmtBRL.format(R.consumo));
+    document.getElementById('lineIcmsLp').style.display='none';
+  }
   setTxt('outIpiLp',fmtBRL.format(R.ipi));
   setTxt('outCustoLp',fmtBRL.format(ctx.custosOp));
   setTxt('outFolhaLp',fmtBRL.format(ctx.folha+ctx.fgts));
@@ -1247,8 +1277,8 @@ function recalc(){
   /* Anatomia da carga */
   desenharAnatomia(R,ctx,fat,saidasSN,saidasLP);
   document.getElementById('anatomiaTxt').innerHTML = fat>0
-    ? 'Cada barra é 100% do faturamento. As faixas coloridas mostram para onde o dinheiro vai em cada regime; a faixa verde à direita é o que sobra para os sócios. Quanto maior o verde, melhor o regime — e dá para ver na hora <b>por que</b> um vence (ex.: o bloco de encargo patronal que só aparece no Lucro Presumido).'
-    : 'Preencha o faturamento para ver a composição.';
+    ? 'Cada categoria mostra os dois regimes lado a lado, para comparar bloco a bloco onde vai o dinheiro. As retenções dos sócios e os custos+folha são iguais nos dois (não dependem do regime) — a decisão se concentra em <b>impostos PJ</b> e <b>encargo patronal</b>, que definem a <b>sobra</b> final. Passe o mouse para ver os valores exatos.'
+    : 'Preencha o faturamento para ver o comparativo.';
 
   /* IRPFM — por sócio, com reconciliação (piso − IR já pago = complemento) */
   const D=distribuicao(R,ctx);
