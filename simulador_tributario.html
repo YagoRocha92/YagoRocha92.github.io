@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador Tributário Estratégico · Yago Rocha</title>
+<title>Simulador Tributário Estratégico v3 · VR Moraes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -62,7 +62,7 @@
   .input-wrap{position:relative;display:flex;align-items:center}
   .input-wrap .prefix,.input-wrap .suffix{position:absolute;font-size:.85rem;font-weight:600;color:var(--text-soft);pointer-events:none}
   .input-wrap .prefix{left:13px}.input-wrap .suffix{right:13px}
-  input[type="number"]:not(.header-actions input),select{width:100%;font-family:var(--font-body);font-size:.95rem;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text)}
+  input[type="number"]:not(.header-actions input),input[type="text"]:not(.header-actions input):not(.mista-line input),select{width:100%;font-family:var(--font-body);font-size:.95rem;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text)}
   input.has-prefix{padding-left:38px!important}input.has-suffix{padding-right:34px!important}
   input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);background:var(--surface)}
   select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2358697e' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
@@ -113,8 +113,9 @@
   .memoria summary::before{content:'▸';transition:transform .2s}
   .memoria[open] summary::before{transform:rotate(90deg)}
   .memoria[open] summary{border-bottom:1px solid var(--border)}
-  .mem-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
-  @media(max-width:640px){.mem-grid{grid-template-columns:1fr}}
+  .mem-grid{display:none;grid-template-columns:1fr 1fr;gap:0}
+  .memoria[open] .mem-grid{display:grid}
+  @media(max-width:640px){.memoria[open] .mem-grid{grid-template-columns:1fr}}
   .mem-col{padding:14px 16px}
   .mem-col+.mem-col{border-left:1px solid var(--border)}
   @media(max-width:640px){.mem-col+.mem-col{border-left:none;border-top:1px solid var(--border)}}
@@ -153,6 +154,20 @@
   .ptab tr.tot td{font-weight:700;border-top:2px solid var(--border-strong);border-bottom:none}
   .ptab .flag{color:var(--warning);font-weight:700}
 
+  .mem-det{margin:6px 0 4px}
+  .mem-det summary{cursor:pointer;font-size:.76rem;font-weight:600;color:var(--primary);list-style:none}
+  .mem-det summary::-webkit-details-marker{display:none}
+  .mem-det summary::before{content:'▸ '}
+  .mem-det[open] summary::before{content:'▾ '}
+  .mem-wrap{margin-top:8px}
+  .mem-wrap .mem-soc{margin-bottom:12px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm)}
+  .mem-wrap .mem-soc h6{font-size:.78rem;font-weight:700;margin:0 0 6px;color:var(--text)}
+  .mem-wrap .mem-row{display:flex;justify-content:space-between;gap:10px;font-size:.76rem;padding:2px 0;color:var(--text-soft)}
+  .mem-wrap .mem-row .vv{font-family:var(--font-num);color:var(--text);white-space:nowrap}
+  .mem-wrap .mem-row.cap{color:var(--warning)}
+  .mem-wrap .mem-row.win{color:var(--success-strong);font-weight:600}
+  .mem-wrap .mem-sep{border-top:1px dashed var(--border);margin:6px 0;padding-top:4px;font-weight:700;color:var(--text);font-size:.76rem}
+
   .socio-det{margin-top:12px;border-top:1px dashed var(--border);padding-top:8px}
   .socio-det summary{cursor:pointer;font-size:.74rem;font-weight:600;color:var(--primary);list-style:none}
   .socio-det summary::-webkit-details-marker{display:none}
@@ -168,6 +183,25 @@
   .hibrido-box.info{background:var(--surface-3)}
   .hibrido-box b{color:var(--text)}
   .hibrido-box .dl{margin-top:8px;font-size:.74rem;color:var(--text-muted);border-top:1px dashed var(--border);padding-top:6px}
+
+  .mista-head{font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--text-soft);font-weight:700;margin-bottom:8px}
+  .mista-line{display:grid;grid-template-columns:1fr 1.2fr 92px 26px;gap:6px;align-items:end;margin-bottom:7px}
+  .mista-ratecell{display:flex;flex-direction:column;gap:3px}
+  .mista-ratelbl{font-size:.6rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;display:flex;align-items:center}
+  .mista-ratelbl .tip{min-width:13px;height:13px;font-size:9px;margin-left:3px}
+  .mista-line input,.mista-line select{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-size:.8rem;font-family:inherit}
+  .mista-line .rm{border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--danger);cursor:pointer;height:34px;font-size:1rem;line-height:1}
+  .mista-total{font-size:.84rem;font-weight:700;margin:8px 0;color:var(--text)}
+  .mini-btn{background:var(--surface-3);border:1px solid var(--border);border-radius:8px;color:var(--primary);font-weight:600;font-size:.76rem;padding:7px 12px;cursor:pointer}
+  .mini-btn:hover{background:var(--primary);color:#fff}
+  .mista-row{margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--border)}
+  .mista-row:last-of-type{border-bottom:none}
+  .mista-det{margin-top:4px}
+  .mista-det summary{cursor:pointer;font-size:.72rem;font-weight:600;color:var(--primary);list-style:none}
+  .mista-det summary::-webkit-details-marker{display:none}
+  .mista-det summary::before{content:'▸ '}
+  .mista-det[open] summary::before{content:'▾ '}
+  .mista-det #mistaPresLbl1,.mista-det span[id^="mistaPresLbl"]{color:var(--text-soft);font-weight:700}
 
   .timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0}
   .tl-step{background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:11px}
@@ -196,10 +230,10 @@
 <div class="shell">
   <header class="topbar">
     <div class="brand">
-      <div class="mark">YR</div>
+      <div class="mark">VR</div>
       <div>
         <h1>Simulador Tributário Estratégico</h1>
-        <p>Yago Rocha · Simples Nacional × Lucro Presumido</p>
+        <p>VR Moraes Assessoria Contábil · Simples Nacional × Lucro Presumido</p>
       </div>
     </div>
     <div class="top-actions">
@@ -227,9 +261,14 @@
       <div class="card">
         <div class="card-header"><div class="card-title"><span class="dot"></span>Perfil da Atividade</div></div>
         <div class="field" style="margin-bottom:10px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+            <input type="checkbox" id="mistaCheck" style="width:18px;height:18px;accent-color:var(--primary)" onchange="recalc()">
+            Atividade mista (serviço + comércio na mesma empresa)
+          </label>
+        </div>
+        <div class="field" id="perfilUnicoWrap" style="margin-bottom:10px">
           <label>Tipo de operação</label>
           <select id="perfil" class="calc-trigger">
-            <option value="opcao">Selecione uma opção:</option>
             <option value="saude_servico">Saúde — consultório / serviço intelectual</option>
             <option value="saude_hospitalar">Saúde — equiparação hospitalar (estrutura + ANVISA)</option>
             <option value="servico_fatorR">Serviços gerais sujeitos a Fator R</option>
@@ -241,8 +280,16 @@
           </select>
           <span class="hint" id="perfilHint"></span>
         </div>
+        <div id="mistaWrap" style="display:none">
+          <div class="mista-head"><span>Linhas de receita (cada uma com seu anexo/presunção)</span></div>
+          <div id="mistaLines"></div>
+          <button type="button" id="addMistaBtn" class="mini-btn">+ adicionar linha</button>
+          <div class="mista-total" id="mistaTotal"></div>
+          <span class="hint">No Simples cada linha é segregada pelo seu anexo (sobre o RBT12 total). No LP as presunções somam. O % é ISS (serviço) ou ICMS (comércio), aplicado só no LP. O Fator R usa a RBT12 total (comércio incluído no denominador), então a receita de comércio dilui o índice — use "Serviço Anexo III/V fixo" se quiser travar o enquadramento de uma linha.</span>
+        </div>
         <span class="adv-toggle" id="advToggle">⚙ Ajustes avançados de enquadramento</span>
         <div class="adv-body" id="advBody">
+          <p class="hint" id="advNotaMista" style="display:none;margin:0 0 10px;color:var(--warning)">No modo misto, o enquadramento e a presunção são definidos <b>por linha de receita</b> (no seletor de cada linha). Os campos abaixo valem para o modo de atividade única.</p>
           <div class="field-row">
             <div class="field" style="margin-bottom:10px">
               <label>Presunção IRPJ (LP)</label>
@@ -269,9 +316,9 @@
 
       <div class="card">
         <div class="card-header"><div class="card-title"><span class="dot"></span>Dados Financeiros (Mensal)</div></div>
-        <div class="field">
+        <div class="field" id="fatUnicoWrap">
           <label>Faturamento Bruto</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valFaturamento" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valFaturamento" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
         </div>
         <div class="field" style="margin-bottom:6px">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
@@ -283,25 +330,25 @@
           <label>Receita bruta acumulada — RBT12
             <span class="tip" data-tip="Soma da receita bruta dos últimos 12 meses. É ela que define a faixa e a alíquota efetiva do Simples (não o faturamento do mês × 12). Para início de atividade, deixe desmarcado.">i</span>
           </label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valRbt12" class="has-prefix calc-trigger" min="0" step="1000" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valRbt12" class="money has-prefix calc-trigger" min="0" step="1000" value="0"></div>
           <span class="hint">Define a faixa do Simples e o Fator R. Desmarcado = início de atividade (faturamento × 12).</span>
         </div>
         <div class="field" id="massa12Wrap" style="display:none">
           <label>Massa salarial dos últimos 12 meses (Fator R)
             <span class="tip" data-tip="Soma de salários + pró-labore + FGTS + 13º dos 12 meses anteriores — exatamente a 'folha de salários' que aparece no PGDAS-D. Vai direto ao numerador do Fator R (massa 12m ÷ RBT12). Deixe 0 para a ferramenta anualizar o mês atual.">i</span>
           </label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valMassa12" class="has-prefix calc-trigger" min="0" step="1000" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valMassa12" class="money has-prefix calc-trigger" min="0" step="1000" value="0"></div>
           <span class="hint">Como no relatório do Simples. Se 0, a ferramenta anualiza a folha do mês (início de atividade).</span>
         </div>
         <div class="field-row">
           <div class="field">
             <label>Custos Operacionais</label>
-            <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valCustos" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+            <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valCustos" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
             <span class="hint">Aluguel, sistemas, etc.</span>
           </div>
           <div class="field">
             <label id="issLabel">Alíquota ISS (LP)</label>
-            <div class="input-wrap"><input type="number" id="valIss" class="has-suffix calc-trigger" min="0" step="0.1" value="0"><span class="suffix">%</span></div>
+            <div class="input-wrap"><input type="number" id="valIss" class="has-suffix calc-trigger" min="0" step="0.1" value="2.0"><span class="suffix">%</span></div>
             <span class="hint">Tributo municipal/estadual.</span>
           </div>
         </div>
@@ -313,12 +360,12 @@
         </div>
         <div class="field" id="issFixoWrap" style="display:none">
           <label>ISS fixo total / mês</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valIssFixo" class="has-prefix calc-trigger" min="0" step="50" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valIssFixo" class="money has-prefix calc-trigger" min="0" step="50" value="300"></div>
           <span class="hint">Sociedade uniprofissional: remove a fatia do ISS do DAS (Anexo III/IV/V) e, no LP, substitui o ISS percentual. Recolhido em valor fixo ao município.</span>
         </div>
         <div class="field" id="ipiWrap" style="display:none;margin-bottom:0">
           <label>IPI líquido / mês (débito − crédito)</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valIpi" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valIpi" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
           <span class="hint">Indústria: IPI à parte no LP. No Simples (Anexo II) já está no DAS.</span>
         </div>
       </div>
@@ -336,7 +383,7 @@
           <div class="field-row">
             <div class="field">
               <label>Salários Brutos (CLT)</label>
-              <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="valFolha" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+              <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="valFolha" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
             </div>
             <div class="field">
               <label>Patronal CLT (CPP+RAT+Terc.)</label>
@@ -441,6 +488,7 @@
     <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--warning)"></span>Alerta — Tributação de Lucros e Altas Rendas (Lei 15.270/2025)
       <span class="tip tip-l" data-tip="Art. 6º-A: IRRF de 10% sobre lucros > R$ 50.000/mês pagos por uma PJ a uma PF. Art. 16-A: IRPFM para renda anual > R$ 600 mil, alíquota linear de 0% a 10% (R$ 600 mil–1,2 mi) e 10% acima.">i</span></div></div>
     <div style="overflow-x:auto"><table class="ptab" id="irpfmTab"></table></div>
+    <details class="mem-det"><summary>Memória de cálculo do IRPFM</summary><div id="irpfmMem" class="mem-wrap"></div></details>
     <p class="disclaimer" id="irpfmTxt"></p>
   </div>
 
@@ -449,6 +497,7 @@
     <div class="card-header"><div class="card-title"><span class="dot"></span>IRPF Anual do Sócio (Ajuste) — pró-labore + outros rendimentos
       <span class="tip tip-l" data-tip="O IRRF mensal é antecipação. No ajuste anual somam-se todos os rendimentos tributáveis (pró-labore + aluguéis + outros) menos deduções (legais ou desconto simplificado, o melhor), aplica-se a tabela anual e o redutor da Lei 15.270. Deduções: INSS, dependentes R$ 2.275,08, saúde sem teto, educação R$ 3.561,50/pessoa, PGBL até 12% da renda.">i</span></div></div>
     <div style="overflow-x:auto"><table class="ptab" id="irpfPFTab"></table></div>
+    <details class="mem-det"><summary>Memória de cálculo do IRPF anual (deduções e tetos)</summary><div id="irpfPFMem" class="mem-wrap"></div></details>
     <p class="disclaimer" id="irpfPFTxt"></p>
   </div>
 
@@ -497,7 +546,7 @@
         </div>
         <div class="field" style="margin-bottom:10px">
           <label>Aluguel e ocupação / mês</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="credAluguel" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="credAluguel" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
         </div>
       </div>
       <div class="field" style="margin-bottom:6px">
@@ -508,21 +557,21 @@
       <div class="field-row">
         <div class="field" style="margin-bottom:10px">
           <label>Energia, telecom e software</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="credUtil" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="credUtil" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
         </div>
         <div class="field" style="margin-bottom:10px">
           <label>Materiais e mercadorias</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="credMat" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="credMat" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
         </div>
       </div>
       <div class="field-row">
         <div class="field" style="margin-bottom:10px">
           <label>Serviços de terceiros (PJ)</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="credServ" class="has-prefix calc-trigger" min="0" step="100" value="0"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="credServ" class="money has-prefix calc-trigger" min="0" step="100" value="0"></div>
         </div>
         <div class="field" style="margin-bottom:10px">
           <label>Folha de salários <span style="color:var(--danger);font-weight:700">(não credita)</span></label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="credFolha" class="has-prefix" min="0" step="100" value="0" disabled style="opacity:.6"></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="credFolha" class="money has-prefix" min="0" step="100" value="0" disabled style="opacity:.6"></div>
           <span class="hint">Salários não geram crédito — o gargalo dos serviços.</span>
         </div>
       </div>
@@ -597,7 +646,9 @@ const PERFIS = {
   comercio:        {presIR:8, presCSLL:12,sn:"I",    iss:"ICMS",red:"padrao",hint:"Comércio: Anexo I. No LP o consumo é ICMS (apuração real depende de créditos)."},
   industria:       {presIR:8, presCSLL:12,sn:"II",   iss:"ICMS",red:"padrao",hint:"Indústria: Anexo II. IPI à parte no LP; no Anexo II já está no DAS."},
   transp_carga:    {presIR:8, presCSLL:12,sn:"III",  iss:"ICMS",red:"padrao",hint:"Transporte de cargas: presunção 8%/12%. Consumo via ICMS."},
-  transp_pass:     {presIR:16,presCSLL:12,sn:"III",  iss:"ISS",red:"padrao",hint:"Transporte de passageiros: presunção 16%/12%."}
+  transp_pass:     {presIR:16,presCSLL:12,sn:"III",  iss:"ISS",red:"padrao",hint:"Transporte de passageiros: presunção 16%/12%."},
+  servico_III:     {presIR:32,presCSLL:32,sn:"III",  iss:"ISS",red:"reg30",hint:"Serviço forçado ao Anexo III (independe do Fator R)."},
+  servico_V:       {presIR:32,presCSLL:32,sn:"V",    iss:"ISS",red:"reg30",hint:"Serviço forçado ao Anexo V."}
 };
 
 /* Reduções IBS/CBS — LC 214/2025 */
@@ -612,7 +663,17 @@ const REDUCOES = {
 
 const fmtBRL=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 const fmtPct=v=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v)+'%';
-const getVal=id=>{const el=document.getElementById(id);if(!el)return 0;const v=parseFloat(el.value);return isNaN(v)||v<0?0:v;};
+const fmtNum=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function parseMoeda(str){ const raw=(str||'').replace(/\./g,'').replace(',','.').replace(/[^\d.-]/g,''); const v=parseFloat(raw); return isNaN(v)?0:v; }
+const getVal=id=>{
+  const el=document.getElementById(id); if(!el) return 0;
+  let v = el.classList.contains('money') ? parseMoeda(el.value) : parseFloat(el.value);
+  return isNaN(v)||v<0?0:v;
+};
+/* Formata o campo monetário ao concluir (blur): 20000 → 20.000,00 */
+function formatarCampoMoeda(el){ const v=parseMoeda(el.value); el.value = (el.value.trim()==='') ? '' : fmtNum.format(v<0?0:v); }
+function formatarTodosMoeda(){ document.querySelectorAll('input.money').forEach(el=>{ if(el.value.trim()!=='') formatarCampoMoeda(el); }); }
+document.addEventListener('focusout',e=>{ if(e.target.classList&&e.target.classList.contains('money')) formatarCampoMoeda(e.target); });
 const setTxt=(id,t)=>{const el=document.getElementById(id);if(el)el.textContent=t;};
 
 /* ======================= MOTOR ======================= */
@@ -661,7 +722,9 @@ function lerContexto(){
   const rbtRealOn=document.getElementById('rbtRealCheck').checked;
   const rbt12Override=rbtRealOn?getVal('valRbt12'):0;
   const massa12=rbtRealOn?getVal('valMassa12'):0;
-  return {A,custosOp,folha,fgts,patCltRate,issFixoOn,issRate,issFixo,ehIndustria,ipi,presIR,presCSLL,socios,snModo,rbt12Override,massa12,issLabel:document.getElementById('issLpK').textContent};
+  const mista=document.getElementById('mistaCheck').checked;
+  const streams=mista?getStreams():null;
+  return {A,custosOp,folha,fgts,patCltRate,issFixoOn,issRate,issFixo,ehIndustria,ipi,presIR,presCSLL,socios,snModo,rbt12Override,massa12,mista,streams,issLabel:document.getElementById('issLpK').textContent};
 }
 
 function simular(fat,ctx){
@@ -672,24 +735,51 @@ function simular(fat,ctx){
   const rbt12=(ctx.rbt12Override&&ctx.rbt12Override>0)?ctx.rbt12Override:fat*12;
   const massaAnual=(ctx.massa12&&ctx.massa12>0)?ctx.massa12:(proTotal+folha+fgts)*12;
   const fatorR=rbt12>0?massaAnual/rbt12:0;
-  let anexo,anexoIV=false;
-  if(snModo==='fatorR'){anexo=fatorR>=0.28?'III':'V';}else{anexo=snModo;anexoIV=(snModo==='IV');}
-  const fSN=faixaSN(anexo,rbt12); const efSN=aliqEfetivaSN(anexo,rbt12);
-  const issShareSN=(ctx.issFixoOn && ISS_REPART[anexo]) ? (ISS_REPART[anexo][fSN.idx]||0) : 0;
-  const das=fat*efSN*(1-issShareSN);                       /* ISS fixo: remove a fatia do ISS da guia */
-  const issFixoSN=issShareSN>0 ? ctx.issFixo : 0;          /* ISS fixo recolhido ao município, à parte */
+  let anexo,anexoIV=false,das,issFixoSN,efSN,fSN,baseIR,baseCSLL,consumo,ipiLp,temFatorR;
+  if(ctx.streams && ctx.streams.length){
+    /* ---------- ATIVIDADE MISTA ---------- */
+    das=0; baseIR=0; baseCSLL=0; ipiLp=0; let issFixoFlag=false,anyIV=false,icmsTot=0,issTot=0; const axs=[]; temFatorR=false;
+    for(const s of ctx.streams){
+      const ax = s.snMode==='fatorR' ? (fatorR>=0.28?'III':'V') : s.snMode;
+      if(s.snMode==='fatorR') temFatorR=true;
+      if(ax==='IV') anyIV=true;
+      const idx=faixaSN(ax,rbt12).idx, ef=aliqEfetivaSN(ax,rbt12);
+      const issShareS=(issFixoOn && ISS_REPART[ax])?(ISS_REPART[ax][idx]||0):0;
+      if(issShareS>0) issFixoFlag=true;
+      das += s.valor*ef*(1-issShareS);
+      axs.push(ax);
+      baseIR += s.valor*s.presIR;
+      baseCSLL += s.valor*s.presCSLL;
+      if(s.issType==='ISS') issTot += s.valor*s.rate; else icmsTot += s.valor*s.rate;
+    }
+    anexoIV=anyIV;
+    issFixoSN=issFixoFlag?issFixo:0;
+    anexo=[...new Set(axs)].join('+');
+    efSN=fat>0?das/fat:0;
+    fSN=faixaSN('III',rbt12);
+    consumo=icmsTot+(issFixoOn?issFixo:issTot);
+  } else {
+    /* ---------- MONOATIVIDADE ---------- */
+    if(snModo==='fatorR'){anexo=fatorR>=0.28?'III':'V';temFatorR=true;}else{anexo=snModo;anexoIV=(snModo==='IV');temFatorR=false;}
+    fSN=faixaSN(anexo,rbt12); efSN=aliqEfetivaSN(anexo,rbt12);
+    const issShareSN=(issFixoOn && ISS_REPART[anexo])?(ISS_REPART[anexo][fSN.idx]||0):0;
+    das=fat*efSN*(1-issShareSN);
+    issFixoSN=issShareSN>0?issFixo:0;
+    baseIR=fat*presIR; baseCSLL=fat*presCSLL;
+    consumo=issFixoOn?issFixo:fat*issRate;
+    ipiLp=ipi;
+  }
+  const issShareSN=issFixoSN>0?1:0;
   const patSimples=anexoIV?0.20*(proTotal+folha):0;
   const cargaSN=das+issFixoSN+patSimples+retPF;
   const lucroSN=fat-(das+issFixoSN+custosOp+folha+fgts+patSimples+retPF);
-  const baseIR=fat*presIR, baseCSLL=fat*presCSLL;
   const irpj=baseIR*0.15, adic=baseIR>20000?(baseIR-20000)*0.10:0, csll=baseCSLL*0.09;
   const pisCofins=fat*(0.0065+0.03);
-  const consumo=issFixoOn?issFixo:fat*issRate;
   const patLp=proTotal*0.20+folha*patCltRate;
-  const cargaLP=irpj+adic+csll+pisCofins+consumo+ipi+patLp+retPF;
-  const lucroLP=fat-(irpj+adic+csll+pisCofins+consumo+ipi+custosOp+folha+fgts+patLp+retPF);
-  return {fat,proTotal,inssPF,irrfPF,retPF,detPF,rbt12,massaAnual,fatorR,anexo,anexoIV,fSN,efSN,das,issFixoSN,issShareSN,patSimples,cargaSN,lucroSN,
-          baseIR,baseCSLL,irpj,adic,csll,pisCofins,consumo,ipi,patLp,cargaLP,lucroLP};
+  const cargaLP=irpj+adic+csll+pisCofins+consumo+ipiLp+patLp+retPF;
+  const lucroLP=fat-(irpj+adic+csll+pisCofins+consumo+ipiLp+custosOp+folha+fgts+patLp+retPF);
+  return {fat,proTotal,inssPF,irrfPF,retPF,detPF,rbt12,massaAnual,fatorR,temFatorR,anexo,anexoIV,fSN,efSN,das,issFixoSN,issShareSN,patSimples,cargaSN,lucroSN,
+          baseIR,baseCSLL,irpj,adic,csll,pisCofins,consumo,ipi:ipiLp,patLp,cargaLP,lucroLP};
 }
 
 /* ======================= UI DINÂMICA ======================= */
@@ -730,7 +820,7 @@ function renderSocios(){
     const vpg=cur['pg'+i]!==undefined?cur['pg'+i]:0;
     c.innerHTML+=`<div class="socio-box"><h4>Sócio ${i}</h4><div class="field-row">
       <div class="field" style="margin-bottom:0"><label>Pró-labore</label>
-        <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="proLabore${i}" class="has-prefix calc-trigger" min="0" step="100" value="${vp}"></div></div>
+        <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="proLabore${i}" class="money has-prefix calc-trigger" min="0" step="100" value="${vp}"></div></div>
       <div class="field" style="margin-bottom:0"><label>Dependentes</label>
         <div class="input-wrap"><input type="number" id="dep${i}" class="calc-trigger" min="0" step="1" value="${vd}"></div></div>
     </div>
@@ -739,20 +829,21 @@ function renderSocios(){
     <details class="socio-det"><summary>deduções e outros rendimentos da PF</summary>
       <div class="field-row" style="margin-top:10px">
         <div class="field" style="margin-bottom:0"><label>Outros rend. tributáveis/mês <span style="color:var(--text-soft)">(aluguéis)</span></label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="outros${i}" class="has-prefix calc-trigger" min="0" step="100" value="${vo}"></div></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="outros${i}" class="money has-prefix calc-trigger" min="0" step="100" value="${vo}"></div></div>
         <div class="field" style="margin-bottom:0"><label>Despesas médicas/ano</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="saude${i}" class="has-prefix calc-trigger" min="0" step="100" value="${vsa}"></div></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="saude${i}" class="money has-prefix calc-trigger" min="0" step="100" value="${vsa}"></div></div>
       </div>
       <div class="field-row" style="margin-top:10px">
         <div class="field" style="margin-bottom:0"><label>Educação/ano</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="educ${i}" class="has-prefix calc-trigger" min="0" step="100" value="${ved}"></div></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="educ${i}" class="money has-prefix calc-trigger" min="0" step="100" value="${ved}"></div></div>
         <div class="field" style="margin-bottom:0"><label>PGBL/ano</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" id="pgbl${i}" class="has-prefix calc-trigger" min="0" step="100" value="${vpg}"></div></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="pgbl${i}" class="money has-prefix calc-trigger" min="0" step="100" value="${vpg}"></div></div>
       </div>
     </details>
     </div>`;
   }
   document.querySelectorAll('#containerSocios .calc-trigger').forEach(el=>el.addEventListener('input',recalc));
+  formatarTodosMoeda();
   recalc();
 }
 
@@ -770,9 +861,11 @@ function irpfAnual(s,A){
   const rendTrib=proAnual+outrosAnual;
   if(rendTrib<=0) return {rendTrib:0,irDevido:0,aliqEf:0,vazio:true};
   const inssAnual=Math.min(s.pro,A.tetoInss)*0.11*12;
-  const pgblDed=Math.min(s.pgbl||0, 0.12*rendTrib);
-  const educDed=Math.min(s.educ||0, (1+(s.dep||0))*3561.50);
-  const legais=inssAnual + (s.dep||0)*2275.08 + (s.saude||0) + educDed + pgblDed;
+  const depQt=s.dep||0, depDed=depQt*2275.08;
+  const saudeDed=s.saude||0;
+  const educInf=s.educ||0, educLim=(1+depQt)*3561.50, educDed=Math.min(educInf,educLim);
+  const pgblInf=s.pgbl||0, pgblLim=0.12*rendTrib, pgblDed=Math.min(pgblInf,pgblLim);
+  const legais=inssAnual + depDed + saudeDed + educDed + pgblDed;
   const simpl=Math.min(rendTrib*0.20, A.simplAnual);
   const usaSimpl=simpl>legais;
   const ded=usaSimpl?simpl:legais;
@@ -781,7 +874,70 @@ function irpfAnual(s,A){
   let red=0;
   if(A.redutor){ if(rendTrib<=60000) red=ir; else if(rendTrib<=88200){ red=11743.44-0.133145*rendTrib; if(red<0)red=0; } if(red>ir)red=ir; }
   const irDevido=Math.max(0,ir-red);
-  return {rendTrib,proAnual,outrosAnual,inssAnual,legais,simpl,usaSimpl,ded,base,ir,red,irDevido,aliqEf:rendTrib>0?irDevido/rendTrib:0};
+  return {rendTrib,proAnual,outrosAnual,inssAnual,depQt,depDed,saudeDed,educInf,educLim,educDed,pgblInf,pgblLim,pgblDed,legais,simpl,usaSimpl,ded,base,ir,red,irDevido,aliqEf:rendTrib>0?irDevido/rendTrib:0};
+}
+
+/* Memória de cálculo do IRPF anual (por sócio) */
+function memIrpfPFHTML(ctx,A){
+  let h='';
+  ctx.socios.forEach((s,i)=>{
+    const r=irpfAnual(s,A); if(r.vazio) return;
+    const irrfProAno=calcPF(s.pro,s.dep,A).irrf*12;
+    const carneAno=carneLeaoMensal(s.outros||0,A)*12;
+    const antec=irrfProAno+carneAno, saldo=r.irDevido-antec;
+    h+=`<div class="mem-soc"><h6>Sócio ${i+1}</h6>
+      <div class="mem-row"><span>Pró-labore (${fmtBRL.format(s.pro)} × 12)</span><span class="vv">${fmtBRL.format(r.proAnual)}</span></div>
+      ${r.outrosAnual>0?`<div class="mem-row"><span>Outros rendimentos (${fmtBRL.format(s.outros)} × 12)</span><span class="vv">${fmtBRL.format(r.outrosAnual)}</span></div>`:''}
+      <div class="mem-row" style="font-weight:600;color:var(--text)"><span>= Rendimentos tributáveis</span><span class="vv">${fmtBRL.format(r.rendTrib)}</span></div>
+      <div class="mem-sep">Deduções legais (completa)</div>
+      <div class="mem-row"><span>INSS (11% s/ pró-labore, teto ${fmtBRL.format(A.tetoInss)})</span><span class="vv">${fmtBRL.format(r.inssAnual)}</span></div>
+      <div class="mem-row"><span>Dependentes (${r.depQt} × ${fmtBRL.format(2275.08)})</span><span class="vv">${fmtBRL.format(r.depDed)}</span></div>
+      <div class="mem-row"><span>Saúde (sem teto)</span><span class="vv">${fmtBRL.format(r.saudeDed)}</span></div>
+      <div class="mem-row ${r.educInf>r.educLim?'cap':''}"><span>Educação: informado ${fmtBRL.format(r.educInf)} · teto ${fmtBRL.format(r.educLim)} (${1+r.depQt} pessoa(s) × ${fmtBRL.format(3561.50)})${r.educInf>r.educLim?' — limitado':''}</span><span class="vv">${fmtBRL.format(r.educDed)}</span></div>
+      <div class="mem-row ${r.pgblInf>r.pgblLim?'cap':''}"><span>PGBL: informado ${fmtBRL.format(r.pgblInf)} · teto 12% da renda = ${fmtBRL.format(r.pgblLim)}${r.pgblInf>r.pgblLim?' — limitado':''}</span><span class="vv">${fmtBRL.format(r.pgblDed)}</span></div>
+      <div class="mem-row ${!r.usaSimpl?'win':''}"><span>= Total deduções legais</span><span class="vv">${fmtBRL.format(r.legais)}</span></div>
+      <div class="mem-row ${r.usaSimpl?'win':''}"><span>Desconto simplificado (20%, teto ${fmtBRL.format(A.simplAnual)})</span><span class="vv">${fmtBRL.format(r.simpl)}</span></div>
+      <div class="mem-sep">Usado: ${r.usaSimpl?'desconto simplificado':'deduções legais'} (o maior) = ${fmtBRL.format(r.ded)}</div>
+      <div class="mem-row"><span>Base de cálculo (rend. − dedução)</span><span class="vv">${fmtBRL.format(r.base)}</span></div>
+      <div class="mem-row"><span>IR pela tabela anual</span><span class="vv">${fmtBRL.format(r.ir)}</span></div>
+      ${r.red>0?`<div class="mem-row"><span>(−) Redutor Lei 15.270 (rend. ${fmtBRL.format(r.rendTrib)})</span><span class="vv">−${fmtBRL.format(r.red)}</span></div>`:''}
+      <div class="mem-row" style="font-weight:700;color:var(--text)"><span>= IR devido no ano</span><span class="vv">${fmtBRL.format(r.irDevido)}</span></div>
+      <div class="mem-sep">Antecipações</div>
+      <div class="mem-row"><span>IRRF retido s/ pró-labore (× 12)</span><span class="vv">${fmtBRL.format(irrfProAno)}</span></div>
+      ${carneAno>0?`<div class="mem-row"><span>Carnê-leão s/ outros (× 12)</span><span class="vv">${fmtBRL.format(carneAno)}</span></div>`:''}
+      <div class="mem-row"><span>= Total antecipado</span><span class="vv">${fmtBRL.format(antec)}</span></div>
+      <div class="mem-row" style="font-weight:700;color:${saldo<-0.5?'var(--success-strong)':saldo>0.5?'var(--danger)':'var(--text)'}"><span>Saldo no ajuste</span><span class="vv">${saldo<-0.5?'restituir '+fmtBRL.format(-saldo):saldo>0.5?'a pagar '+fmtBRL.format(saldo):'zerado'}</span></div>
+    </div>`;
+  });
+  return h||'<p class="hint">Sem rendimentos tributáveis informados.</p>';
+}
+/* Memória de cálculo do IRPFM (por sócio) */
+function memIrpfmHTML(D,ctx,A){
+  let h='';
+  D.per.forEach(p=>{
+    if(p.renda<=600000) return;
+    const apur=p.aliq*p.renda;
+    const irPadrao=irpfAnual(ctx.socios[p.i-1],A).irDevido;
+    const ret10=p.ret*12, jaPago=irPadrao+ret10, comp=Math.max(0,apur-jaPago), excesso=Math.max(0,jaPago-apur);
+    const so=ctx.socios[p.i-1];
+    h+=`<div class="mem-soc"><h6>Sócio ${p.i}</h6>
+      <div class="mem-sep">Base ampla (todos os rendimentos)</div>
+      <div class="mem-row"><span>Pró-labore (× 12)</span><span class="vv">${fmtBRL.format(so.pro*12)}</span></div>
+      ${(so.outros||0)>0?`<div class="mem-row"><span>Outros rendimentos (× 12)</span><span class="vv">${fmtBRL.format((so.outros||0)*12)}</span></div>`:''}
+      <div class="mem-row"><span>Lucros distribuídos (${fmtBRL.format(p.div)} × 12)</span><span class="vv">${fmtBRL.format(p.div*12)}</span></div>
+      <div class="mem-row" style="font-weight:600;color:var(--text)"><span>= Renda total</span><span class="vv">${fmtBRL.format(p.renda)}</span></div>
+      <div class="mem-sep">Apuração do piso</div>
+      <div class="mem-row"><span>Alíquota = ${p.renda>=1200000?'10% (renda ≥ R$ 1,2 mi)':`(${fmtBRL.format(p.renda)} ÷ 60.000 − 10)`}</span><span class="vv">${fmtPct(p.aliq*100)}</span></div>
+      <div class="mem-row" style="font-weight:600;color:var(--text)"><span>IRPFM mínimo = renda × alíquota</span><span class="vv">${fmtBRL.format(apur)}</span></div>
+      <div class="mem-sep">(−) IR já pago (abatido do piso)</div>
+      <div class="mem-row"><span>IRPF padrão sobre o pró-labore/outros</span><span class="vv">−${fmtBRL.format(irPadrao)}</span></div>
+      <div class="mem-row"><span>IRRF 10% sobre dividendos (antecipação, × 12)</span><span class="vv">−${fmtBRL.format(ret10)}</span></div>
+      <div class="mem-row"><span>= Total já pago</span><span class="vv">${fmtBRL.format(jaPago)}</span></div>
+      <div class="mem-row" style="font-weight:700;color:${comp>0.5?'var(--danger)':'var(--success-strong)'}"><span>Complemento IRPFM = máx(0; piso − já pago)</span><span class="vv">${comp>0.5?fmtBRL.format(comp):'zero'+(excesso>0.5?' · restitui '+fmtBRL.format(excesso):'')}</span></div>
+      <div class="mem-row" style="color:var(--text-muted)"><span>Obs.: ainda sem o redutor do art. 16-B (IRPJ/CSLL), que reduz mais</span><span class="vv"></span></div>
+    </div>`;
+  });
+  return h||'<p class="hint">Nenhum sócio com renda acima de R$ 600 mil.</p>';
 }
 
 /* ======================= DISTRIBUIÇÃO POR SÓCIO ======================= */
@@ -806,22 +962,37 @@ function memoriaHTML(R,ctx){
   const A=ctx.A;
   /* Coluna Simples */
   let sn=`<div class="mem-col"><h5>Simples Nacional — Anexo ${R.anexo}</h5>`;
-  sn+=`<div class="mem-block"><b>DAS</b>
-    <div class="mem-row"><span>RBT12 (faturamento × 12)</span><span class="vv">${fmtBRL.format(R.rbt12)}</span></div>
-    <div class="mem-row"><span>Faixa ${NOME_FAIXA[R.fSN.idx]} · alíquota nominal</span><span class="vv">${fmtPct(R.fSN.nom*100)}</span></div>
-    <div class="mem-row"><span>Parcela a deduzir</span><span class="vv">${fmtBRL.format(R.fSN.pd)}</span></div>
-    <div class="mem-formula">efetiva = (${fmtBRL.format(R.rbt12)} × ${fmtPct(R.fSN.nom*100)} − ${fmtBRL.format(R.fSN.pd)}) ÷ ${fmtBRL.format(R.rbt12)} = ${fmtPct(R.efSN*100)}<br>DAS = ${fmtBRL.format(R.fat)} × ${fmtPct(R.efSN*100)} = ${fmtBRL.format(R.das)}</div></div>`;
+  if(ctx.mista && ctx.streams){
+    sn+=`<div class="mem-block"><b>DAS — segregação por anexo (RBT12 ${fmtBRL.format(R.rbt12)})</b>`;
+    ctx.streams.forEach(s=>{
+      if(s.valor<=0) return;
+      const ax=s.snMode==='fatorR'?(R.fatorR>=0.28?'III':'V'):s.snMode;
+      const ef=aliqEfetivaSN(ax,R.rbt12);
+      const idx=faixaSN(ax,R.rbt12).idx;
+      const issShareS=(ctx.issFixoOn && ISS_REPART[ax])?(ISS_REPART[ax][idx]||0):0;
+      const val=s.valor*ef*(1-issShareS);
+      sn+=`<div class="mem-row"><span>Anexo ${ax} · ${fmtBRL.format(s.valor)} × ${fmtPct(ef*100)}${issShareS>0?' (−ISS)':''}</span><span class="vv">${fmtBRL.format(val)}</span></div>`;
+    });
+    sn+=`<div class="mem-formula">DAS total = ${fmtBRL.format(R.das)}</div></div>`;
+  } else {
+    sn+=`<div class="mem-block"><b>DAS</b>
+      <div class="mem-row"><span>RBT12 (faturamento × 12)</span><span class="vv">${fmtBRL.format(R.rbt12)}</span></div>
+      <div class="mem-row"><span>Faixa ${NOME_FAIXA[R.fSN.idx]} · alíquota nominal</span><span class="vv">${fmtPct(R.fSN.nom*100)}</span></div>
+      <div class="mem-row"><span>Parcela a deduzir</span><span class="vv">${fmtBRL.format(R.fSN.pd)}</span></div>
+      <div class="mem-formula">efetiva = (${fmtBRL.format(R.rbt12)} × ${fmtPct(R.fSN.nom*100)} − ${fmtBRL.format(R.fSN.pd)}) ÷ ${fmtBRL.format(R.rbt12)} = ${fmtPct(R.efSN*100)}<br>DAS = ${fmtBRL.format(R.fat)} × ${fmtPct(R.efSN*100)} = ${fmtBRL.format(R.das)}</div></div>`;
+  }
+  if(R.issFixoSN>0) sn+=`<div class="mem-block"><b>ISS fixo (município, fora do DAS)</b><div class="mem-formula">${fmtBRL.format(R.issFixoSN)}</div></div>`;
   if(R.anexoIV) sn+=`<div class="mem-block"><b>CPP patronal (fora do DAS)</b><div class="mem-formula">20% × (pró-labore ${fmtBRL.format(R.proTotal)} + folha) = ${fmtBRL.format(R.patSimples)}</div></div>`;
   sn+=memSociosHTML(R,A);
   sn+=`</div>`;
   /* Coluna LP */
   let lp=`<div class="mem-col"><h5>Lucro Presumido</h5>
     <div class="mem-block"><b>Tributos federais + consumo</b>
-    <div class="mem-row"><span>Base IRPJ (presunção)</span><span class="vv">${fmtBRL.format(R.baseIR)}</span></div>
+    <div class="mem-row"><span>Base IRPJ${ctx.mista?' (presunções somadas)':' (presunção)'}</span><span class="vv">${fmtBRL.format(R.baseIR)}</span></div>
     <div class="mem-row"><span>IRPJ 15%${R.adic>0?' + adicional 10%':''}</span><span class="vv">${fmtBRL.format(R.irpj+R.adic)}</span></div>
     <div class="mem-row"><span>Base CSLL · CSLL 9%</span><span class="vv">${fmtBRL.format(R.csll)}</span></div>
     <div class="mem-row"><span>PIS 0,65% + COFINS 3%</span><span class="vv">${fmtBRL.format(R.pisCofins)}</span></div>
-    <div class="mem-row"><span>${ctx.issLabel}</span><span class="vv">${fmtBRL.format(R.consumo)}</span></div>`;
+    <div class="mem-row"><span>${ctx.mista?'ISS + ICMS (consumo)':ctx.issLabel}</span><span class="vv">${fmtBRL.format(R.consumo)}</span></div>`;
   if(R.ipi>0) lp+=`<div class="mem-row"><span>IPI líquido</span><span class="vv">${fmtBRL.format(R.ipi)}</span></div>`;
   lp+=`</div>
     <div class="mem-block"><b>Encargo patronal</b><div class="mem-formula">20% × pró-labore (${fmtBRL.format(R.proTotal)}) = ${fmtBRL.format(R.proTotal*0.20)}${ctx.folha>0?'<br>+ '+fmtPct(ctx.patCltRate*100)+' × folha CLT':''}<br>total = ${fmtBRL.format(R.patLp)}</div></div>`;
@@ -906,10 +1077,90 @@ function desenharAnatomia(R,ctx,fat,saidasSN,saidasLP){
   document.getElementById('anatomiaLeg').innerHTML=segs.map(s=>`<span><i style="background:${s.c}"></i> ${s.k}</span>`).join('');
 }
 
+/* ======================= ATIVIDADE MISTA ======================= */
+const MISTA_OPCOES=[
+  ['servico_fatorR','Serviço (Fator R · Anexo III/V)'],
+  ['servico_III','Serviço Anexo III fixo'],
+  ['servico_V','Serviço Anexo V fixo'],
+  ['saude_servico','Saúde serviço (32% · Fator R)'],
+  ['saude_hospitalar','Saúde hospitalar (8/12%)'],
+  ['servico_anexoIV','Serviço Anexo IV'],
+  ['comercio','Comércio (Anexo I)'],
+  ['industria','Indústria (Anexo II)'],
+  ['transp_carga','Transporte cargas'],
+  ['transp_pass','Transporte passageiros']
+];
+let mistaKeys=[1,2], mistaSeq=2;
+const mistaDefaults={1:{val:0,perfil:'servico_fatorR',rate:5},2:{val:0,perfil:'comercio',rate:0}};
+function renderMista(){
+  const host=document.getElementById('mistaLines'); if(!host) return;
+  const cur={};
+  mistaKeys.forEach(k=>{ if(document.getElementById('mistaVal'+k)){ cur[k]={val:document.getElementById('mistaVal'+k).value,perfil:document.getElementById('mistaPerfil'+k).value,rate:document.getElementById('mistaRate'+k).value,pir:document.getElementById('mistaPresIR'+k).value,pcsll:document.getElementById('mistaPresCSLL'+k).value}; } });
+  host.innerHTML='';
+  mistaKeys.forEach(k=>{
+    const dd=cur[k]||mistaDefaults[k]||{val:0,perfil:'servico_fatorR',rate:0};
+    const p0=PERFIS[dd.perfil]||PERFIS.servico_fatorR;
+    const pir=dd.pir!==undefined?dd.pir:p0.presIR;
+    const pcsll=dd.pcsll!==undefined?dd.pcsll:p0.presCSLL;
+    const opts=MISTA_OPCOES.map(([v,l])=>`<option value="${v}" ${v===dd.perfil?'selected':''}>${l}</option>`).join('');
+    host.innerHTML+=`<div class="mista-row">
+      <div class="mista-line">
+        <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="mistaVal${k}" class="money has-prefix calc-trigger" min="0" step="100" value="${dd.val}" placeholder="receita"></div>
+        <select id="mistaPerfil${k}" onchange="mistaPerfilChange(${k})">${opts}</select>
+        <div class="mista-ratecell">
+          <span class="mista-ratelbl"><span id="mistaRateLbl${k}">imposto</span><span class="tip tip-l" id="mistaRateTip${k}" data-tip="">i</span></span>
+          <div class="input-wrap"><input type="number" id="mistaRate${k}" class="has-suffix calc-trigger" min="0" step="0.1" value="${dd.rate}"><span class="suffix">%</span></div>
+        </div>
+        <button type="button" class="rm" onclick="removeMista(${k})" title="remover">×</button>
+      </div>
+      <details class="mista-det">
+        <summary>Presunção LP: <span id="mistaPresLbl${k}"></span> · ajustar</summary>
+        <div class="field-row" style="margin-top:8px">
+          <div class="field" style="margin-bottom:0"><label>Presunção IRPJ</label>
+            <div class="input-wrap"><input type="number" id="mistaPresIR${k}" class="has-suffix calc-trigger" min="0" step="0.1" value="${pir}"><span class="suffix">%</span></div></div>
+          <div class="field" style="margin-bottom:0"><label>Presunção CSLL</label>
+            <div class="input-wrap"><input type="number" id="mistaPresCSLL${k}" class="has-suffix calc-trigger" min="0" step="0.1" value="${pcsll}"><span class="suffix">%</span></div></div>
+        </div>
+      </details>
+    </div>`;
+  });
+  host.querySelectorAll('.calc-trigger').forEach(el=>el.addEventListener('input',recalc));
+  formatarTodosMoeda();
+}
+function mistaPerfilChange(k){
+  const p=PERFIS[document.getElementById('mistaPerfil'+k).value];
+  document.getElementById('mistaPresIR'+k).value=p.presIR;
+  document.getElementById('mistaPresCSLL'+k).value=p.presCSLL;
+  recalc();
+}
+function addMista(){ mistaSeq++; mistaKeys.push(mistaSeq); renderMista(); recalc(); }
+function removeMista(k){ if(mistaKeys.length<=1) return; mistaKeys=mistaKeys.filter(x=>x!==k); renderMista(); recalc(); }
+function getStreams(){
+  return mistaKeys.map(k=>{
+    const perfilKey=document.getElementById('mistaPerfil'+k)?document.getElementById('mistaPerfil'+k).value:'servico_fatorR';
+    const p=PERFIS[perfilKey];
+    return {valor:getVal('mistaVal'+k), presIR:getVal('mistaPresIR'+k)/100, presCSLL:getVal('mistaPresCSLL'+k)/100, snMode:p.sn, issType:p.iss, rate:getVal('mistaRate'+k)/100, perfilKey};
+  });
+}
+
 /* ======================= ORQUESTRADOR ======================= */
 function recalc(){
   const ctx=lerContexto(); const A=ctx.A;
-  const fat=getVal('valFaturamento');
+  const mistaOn=ctx.mista;
+  document.getElementById('perfilUnicoWrap').style.display=mistaOn?'none':'block';
+  document.getElementById('mistaWrap').style.display=mistaOn?'block':'none';
+  document.getElementById('fatUnicoWrap').style.display=mistaOn?'none':'block';
+  const fat=mistaOn?ctx.streams.reduce((a,s)=>a+s.valor,0):getVal('valFaturamento');
+  if(mistaOn){ document.getElementById('mistaTotal').textContent='Faturamento total: '+fmtBRL.format(fat);
+    mistaKeys.forEach(k=>{ const el=document.getElementById('mistaPresLbl'+k); if(el) el.textContent=`IRPJ ${getVal('mistaPresIR'+k)}% · CSLL ${getVal('mistaPresCSLL'+k)}%`;
+      const lbl=document.getElementById('mistaRateLbl'+k), pf=PERFIS[document.getElementById('mistaPerfil'+k).value], tp=document.getElementById('mistaRateTip'+k);
+      if(lbl&&pf){
+        lbl.textContent=pf.iss==='ISS'?'ISS':'ICMS';
+        if(tp) tp.setAttribute('data-tip', pf.iss==='ISS'
+          ? 'ISS sobre a receita de serviço, aplicado só no Lucro Presumido (no Simples já está no DAS).'
+          : 'ICMS estimado, só no Lucro Presumido. Informe a alíquota efetiva média. Se a mercadoria for ST (substituição tributária), o ICMS já foi recolhido na cadeia — use 0. Não substitui a apuração real (créditos, DIFAL, reduções).');
+      } }); }
+  document.getElementById('advNotaMista').style.display=mistaOn?'block':'none';
   document.getElementById('issFixoWrap').style.display=ctx.issFixoOn?'block':'none';
   document.getElementById('rbtRealWrap').style.display=document.getElementById('rbtRealCheck').checked?'block':'none';
   document.getElementById('massa12Wrap').style.display=document.getElementById('rbtRealCheck').checked?'block':'none';
@@ -921,7 +1172,7 @@ function recalc(){
   const saidasLP=R.irpj+R.adic+R.csll+R.pisCofins+R.consumo+R.ipi+ctx.custosOp+ctx.folha+ctx.fgts+R.patLp+R.retPF;
 
   /* Cards Simples */
-  setTxt('descSimples',`Anexo ${R.anexo}${ctx.snModo==='fatorR'?` · Fator R ${fmtPct(R.fatorR*100)}`:''} · efetiva ${fmtPct(R.efSN*100)}${R.anexo==='II'?' · IPI no DAS':''}${R.issShareSN>0?' · ISS fixo (fora do DAS)':''}`);
+  setTxt('descSimples',`Anexo ${R.anexo}${R.temFatorR?` · Fator R ${fmtPct(R.fatorR*100)}`:''} · efetiva ${fmtPct(R.efSN*100)}${R.anexo==='II'?' · IPI no DAS':''}${R.issShareSN>0?' · ISS fixo (fora do DAS)':''}`);
   setTxt('outDas',fmtBRL.format(R.das));
   document.getElementById('lineIssFixoSN').style.display=R.issFixoSN>0?'flex':'none';
   setTxt('outIssFixoSN',fmtBRL.format(R.issFixoSN));
@@ -939,7 +1190,7 @@ function recalc(){
   setTxt('outProLiqSimples',fmtBRL.format(proLiqTot));
   setTxt('outDistSimples',fmtBRL.format(R.lucroSN-proLiqTot));
   /* Cards LP */
-  setTxt('descPresumido',`Presunção IRPJ ${fmtPct(ctx.presIR*100)} · CSLL ${fmtPct(ctx.presCSLL*100)}`);
+  setTxt('descPresumido',ctx.mista?`Atividade mista · base IRPJ ${fmtBRL.format(R.baseIR)} · base CSLL ${fmtBRL.format(R.baseCSLL)}`:`Presunção IRPJ ${fmtPct(ctx.presIR*100)} · CSLL ${fmtPct(ctx.presCSLL*100)}`);
   setTxt('outIrpjLp',fmtBRL.format(R.irpj+R.adic));
   setTxt('outCsllLp',fmtBRL.format(R.csll));
   setTxt('outPisLp',fmtBRL.format(R.pisCofins));
@@ -970,9 +1221,10 @@ function recalc(){
     else{venc='Empate';dif=0;}
     let html=venc==='Empate'?'Os dois regimes geram a mesma sobra líquida; pela menor burocracia tende a prevalecer o <b>Simples Nacional</b>.'
       :`Estratégia vencedora: <b>${venc}</b> deixa mais com os sócios — diferença de <b>${fmtBRL.format(dif)}</b>/mês (~<b>${fmtBRL.format(dif*12)}</b>/ano).`;
-    if(ctx.snModo==='fatorR'){
-      if(R.fatorR<0.28){ const faltaAno=Math.max(0,0.28*R.rbt12-R.massaAnual); html+=`<div class="fator-tip">⚠ Fator R em ${fmtPct(R.fatorR*100)} (Anexo V). Faltam ~<b>${fmtBRL.format(faltaAno)}</b> de massa salarial nos 12 meses (≈ ${fmtBRL.format(faltaAno/12)}/mês) para cruzar os 28% e migrar ao Anexo III.</div>`; }
-      else html+=`<div class="fator-tip" style="color:var(--success)">✓ Fator R em ${fmtPct(R.fatorR*100)} — enquadrado no Anexo III.</div>`;
+    if(ctx.mista?R.temFatorR:ctx.snModo==='fatorR'){
+      const baseTxt=ctx.mista?' (sobre a RBT12 total — o comércio dilui o índice)':'';
+      if(R.fatorR<0.28){ const faltaAno=Math.max(0,0.28*R.rbt12-R.massaAnual); html+=`<div class="fator-tip">⚠ Fator R em ${fmtPct(R.fatorR*100)}${baseTxt} → serviço no Anexo V. Faltam ~<b>${fmtBRL.format(faltaAno)}</b> de massa salarial nos 12 meses (≈ ${fmtBRL.format(faltaAno/12)}/mês) para cruzar os 28% e levar a perna de serviço ao Anexo III.</div>`; }
+      else html+=`<div class="fator-tip" style="color:var(--success)">✓ Fator R em ${fmtPct(R.fatorR*100)}${baseTxt} — serviço no Anexo III.</div>`;
     }
     v.innerHTML=html;
   }
@@ -998,28 +1250,39 @@ function recalc(){
     ? 'Cada barra é 100% do faturamento. As faixas coloridas mostram para onde o dinheiro vai em cada regime; a faixa verde à direita é o que sobra para os sócios. Quanto maior o verde, melhor o regime — e dá para ver na hora <b>por que</b> um vence (ex.: o bloco de encargo patronal que só aparece no Lucro Presumido).'
     : 'Preencha o faturamento para ver a composição.';
 
-  /* IRPFM — por sócio, conforme participação societária */
+  /* IRPFM — por sócio, com reconciliação (piso − IR já pago = complemento) */
   const D=distribuicao(R,ctx);
   const pIr=document.getElementById('panelIrpfm');
   const dispara=D.per.some(p=>p.div>50000 || p.renda>600000);
   if(dispara){
     pIr.style.display='block';
-    let linhas=`<tr><th>Sócio</th><th>Particip.</th><th>Pró-labore/mês</th><th>Lucro distrib./mês</th><th>Retenção 10%</th><th>Renda anual</th><th>Alíq. IRPFM</th></tr>`;
+    let linhas=`<tr><th>Sócio</th><th>Renda anual</th><th>Alíq.</th><th>IRPFM mínimo/ano</th><th>(−) IR já pago (padrão + 10%)</th><th>Complemento a pagar</th></tr>`;
+    let tApur=0,tPago=0,tComp=0;
     D.per.forEach(p=>{
+      const apur=p.aliq*p.renda;
+      const irPadrao=irpfAnual(ctx.socios[p.i-1],A).irDevido;
+      const ret10=p.ret*12;
+      const jaPago=irPadrao+ret10;
+      const comp=Math.max(0,apur-jaPago);
+      const excesso=Math.max(0,jaPago-apur);
+      tApur+=apur; tPago+=jaPago; tComp+=comp;
+      const compTxt = p.renda<=600000 ? 'isento (renda < R$ 600k)'
+        : comp>0.5 ? `<span style="color:var(--danger);font-weight:700">a pagar ${fmtBRL.format(comp)}</span>`
+        : `<span style="color:var(--success-strong);font-weight:700">zero</span>${excesso>0.5?` · restitui ${fmtBRL.format(excesso)}`:''}`;
       linhas+=`<tr>
         <td>Sócio ${p.i}</td>
-        <td>${fmtPct(p.fracPct)}</td>
-        <td>${fmtBRL.format(p.pro)}</td>
-        <td>${fmtBRL.format(p.div)}</td>
-        <td class="${p.ret>0?'flag':''}">${p.ret>0?fmtBRL.format(p.ret):'—'}</td>
         <td class="${p.renda>600000?'flag':''}">${fmtBRL.format(p.renda)}</td>
-        <td class="${p.aliq>0?'flag':''}">${p.renda>600000?fmtPct(p.aliq*100):'isento'}</td>
+        <td>${p.renda>600000?fmtPct(p.aliq*100):'—'}</td>
+        <td>${p.renda>600000?fmtBRL.format(apur):'—'}</td>
+        <td>${p.renda>600000?fmtBRL.format(jaPago):'—'}</td>
+        <td>${compTxt}</td>
       </tr>`;
     });
-    linhas+=`<tr class="tot"><td>Total</td><td>${fmtPct(Math.min(100,D.somaParts))}</td><td>${fmtBRL.format(R.proTotal)}</td><td>${fmtBRL.format(D.divTotal)}</td><td class="${D.retTotal>0?'flag':''}">${D.retTotal>0?fmtBRL.format(D.retTotal):'—'}</td><td>—</td><td>—</td></tr>`;
+    linhas+=`<tr class="tot"><td>Total</td><td>—</td><td>—</td><td>${fmtBRL.format(tApur)}</td><td>${fmtBRL.format(tPago)}</td><td class="${tComp>0.5?'flag':''}">${tComp>0.5?fmtBRL.format(tComp):'zero'}</td></tr>`;
     document.getElementById('irpfmTab').innerHTML=linhas;
-    const somaAviso = Math.abs(D.somaParts-100)>0.5 ? ` <b>As participações somam ${fmtPct(D.somaParts)}</b> — ajuste para 100% para refletir o contrato social.` : '';
-    document.getElementById('irpfmTxt').innerHTML=`Apuração por sócio conforme a participação informada (cenário de distribuição no Lucro Presumido).${somaAviso} A retenção de 10% incide quando o lucro distribuído a um sócio passa de R$ 50.000/mês (art. 6º-A) e é antecipação compensável. O IRPFM anual (art. 16-A) só gera complemento se o IR já recolhido (PJ + retenções) ficar abaixo do piso, com redutor para evitar carga combinada acima de 34%. Estimativa de planejamento; não abatida da sobra líquida.`;
+    document.getElementById('irpfmMem').innerHTML=memIrpfmHTML(D,ctx,A);
+    const somaAviso = Math.abs(D.somaParts-100)>0.5 ? ` <b>As participações somam ${fmtPct(D.somaParts)}</b> — ajuste para 100%.` : '';
+    document.getElementById('irpfmTxt').innerHTML=`O IRPFM é um <b>piso</b>, não um imposto que se soma. Calcula-se o mínimo (alíquota × renda total, que inclui pró-labore + lucros + outros) e dele se <b>abate o IR já pago</b>: o IRPF padrão sobre o pró-labore e o IRRF de 10% sobre os dividendos (que é antecipação do IRPFM, art. 16-A §5º). Só há complemento se o já pago ficar abaixo do mínimo; caso contrário é zero e o excesso da retenção é restituível.${somaAviso} O cálculo aqui ainda <b>não</b> aplica o redutor do art. 16-B (que abate também o IRPJ/CSLL da empresa), então o complemento mostrado é um teto conservador — na prática tende a ser menor ou zero. Estimativa de planejamento; não abatida da sobra líquida.`;
   } else pIr.style.display='none';
 
   /* IRPF anual do sócio (ajuste) */
@@ -1054,6 +1317,7 @@ function recalc(){
     const totColor=totSaldo<-0.5?'style="color:var(--success-strong);font-weight:700"':totSaldo>0.5?'style="color:var(--danger);font-weight:700"':'';
     linhasPF+=`<tr class="tot"><td>Total</td><td>—</td><td>—</td><td>${fmtBRL.format(totIR)}</td><td>${fmtBRL.format(totAntec)}</td><td ${totColor}>${totSaldoTxt}</td><td>—</td></tr>`;
     document.getElementById('irpfPFTab').innerHTML=linhasPF;
+    document.getElementById('irpfPFMem').innerHTML=memIrpfPFHTML(ctx,A);
     document.getElementById('irpfPFTxt').innerHTML=`Apuração anual consolidando pró-labore + outros rendimentos, com a melhor dedução (legais × simplificado de ${fmtBRL.format(A.simplAnual)})${A.redutor?' e o redutor da Lei 15.270':''}. O <b>antecipado</b> soma o IRRF retido na fonte sobre o pró-labore e o carnê-leão dos aluguéis. O <b>saldo</b> é o que se acerta na declaração: <span style="color:var(--success-strong);font-weight:600">restituir</span> quando reteve-se mais do que o devido (comum quando a fonte usa deduções legais e o ajuste opta pelo simplificado), ou <span style="color:var(--danger);font-weight:600">a pagar</span> no caso oposto. Estimativa de planejamento — a restituição real depende das deduções comprovadas na DAA.`;
   } else pPF.style.display='none';
   const red=REDUCOES[document.getElementById('redIBS').value];
@@ -1062,7 +1326,7 @@ function recalc(){
   const baseRate=cenarioRT==='teste'?0.01:aliqRef;     // 2026: CBS 0,9% + IBS 0,1%
   const aliqEf=baseRate*(1-red.r);
   const insumos=getVal('credAluguel')+getVal('credUtil')+getVal('credMat')+getVal('credServ');
-  const cf=document.getElementById('credFolha'); if(cf) cf.value=Math.round(ctx.folha);
+  const cf=document.getElementById('credFolha'); if(cf) cf.value=fmtNum.format(Math.round(ctx.folha));
   const debito=fat*aliqEf;
   const credito=Math.min(debito, insumos*baseRate);
   const liquido=Math.max(0,debito-credito);
@@ -1123,7 +1387,7 @@ function otimizar(R,ctx,fat){
   if(fat<=0){ rows.innerHTML=''; txt.textContent='Preencha o faturamento.'; btn.style.display='none'; return; }
   const D=distribuicao(R,ctx);
   const maior=D.per.reduce((m,p)=>p.div>m.div?p:m,{div:0,i:0});
-  if(ctx.snModo==='fatorR'){
+  if(ctx.mista?R.temFatorR:ctx.snModo==='fatorR'){
     if(ctx.massa12&&ctx.massa12>0){
       /* Massa consolidada informada (empresa em atividade): Fator R fixo pelo número real */
       const alvoMassa=0.28*R.rbt12, gap=Math.max(0,alvoMassa-R.massaAnual);
@@ -1169,7 +1433,7 @@ document.getElementById('perfil').addEventListener('change',aplicarPerfil);
 document.getElementById('advToggle').addEventListener('click',()=>document.getElementById('advBody').classList.toggle('open'));
 document.getElementById('reformaToggle').addEventListener('click',function(){const b=document.getElementById('reformaBody');b.classList.toggle('open');this.textContent=b.classList.contains('open')?'ocultar projeção ▴':'mostrar projeção ▾';});
 document.getElementById('themeBtn').addEventListener('click',function(){const r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);document.getElementById('themeLabel').textContent=n==='dark'?'Claro':'Escuro';recalc();});
-document.getElementById('printBtn').addEventListener('click',()=>{document.getElementById('memoria').open=true;window.print();});
+document.getElementById('printBtn').addEventListener('click',()=>{window.print();});
 document.getElementById('aplicarPro').addEventListener('click',()=>{
   const ctx=lerContexto(), fat=getVal('valFaturamento');
   const fmed=(ctx.rbt12Override&&ctx.rbt12Override>0?ctx.rbt12Override:fat*12)/12;
@@ -1179,7 +1443,8 @@ document.getElementById('aplicarPro').addEventListener('click',()=>{
   recalc();
 });
 document.querySelectorAll('.calc-trigger').forEach(el=>el.addEventListener('input',recalc));
-window.addEventListener('DOMContentLoaded',()=>{ renderSocios(); aplicarPerfil(); });
+document.getElementById('addMistaBtn').addEventListener('click',addMista);
+window.addEventListener('DOMContentLoaded',()=>{ renderSocios(); renderMista(); aplicarPerfil(); });
 </script>
 </body>
 </html>
