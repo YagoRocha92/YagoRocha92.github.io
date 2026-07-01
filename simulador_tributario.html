@@ -209,6 +209,14 @@
   .hibrido-box b{color:var(--text)}
   .hibrido-box .dl{margin-top:8px;font-size:.74rem;color:var(--text-muted);border-top:1px dashed var(--border);padding-top:6px}
   .rt-anos-wrap{margin-top:16px}
+  .rt-sub{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .rt-sub>summary{cursor:pointer;list-style:none;padding:11px 14px;font-size:.84rem;font-weight:700;color:var(--cbs);background:var(--surface-2);user-select:none}
+  .rt-sub>summary::-webkit-details-marker{display:none}
+  .rt-sub>summary::before{content:'▸ ';color:var(--text-muted)}
+  .rt-sub[open]>summary::before{content:'▾ '}
+  .rt-sub[open]>summary{border-bottom:1px dashed var(--border)}
+  .rt-anos-wrap, .rt-split-wrap{padding:14px}
+  .rt-anos-wrap{margin-top:0}
   .rt-simples-aviso{background:var(--warning-soft);border-left:3px solid var(--warning);color:var(--warning);padding:10px 12px;border-radius:8px;font-size:.78rem;line-height:1.5;margin-bottom:10px}
   .rt-simples-aviso b{color:var(--warning)}
   #rtProjBody.rt-dim{opacity:.45;filter:grayscale(.35);pointer-events:none;transition:opacity .2s}
@@ -398,6 +406,12 @@
               <option value="IV">Anexo IV — CPP fora do DAS</option>
               <option value="V">Anexo V — fixo</option>
             </select>
+          </div>
+          <div class="field" style="margin-bottom:0;margin-top:10px">
+            <label>Faturamento do trimestre — adicional de IRPJ (LP)
+              <span class="tip" data-tip="No Lucro Presumido, o adicional de 10% de IRPJ é apurado por TRIMESTRE, sobre a base que excede R$ 60.000 no trimestre. Preencha o faturamento trimestral para calcular o adicional corretamente em faturamento sazonal. Deixe em branco para usar a aproximação mensal (excedente de R$ 20.000/mês), válida quando o faturamento é uniforme.">i</span>
+            </label>
+            <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="fatTrimestre" class="money has-prefix calc-trigger" min="0" step="1000" placeholder="opcional — deixe vazio p/ mensal"></div>
           </div>
         </div>
       </div>
@@ -700,15 +714,38 @@
         <div class="alert-stat"><div class="l">Consumo hoje (PIS+COFINS+ISS/IPI)</div><div class="n" id="rtHoje">—</div></div>
       </div>
       <div class="hibrido-box info" id="hibridoBox"></div>
-      <div class="rt-anos-wrap">
-        <h5 class="rt-anos-h">Projeção ano a ano da transição (2026–2033)</h5>
-        <div class="rt-simples-aviso" id="rtSimplesAviso" style="display:none"></div>
-        <div id="rtProjBody">
-          <div style="overflow-x:auto"><table class="ptab rt-anos" id="rtAnos"></table></div>
-          <details class="mem-det"><summary>Memória CBS × IBS por ano</summary><div style="overflow-x:auto"><table class="ptab" id="rtAnosMem"></table></div></details>
+
+      <details class="rt-sub" id="rtProjDet">
+        <summary>Projeção ano a ano da transição (2026–2033)</summary>
+        <div class="rt-anos-wrap">
+          <div class="rt-simples-aviso" id="rtSimplesAviso" style="display:none"></div>
+          <div id="rtProjBody">
+            <div style="overflow-x:auto"><table class="ptab rt-anos" id="rtAnos"></table></div>
+            <details class="mem-det"><summary>Memória CBS × IBS por ano</summary><div style="overflow-x:auto"><table class="ptab" id="rtAnosMem"></table></div></details>
+          </div>
+          <p class="disclaimer" id="rtAnosTxt"></p>
         </div>
-        <p class="disclaimer" id="rtAnosTxt"></p>
-      </div>
+      </details>
+
+      <details class="rt-sub" id="rtSplitDet">
+        <summary>Impacto no caixa — split payment</summary>
+        <div class="rt-split-wrap">
+          <p class="disclaimer" style="margin-top:0">Com o split payment, o IBS/CBS é separado automaticamente na liquidação do pagamento e vai direto ao fisco — a empresa deixa de "segurar" esse valor no caixa até o vencimento da guia. Estime abaixo o efeito no capital de giro.</p>
+          <div class="field" style="max-width:320px">
+            <label>Prazo médio de giro hoje (dias entre receber e recolher)
+              <span class="tip" data-tip="Intervalo médio, em dias, entre receber o valor da venda (com o tributo embutido) e recolher esse tributo ao fisco. É o período em que o dinheiro do imposto ajuda o capital de giro hoje — e que o split payment elimina.">i</span>
+            </label>
+            <div class="input-wrap"><input type="number" id="splitDias" class="has-suffix calc-trigger" min="0" max="120" step="1" value="30"><span class="suffix">dias</span></div>
+          </div>
+          <div class="alert-rows" style="margin-top:12px">
+            <div class="alert-stat"><div class="l">IBS/CBS que passa pelo split (mês)</div><div class="n" id="splTributo">—</div></div>
+            <div class="alert-stat"><div class="l">Capital de giro que deixa de existir (float)</div><div class="n" id="splFloat" style="color:var(--danger)">—</div></div>
+            <div class="alert-stat" id="splPresoWrap" style="display:none"><div class="l">Crédito preso aguardando ressarcimento (mês)</div><div class="n" id="splPreso" style="color:var(--warning)">—</div></div>
+          </div>
+          <p class="disclaimer" id="splTxt"></p>
+        </div>
+      </details>
+
       <p class="disclaimer" id="rtTxt"></p>
     </div>
   </div>
@@ -792,6 +829,7 @@ const LP = {
   irpj:0.15,            // IRPJ
   adicAliq:0.10,        // adicional de IRPJ
   adicLimMes:20000,     // adicional incide sobre a base que excede R$ 20.000/mês
+  adicLimTri:60000,     // apuração legal do LP é trimestral: excedente de R$ 60.000/trimestre
   csll:0.09,            // CSLL
   pis:0.0065, cofins:0.03,   // PIS/COFINS cumulativo (3,65%)
   inss:0.11,            // INSS do pró-labore (desconto do sócio)
@@ -928,13 +966,23 @@ function simular(fat,ctx){
   const patSimples=anexoIV?0.20*(proTotal+folha):0;
   const cargaSN=das+issFixoSN+patSimples+retPF;
   const lucroSN=fat-(das+issFixoSN+custosOp+folha+fgts+patSimples+retPF);
-  const irpj=baseIR*LP.irpj, adic=baseIR>LP.adicLimMes?(baseIR-LP.adicLimMes)*LP.adicAliq:0, csll=baseCSLL*LP.csll;
+  const irpj=baseIR*LP.irpj, csll=baseCSLL*LP.csll;
+  const fatTrim=getVal('fatTrimestre');
+  let adic, adicTrimestral=false, baseIRtrim=0;
+  if(fatTrim>0 && fat>0){
+    baseIRtrim=fatTrim*(baseIR/fat);                                       // base trimestral (mesma presunção efetiva)
+    const adicTri=baseIRtrim>LP.adicLimTri?(baseIRtrim-LP.adicLimTri)*LP.adicAliq:0;
+    adic=adicTri/3;                                                          // rateado p/ a visão mensal
+    adicTrimestral=true;
+  } else {
+    adic=baseIR>LP.adicLimMes?(baseIR-LP.adicLimMes)*LP.adicAliq:0;
+  }
   const pisCofins=fat*(LP.pis+LP.cofins);
   const patLp=proTotal*0.20+folha*patCltRate;
   const cargaLP=irpj+adic+csll+pisCofins+consumo+ipiLp+patLp+retPF;
   const lucroLP=fat-(irpj+adic+csll+pisCofins+consumo+ipiLp+custosOp+folha+fgts+patLp+retPF);
   return {fat,proTotal,inssPF,irrfPF,retPF,detPF,rbt12,massaAnual,fatorR,temFatorR,anexo,anexoIV,fSN,efSN,efTab,das,issFixoSN,issShareSN,patSimples,cargaSN,lucroSN,
-          baseIR,baseCSLL,irpj,adic,csll,pisCofins,consumo,ipi:ipiLp,patLp,cargaLP,lucroLP};
+          baseIR,baseCSLL,irpj,adic,adicTrimestral,baseIRtrim,csll,pisCofins,consumo,ipi:ipiLp,patLp,cargaLP,lucroLP};
 }
 
 /* ======================= UI DINÂMICA ======================= */
@@ -1153,7 +1201,9 @@ function memoriaHTML(R,ctx){
   lp+=`<div class="mem-block"><b>Tributos federais + consumo</b>`;
   if(!ctx.mista) lp+=`<div class="mem-row"><span>Base IRPJ (presunção)</span><span class="vv">${fmtBRL.format(R.baseIR)}</span></div>`;
   lp+=`<div class="mem-row"><span>IRPJ 15% × base ${fmtBRL.format(R.baseIR)}</span><span class="vv">${fmtBRL.format(R.irpj)}</span></div>
-    ${R.adic>0?`<div class="mem-row"><span>Adicional 10% × (base − R$ 20.000)</span><span class="vv">${fmtBRL.format(R.adic)}</span></div>`:''}
+    ${R.adicTrimestral
+      ? `<div class="mem-row ${R.adic>0?'':'cap'}"><span>Adicional 10% · base trimestral ${fmtBRL.format(R.baseIRtrim)} vs. limite ${fmtBRL.format(60000)}${R.adic>0?` → excedente ${fmtBRL.format(R.baseIRtrim-60000)} × 10% ÷ 3`:' → sem excedente, sem adicional'}</span><span class="vv">${fmtBRL.format(R.adic)}</span></div>`
+      : (R.adic>0?`<div class="mem-row"><span>Adicional 10% × (base − R$ 20.000/mês)</span><span class="vv">${fmtBRL.format(R.adic)}</span></div>`:'')}
     <div class="mem-row"><span>Base CSLL · CSLL 9%</span><span class="vv">${fmtBRL.format(R.csll)}</span></div>
     <div class="mem-row"><span>PIS 0,65% + COFINS 3%</span><span class="vv">${fmtBRL.format(R.pisCofins)}</span></div>`;
   if(ctx.mista && ctx.streams){
@@ -1195,6 +1245,10 @@ function validar(R,ctx){
   const D=distribuicao(R,ctx);
   const temSaudeHosp = perfilSel==='saude_hospitalar' || (ctx.mista && ctx.streams && ctx.streams.some(s=>s.perfilKey==='saude_hospitalar' && s.valor>0));
   const simplesSit=(document.getElementById('simplesSit')||{}).value||'verificar';
+
+  /* ---- Adicional de IRPJ: apuração trimestral ---- */
+  if(R.adic>0 && !R.adicTrimestral) av.push({t:'aviso',m:`O <b>adicional de 10% de IRPJ (LP)</b> está sendo estimado pela aproximação mensal (excedente de R$ 20.000/mês). A apuração legal é <b>trimestral</b> (excedente de R$ 60.000/trimestre) — em faturamento sazonal isso distorce a provisão. Informe o "Faturamento do trimestre" nos ajustes avançados para o cálculo correto.`});
+  else if(R.adicTrimestral) av.push({t:'ok',m:`Adicional de IRPJ apurado pela base <b>trimestral</b> (excedente de R$ 60.000/tri). O valor exibido é rateado ÷ 3 para a visão mensal; na prática o adicional é recolhido na apuração do trimestre.`});
 
   /* ---- SITUAÇÃO NO SIMPLES (lembrete de elegibilidade) ---- */
   if(simplesSit==='vedada') av.push({t:'erro',m:`Atividade marcada como <b>vedada / não elegível ao Simples Nacional</b>: o cenário do Simples nesta simulação é apenas teórico. A decisão real é entre Lucro Presumido e Lucro Real.`});
@@ -1691,6 +1745,24 @@ function recalc(){
   if(b2bShare>0 && R.lucroSN>=R.lucroLP){ nota+='<b>Atenção (Simples + B2B):</b> o optante do Simples transfere ao cliente PJ apenas o crédito embutido no DAS (fração mínima). Para não perder competitividade com clientes B2B, avalie apurar IBS/CBS por fora (regime híbrido) ou migrar de regime. '; }
   nota+='Projeção de planejamento — alíquota de referência e listas dos anexos ainda em regulamentação; a redução segue o serviço efetivamente prestado (NBS), não apenas a habilitação.';
   document.getElementById('rtTxt').innerHTML=nota;
+
+  /* ---- Split payment: impacto no caixa ---- */
+  const splDias=Math.max(0,getVal('splitDias'));
+  const splFloat=liquido*(splDias/30);                 // capital de giro perdido sobre o líquido a recolher
+  setTxt('splTributo',fmtBRL.format(debito));
+  setTxt('splFloat',fmtBRL.format(splFloat));
+  document.getElementById('splPresoWrap').style.display=saldoCredor>0.5?'block':'none';
+  setTxt('splPreso',fmtBRL.format(saldoCredor));
+  let splN='';
+  if(saldoCredor>0.5){
+    splN=`Sua atividade gera <b>saldo credor</b>: o split separa <b>${fmtBRL.format(debito)}</b> do IBS/CBS já na liquidação da venda, mas como o crédito das compras supera o débito, sobra <b>${fmtBRL.format(saldoCredor)}/mês</b> (${fmtBRL.format(saldoCredor*12)}/ano) preso aguardando ressarcimento — o oposto de um float: é caixa imobilizado. O prazo de devolução desse crédito é decisivo para o capital de giro.`;
+  } else if(splFloat>0.5){
+    splN=`Hoje o valor do imposto fica cerca de <b>${splDias} dias</b> no seu caixa antes do recolhimento, financiando o giro. Com o split, esse float some: deixam de ficar disponíveis aproximadamente <b>${fmtBRL.format(splFloat)}</b> de capital de giro. Programe-se para essa diferença na transição.`;
+  } else {
+    splN='Sem IBS/CBS líquido a recolher neste cenário, não há float relevante a perder pelo split.';
+  }
+  splN+=' <b>Estimativa de planejamento:</b> o mecanismo final do split (separação na alíquota cheia × líquida, prazos de devolução, regras por meio de pagamento) ainda depende de regulamentação.';
+  document.getElementById('splTxt').innerHTML=splN;
   projetarTransicao(R,ctx,fat,aliqRef,red,insumos);
 
   /* Recomendação: Simples Híbrido */
