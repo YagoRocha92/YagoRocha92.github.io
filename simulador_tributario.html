@@ -171,21 +171,40 @@
   .val-resumo.ok{color:var(--success-strong)}
   .val-resumo .vr-e{color:var(--danger)}
   .val-resumo .vr-a{color:var(--warning)}
-  .exec{border-left:4px solid var(--primary);background:linear-gradient(135deg,var(--primary-soft),transparent 70%)}
-  .exec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .exec{border-left:4px solid var(--primary)}
+  .exec-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:2px}
   .exec-label{font-size:.7rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--text-soft)}
-  .exec-regime{font-size:1.5rem;font-weight:800;color:var(--primary);line-height:1.1;margin-top:2px}
-  .exec-badge{font-size:.74rem;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--success-soft);color:var(--success-strong);white-space:nowrap}
+  .exec-regime{font-size:1.6rem;font-weight:800;color:var(--primary);line-height:1.1;margin-top:2px}
+  .exec-verdict{text-align:right}
+  .exec-badge{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--success-soft);color:var(--success-strong);white-space:nowrap}
   .exec-badge.emp{background:var(--warning-soft);color:var(--warning)}
-  .exec-lead{font-size:.95rem;color:var(--text);line-height:1.5;margin:0 0 12px}
+  .exec-badge.lp{background:var(--primary-soft);color:var(--primary-strong)}
+  .exec-econ{font-size:1.25rem;font-weight:800;color:var(--success-strong);margin-top:8px;font-family:var(--font-num)}
+  .exec-econ.emp{color:var(--text-soft)}
+  .exec-econ-s{font-size:.72rem;color:var(--text-soft)}
+  .exec-lead{font-size:.92rem;color:var(--text);line-height:1.55;margin:14px 0 16px}
   .exec-lead b{color:var(--primary)}
-  .exec-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
-  .exec-stat{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-  .exec-stat .l{font-size:.68rem;text-transform:uppercase;letter-spacing:.4px;color:var(--text-soft);font-weight:700}
-  .exec-stat .n{font-size:1.05rem;font-weight:800;color:var(--text);font-family:var(--font-num);margin-top:3px}
-  .exec-stat .s{font-size:.72rem;color:var(--text-soft)}
-  .exec-why{font-size:.86rem;color:var(--text-soft);line-height:1.5;margin:0 0 8px;border-top:1px dashed var(--border);padding-top:10px}
-  .exec-note{font-size:.74rem;color:var(--text-muted);margin:0}
+  .exec-cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .exec-col{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface-2)}
+  .exec-col.win{border:2px solid var(--primary);padding:11px 13px}
+  .exec-col-h{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--text-soft);gap:8px}
+  .exec-col-win{font-size:.66rem;color:var(--primary);font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+  .exec-col-n{font-size:1.35rem;font-weight:800;color:var(--text);font-family:var(--font-num);margin:4px 0 8px}
+  .exec-bar{height:8px;background:var(--surface-3);border-radius:999px;overflow:hidden}
+  .exec-bar span{display:block;height:100%;border-radius:999px;background:var(--text-soft)}
+  .exec-col.win .exec-bar span{background:var(--primary)}
+  .exec-col-s{font-size:.7rem;color:var(--text-soft);margin-top:6px}
+  .exec-why-wrap{border-top:1px dashed var(--border);padding-top:12px;margin-bottom:14px}
+  .exec-why-h{font-size:.68rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:10px}
+  .exec-why-list{display:flex;flex-direction:column;gap:9px}
+  .exec-why-item{display:flex;gap:10px;align-items:flex-start;font-size:.84rem;color:var(--text-soft);line-height:1.45}
+  .exec-why-item b{color:var(--text);font-weight:700}
+  .exec-why-dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:6px;background:var(--success)}
+  .exec-why-dot.acc{background:var(--primary)}
+  .exec-next{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0}
+  .exec-next.flag{background:var(--warning-soft);color:var(--warning);border-radius:9px;padding:10px 12px}
+  .exec-note{font-size:.74rem;color:var(--text-muted);margin:10px 0 0}
+  @media(max-width:520px){.exec-cmp{grid-template-columns:1fr}}
 
   .ptab{width:100%;border-collapse:collapse;font-size:.78rem;margin-bottom:8px;min-width:480px}
   .ptab th,.ptab td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--border)}
@@ -294,7 +313,7 @@
     .tabpane{display:block!important}
     .tabpane+.tabpane{margin-top:10px}
     /* manter unidos apenas blocos pequenos, evitando páginas em branco */
-    .exec-stat,.alert-stat,.val-item,.exec-head,.tl-step,.mem-soc,.hibrido-box,.rt-bar,table tr,.line{break-inside:avoid}
+    .exec-col,.exec-why-item,.alert-stat,.val-item,.exec-top,.tl-step,.mem-soc,.hibrido-box,.rt-bar,table tr,.line{break-inside:avoid}
     .card-title,h5,.rt-anos-h{break-after:avoid}
     .memoria[open] .mem-grid{display:grid}
     .print-only{display:block!important}
@@ -386,13 +405,24 @@
     </div>
   </div>
   <div class="card exec" id="execSummary">
-    <div class="exec-head">
-      <div><div class="exec-label">Recomendação</div><div class="exec-regime" id="execRegime">—</div></div>
-      <div class="exec-badge" id="execBadge">—</div>
+    <div class="exec-top">
+      <div>
+        <div class="exec-label">Regime recomendado</div>
+        <div class="exec-regime" id="execRegime">—</div>
+      </div>
+      <div class="exec-verdict">
+        <div class="exec-badge" id="execBadge">—</div>
+        <div class="exec-econ" id="execEcon"></div>
+        <div class="exec-econ-s" id="execEconS"></div>
+      </div>
     </div>
     <p class="exec-lead" id="execLead">Preencha o faturamento e os dados da operação para gerar a recomendação.</p>
-    <div class="exec-stats" id="execStats"></div>
-    <p class="exec-why" id="execWhy"></p>
+    <div class="exec-cmp" id="execCmp"></div>
+    <div class="exec-why-wrap" id="execWhyWrap" style="display:none">
+      <div class="exec-why-h">Por que esse regime vence</div>
+      <div class="exec-why-list" id="execWhy"></div>
+    </div>
+    <p class="exec-next" id="execNext" style="display:none"></p>
     <p class="exec-note" id="execNote"></p>
   </div>
   <section class="grid">
@@ -464,6 +494,14 @@
               <span class="tip" data-tip="No Lucro Presumido, o adicional de 10% de IRPJ é apurado por TRIMESTRE, sobre a base que excede R$ 60.000 no trimestre. Preencha o faturamento trimestral para calcular o adicional corretamente em faturamento sazonal. Deixe em branco para usar a aproximação mensal (excedente de R$ 20.000/mês), válida quando o faturamento é uniforme.">i</span>
             </label>
             <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="fatTrimestre" class="money has-prefix calc-trigger" min="0" step="1000" placeholder="opcional — deixe vazio p/ mensal"></div>
+          </div>
+          <div class="field" style="margin-bottom:0;margin-top:10px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+              <input type="checkbox" id="excluirIcmsPC" class="calc-trigger" style="width:18px;height:18px;accent-color:var(--primary)">
+              Excluir ICMS da base de PIS/COFINS
+              <span class="tip" data-tip="Tese do século (STF, RE 574.706 / Tema 69): o ICMS destacado na nota não compõe a base do PIS/COFINS. Aplica-se ao Lucro Presumido (regime cumulativo). Só afeta atividades com ICMS (comércio/indústria). Na prática, aproveitar o crédito pressupõe decisão judicial/administrativa reconhecendo o direito — ligue apenas para clientes com o direito assegurado.">i</span>
+            </label>
+            <span class="hint">Reduz a base do PIS/COFINS pelo ICMS destacado (RE 574.706). Não afeta serviços (ISS permanece na base).</span>
           </div>
         </div>
       </div>
@@ -979,7 +1017,7 @@ function simular(fat,ctx){
   const rbt12=(ctx.rbt12Override&&ctx.rbt12Override>0)?ctx.rbt12Override:fat*12;
   const massaAnual=(ctx.massa12&&ctx.massa12>0)?ctx.massa12:(proTotal+ctx.folhaFR+ctx.fgtsFR)*12;
   const fatorR=rbt12>0?massaAnual/rbt12:0;
-  let anexo,anexoIV=false,das,issFixoSN,efSN,efTab,fSN,baseIR,baseCSLL,consumo,ipiLp,temFatorR;
+  let anexo,anexoIV=false,das,issFixoSN,efSN,efTab,fSN,baseIR,baseCSLL,consumo,ipiLp,temFatorR,icmsDestacado=0;
   if(ctx.streams && ctx.streams.length){
     /* ---------- ATIVIDADE MISTA ---------- */
     das=0; baseIR=0; baseCSLL=0; ipiLp=0; let issFixoFlag=false,anyIV=false,icmsTot=0,issTot=0; const axs=[]; temFatorR=false;
@@ -1002,6 +1040,7 @@ function simular(fat,ctx){
     efSN=fat>0?das/fat:0; efTab=efSN;
     fSN=faixaSN('III',rbt12);
     consumo=icmsTot+(issFixoOn?issFixo:issTot);
+    icmsDestacado=icmsTot;
   } else {
     /* ---------- MONOATIVIDADE ---------- */
     if(snModo==='fatorR'){anexo=fatorR>=FATOR_R_LIMITE?'III':'V';temFatorR=true;}else{anexo=snModo;anexoIV=(snModo==='IV');temFatorR=false;}
@@ -1012,6 +1051,7 @@ function simular(fat,ctx){
     efSN=fat>0?das/fat:efTab;   // efetiva líquida (consistente com a atividade mista)
     baseIR=fat*presIR; baseCSLL=fat*presCSLL;
     consumo=issFixoOn?issFixo:fat*issRate;
+    icmsDestacado=(ctx.issLabel==='ICMS')?(issFixoOn?0:fat*issRate):0;   // só há ICMS destacado em comércio/indústria
     ipiLp=ipi;
   }
   const issShareSN=issFixoSN>0?1:0;
@@ -1029,12 +1069,15 @@ function simular(fat,ctx){
   } else {
     adic=baseIR>LP.adicLimMes?(baseIR-LP.adicLimMes)*LP.adicAliq:0;
   }
-  const pisCofins=fat*(LP.pis+LP.cofins);
+  const excluirIcms=(document.getElementById('excluirIcmsPC')||{}).checked||false;
+  const icmsExcluido=excluirIcms?icmsDestacado:0;
+  const basePisCofins=Math.max(0,fat-icmsExcluido);
+  const pisCofins=basePisCofins*(LP.pis+LP.cofins);
   const patLp=proTotal*0.20+folha*patCltRate;
   const cargaLP=irpj+adic+csll+pisCofins+consumo+ipiLp+patLp+retPF;
   const lucroLP=fat-(irpj+adic+csll+pisCofins+consumo+ipiLp+custosOp+folha+fgts+patLp+retPF);
   return {fat,proTotal,inssPF,irrfPF,retPF,detPF,rbt12,massaAnual,fatorR,temFatorR,anexo,anexoIV,fSN,efSN,efTab,das,issFixoSN,issShareSN,patSimples,cargaSN,lucroSN,
-          baseIR,baseCSLL,irpj,adic,adicTrimestral,baseIRtrim,csll,pisCofins,consumo,ipi:ipiLp,patLp,cargaLP,lucroLP};
+          baseIR,baseCSLL,irpj,adic,adicTrimestral,baseIRtrim,csll,pisCofins,icmsExcluido,basePisCofins,consumo,ipi:ipiLp,patLp,cargaLP,lucroLP};
 }
 
 /* ======================= UI DINÂMICA ======================= */
@@ -1257,7 +1300,7 @@ function memoriaHTML(R,ctx){
       ? `<div class="mem-row ${R.adic>0?'':'cap'}"><span>Adicional 10% · base trimestral ${fmtBRL.format(R.baseIRtrim)} vs. limite ${fmtBRL.format(60000)}${R.adic>0?` → excedente ${fmtBRL.format(R.baseIRtrim-60000)} × 10% ÷ 3`:' → sem excedente, sem adicional'}</span><span class="vv">${fmtBRL.format(R.adic)}</span></div>`
       : (R.adic>0?`<div class="mem-row"><span>Adicional 10% × (base − R$ 20.000/mês)</span><span class="vv">${fmtBRL.format(R.adic)}</span></div>`:'')}
     <div class="mem-row"><span>Base CSLL · CSLL 9%</span><span class="vv">${fmtBRL.format(R.csll)}</span></div>
-    <div class="mem-row"><span>PIS 0,65% + COFINS 3%</span><span class="vv">${fmtBRL.format(R.pisCofins)}</span></div>`;
+    <div class="mem-row"><span>PIS 0,65% + COFINS 3%${R.icmsExcluido>0?` · base ${fmtBRL.format(R.basePisCofins)} (−ICMS destacado ${fmtBRL.format(R.icmsExcluido)}, RE 574.706)`:''}</span><span class="vv">${fmtBRL.format(R.pisCofins)}</span></div>`;
   if(ctx.mista && ctx.streams){
     ctx.streams.forEach(s=>{ if(s.valor<=0) return;
       if(s.issType==='ISS'){ if(!ctx.issFixoOn && s.rate>0) lp+=`<div class="mem-row"><span>ISS · ${fmtBRL.format(s.valor)} × ${fmtPct(s.rate*100)}</span><span class="vv">${fmtBRL.format(s.valor*s.rate)}</span></div>`; }
@@ -1419,42 +1462,82 @@ function projetarTransicao(R,ctx,fat,aliqRef,red,insumos){
 /* ======================= SUMÁRIO EXECUTIVO ======================= */
 function sumarioExecutivo(R,ctx,fat,av){
   const reg=document.getElementById('execRegime'), badge=document.getElementById('execBadge'),
-        lead=document.getElementById('execLead'), stats=document.getElementById('execStats'),
-        why=document.getElementById('execWhy'), note=document.getElementById('execNote');
-  if(fat<=0){ reg.textContent='—'; badge.textContent='—'; badge.className='exec-badge'; lead.textContent='Preencha o faturamento e os dados da operação para gerar a recomendação.'; stats.innerHTML=''; why.innerHTML=''; note.innerHTML=''; return; }
+        econ=document.getElementById('execEcon'), econS=document.getElementById('execEconS'),
+        lead=document.getElementById('execLead'), cmp=document.getElementById('execCmp'),
+        whyWrap=document.getElementById('execWhyWrap'), why=document.getElementById('execWhy'),
+        next=document.getElementById('execNext'), note=document.getElementById('execNote');
+  if(fat<=0){
+    reg.textContent='—'; badge.textContent='—'; badge.className='exec-badge';
+    econ.textContent=''; econS.textContent='';
+    lead.textContent='Preencha o faturamento e os dados da operação para gerar a recomendação.';
+    cmp.innerHTML=''; whyWrap.style.display='none'; why.innerHTML='';
+    next.style.display='none'; next.innerHTML=''; note.innerHTML=''; return;
+  }
   const difMes=Math.abs(R.lucroLP-R.lucroSN), difAno=difMes*12, empate=difMes<1, vLP=R.lucroLP>R.lucroSN;
   const nome=empate?'Empate técnico':(vLP?'Lucro Presumido':'Simples Nacional');
   reg.textContent=nome;
-  badge.textContent=empate?'praticamente iguais':`+ ${fmtBRL.format(difAno)}/ano`;
-  badge.className='exec-badge'+(empate?' emp':'');
+
+  /* veredito: selo + economia */
+  badge.className='exec-badge'+(empate?' emp':(vLP?' lp':''));
+  badge.innerHTML=empate?'praticamente iguais':`<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Recomendado`;
+  econ.className='exec-econ'+(empate?' emp':'');
+  econ.textContent=empate?'sobras equivalentes':`+ ${fmtBRL.format(difAno)} / ano`;
+  econS.textContent=empate?'diferença desprezível':'a favor dos sócios';
+
+  /* lead */
   if(empate){
-    lead.innerHTML=`Para um faturamento de <b>${fmtBRL.format(fat)}/mês</b>, os dois regimes deixam praticamente a mesma sobra líquida para os sócios (${fmtBRL.format(R.lucroSN)} no Simples e ${fmtBRL.format(R.lucroLP)} no Lucro Presumido). Pela menor burocracia, o <b>Simples Nacional</b> tende a prevalecer.`;
+    lead.innerHTML=`Para um faturamento de <b>${fmtBRL.format(fat)}/mês</b>, os dois regimes deixam praticamente a mesma sobra líquida (${fmtBRL.format(R.lucroSN)} no Simples e ${fmtBRL.format(R.lucroLP)} no Lucro Presumido). Pela menor burocracia, o <b>Simples Nacional</b> tende a prevalecer.`;
   } else {
-    lead.innerHTML=`Para um faturamento de <b>${fmtBRL.format(fat)}/mês</b>, o regime de <b>${nome}</b> deixa mais dinheiro com os sócios: sobra líquida de <b>${fmtBRL.format(vLP?R.lucroLP:R.lucroSN)}/mês</b>, contra ${fmtBRL.format(vLP?R.lucroSN:R.lucroLP)}/mês no outro. A diferença é de <b>${fmtBRL.format(difMes)}/mês</b> — cerca de <b>${fmtBRL.format(difAno)} por ano</b> a favor dos sócios.`;
+    lead.innerHTML=`Para um faturamento de <b>${fmtBRL.format(fat)}/mês</b>, o <b>${nome}</b> deixa mais dinheiro com os sócios: sobra líquida de <b>${fmtBRL.format(vLP?R.lucroLP:R.lucroSN)}/mês</b>, contra ${fmtBRL.format(vLP?R.lucroSN:R.lucroLP)}/mês no outro regime.`;
   }
+
+  /* comparativo de duas colunas com barras */
   const cSN=R.cargaSN/fat, cLP=R.cargaLP/fat;
-  stats.innerHTML=`
-    <div class="exec-stat"><div class="l">Sobra · Simples</div><div class="n">${fmtBRL.format(R.lucroSN)}</div><div class="s">por mês</div></div>
-    <div class="exec-stat"><div class="l">Sobra · Lucro Presumido</div><div class="n">${fmtBRL.format(R.lucroLP)}</div><div class="s">por mês</div></div>
-    <div class="exec-stat"><div class="l">Carga efetiva (PJ+PF)</div><div class="n">${fmtPct(cSN*100)} · ${fmtPct(cLP*100)}</div><div class="s">Simples · Presumido</div></div>
-    <div class="exec-stat"><div class="l">Economia no ano</div><div class="n">${empate?'—':fmtBRL.format(difAno)}</div><div class="s">${empate?'equivalentes':'a favor do '+(vLP?'Lucro Presumido':'Simples')}</div></div>`;
+  const maxSobra=Math.max(R.lucroSN,R.lucroLP,1);
+  const snWin=!vLP && !empate, lpWin=vLP && !empate;
+  const col=(titulo,sobra,carga,win)=>`
+    <div class="exec-col${win?' win':''}">
+      <div class="exec-col-h"><span>${titulo}</span>${win?'<span class="exec-col-win">vencedor</span>':''}</div>
+      <div class="exec-col-n">${fmtBRL.format(sobra)}</div>
+      <div class="exec-bar"><span style="width:${(sobra/maxSobra*100).toFixed(1)}%"></span></div>
+      <div class="exec-col-s">sobra líquida/mês · carga ${fmtPct(carga*100)}</div>
+    </div>`;
+  cmp.innerHTML=col('Simples Nacional',R.lucroSN,cSN,snWin)+col('Lucro Presumido',R.lucroLP,cLP,lpWin);
+
+  /* razões em itens */
   if(!empate){
-    const impSN=R.das+R.issFixoSN, impLP=R.irpj+R.adic+R.csll+R.pisCofins+R.consumo+R.ipi, raz=[];
+    const impSN=R.das+R.issFixoSN, impLP=R.irpj+R.adic+R.csll+R.pisCofins+R.consumo+R.ipi, itens=[];
     if(vLP){
-      if(impLP<impSN) raz.push(`os tributos da empresa no Lucro Presumido (${fmtBRL.format(impLP)}/mês) ficam abaixo do DAS do Simples (${fmtBRL.format(impSN)}/mês)`);
+      if(impLP<impSN) itens.push({t:`Os tributos da empresa no Lucro Presumido (<b>${fmtBRL.format(impLP)}/mês</b>) ficam abaixo do DAS do Simples (${fmtBRL.format(impSN)}/mês).`});
     } else {
-      if(impSN<impLP) raz.push(`os tributos concentrados no DAS (${fmtBRL.format(impSN)}/mês) ficam abaixo dos federais do Lucro Presumido (${fmtBRL.format(impLP)}/mês)`);
-      if(R.patLp>R.patSimples) raz.push(`não há o encargo patronal de 20% que pesaria no Lucro Presumido (${fmtBRL.format(R.patLp)}/mês)`);
+      if(impSN<impLP) itens.push({t:`Os tributos concentrados no DAS (<b>${fmtBRL.format(impSN)}/mês</b>) ficam abaixo dos federais do Lucro Presumido (${fmtBRL.format(impLP)}/mês).`});
+      if(R.patLp>R.patSimples){
+        const patPro=R.proTotal*0.20;                 // 20% CPP sobre pró-labore
+        const patFolha=ctx.folha*ctx.patCltRate;      // CPP+RAT+Terceiros sobre folha CLT
+        const temFolha=ctx.folha>0;
+        if(temFolha){
+          itens.push({t:`O Simples não paga o encargo patronal que pesa no Lucro Presumido: <b>20% de CPP sobre o pró-labore (${fmtBRL.format(patPro)}/mês)</b> e <b>${fmtPct(ctx.patCltRate*100)} de CPP + RAT + Terceiros sobre a folha CLT (${fmtBRL.format(patFolha)}/mês)</b> — economia patronal de <b>${fmtBRL.format(R.patLp)}/mês</b>.`});
+        } else {
+          itens.push({t:`O Simples não paga o encargo patronal de <b>20% de CPP sobre o pró-labore</b> que pesaria no Lucro Presumido (<b>${fmtBRL.format(R.patLp)}/mês</b>).`});
+        }
+      }
     }
-    why.innerHTML=`<b>Por quê:</b> `+(raz.length?raz.join('; ')+'.':'a combinação de tributos e encargos é mais favorável nesse regime.')+(R.temFatorR?` O serviço considera o Fator R em ${fmtPct(R.fatorR*100)} (Anexo ${R.fatorR>=FATOR_R_LIMITE?'III':'V'}).`:'');
-  } else why.innerHTML='';
+    if(R.temFatorR) itens.push({acc:true,t:`O serviço considera o Fator R em <b>${fmtPct(R.fatorR*100)}</b> (Anexo ${R.fatorR>=FATOR_R_LIMITE?'III':'V'}).`});
+    if(!itens.length) itens.push({t:'A combinação de tributos e encargos é mais favorável nesse regime.'});
+    why.innerHTML=itens.map(i=>`<div class="exec-why-item"><span class="exec-why-dot${i.acc?' acc':''}"></span><div>${i.t}</div></div>`).join('');
+    whyWrap.style.display='block';
+  } else { whyWrap.style.display='none'; why.innerHTML=''; }
+
+  /* próximo passo / atenção */
   const nErro=av.filter(a=>a.t==='erro').length, nAviso=av.filter(a=>a.t==='aviso').length;
   const simplesSit=(document.getElementById('simplesSit')||{}).value||'verificar';
   let at='';
-  if(simplesSit==='vedada' && !vLP && !empate) at=`<b style="color:var(--danger)">Atenção:</b> a atividade foi marcada como vedada ao Simples, então o regime recomendado acima não está disponível na prática — a escolha viável recai sobre o <b>Lucro Presumido</b> (ou Lucro Real). `;
-  else if(nErro>0) at=`<b style="color:var(--danger)">Atenção:</b> há ${nErro} ${nErro>1?'impedimentos':'impedimento'} de conformidade — verifique o painel de conformidade antes de decidir. `;
-  else if(nAviso>0) at=`Há ${nAviso} ${nAviso>1?'pontos':'ponto'} de atenção no painel de conformidade. `;
-  note.innerHTML=at+'Valores mensais salvo indicação. Simulação de planejamento tributário; não substitui a apuração formal.';
+  if(simplesSit==='vedada' && !vLP && !empate) at=`<b>Próximo passo:</b> a atividade foi marcada como vedada ao Simples — o regime recomendado não está disponível na prática. A escolha viável recai sobre o Lucro Presumido (ou Lucro Real).`;
+  else if(nErro>0) at=`<b>Próximo passo:</b> há ${nErro} ${nErro>1?'impedimentos':'impedimento'} de conformidade — verifique o painel antes de decidir.`;
+  else if(nAviso>0) at=`<b>Próximo passo:</b> há ${nAviso} ${nAviso>1?'pontos':'ponto'} de atenção no painel de conformidade a confirmar antes de decidir.`;
+  if(at){ next.style.display='block'; next.className='exec-next flag'; next.innerHTML=at; }
+  else { next.style.display='none'; next.innerHTML=''; }
+  note.innerHTML='Valores mensais salvo indicação. Simulação de planejamento tributário; não substitui a apuração formal.';
 }
 
 /* ======================= ANATOMIA DA CARGA (SVG) ======================= */
