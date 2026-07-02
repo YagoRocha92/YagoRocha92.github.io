@@ -1508,7 +1508,7 @@ function sumarioExecutivo(R,ctx,fat,av){
   if(!empate){
     const impSN=R.das+R.issFixoSN, impLP=R.irpj+R.adic+R.csll+R.pisCofins+R.consumo+R.ipi, itens=[];
     if(vLP){
-      if(impLP<impSN) itens.push({t:`Os tributos da empresa no Lucro Presumido (<b>${fmtBRL.format(impLP)}/mês</b>) ficam abaixo do DAS do Simples (${fmtBRL.format(impSN)}/mês).`});
+      if(impLP<impSN) itens.push({t:`Os tributos da empresa no Lucro Presumido (<b>${fmtBRL.format(impLP)}/mês</b>) ficam abaixo do DAS do Simples (${fmtBRL.format(impSN)}/mês)</b>.`});
     } else {
       if(impSN<impLP) itens.push({t:`Os tributos concentrados no DAS (<b>${fmtBRL.format(impSN)}/mês</b>) ficam abaixo dos federais do Lucro Presumido (<b>${fmtBRL.format(impLP)}/mês).`});
       if(R.patLp>R.patSimples){
