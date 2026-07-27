@@ -400,8 +400,8 @@
   <div class="card ident" id="identCard">
     <div class="card-title"><span class="dot"></span>Identificação do Estudo</div>
     <div class="ident-grid">
-      <div class="field"><label>Cliente</label><input type="text" id="idCliente" placeholder="Razão social / nome do cliente"></div>
-      <div class="field"><label>Competência</label><input type="text" id="idComp" placeholder="ex.: 06/2026"></div>
+      <div class="field"><label>Cliente</label><input type="text" id="idCliente" placeholder=""></div>
+      <div class="field"><label>Competência</label><input type="text" id="idComp" placeholder=""></div>
     </div>
   </div>
   <div class="card exec" id="execSummary">
@@ -493,7 +493,7 @@
             <label>Faturamento do trimestre — adicional de IRPJ (LP)
               <span class="tip" data-tip="No Lucro Presumido, o adicional de 10% de IRPJ é apurado por TRIMESTRE, sobre a base que excede R$ 60.000 no trimestre. Preencha o faturamento trimestral para calcular o adicional corretamente em faturamento sazonal. Deixe em branco para usar a aproximação mensal (excedente de R$ 20.000/mês), válida quando o faturamento é uniforme.">i</span>
             </label>
-            <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="fatTrimestre" class="money has-prefix calc-trigger" min="0" step="1000" placeholder="opcional — deixe vazio p/ mensal"></div>
+            <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="fatTrimestre" class="money has-prefix calc-trigger" min="0" step="1000" placeholder="opcional deixe vazio p/ mensal"></div>
           </div>
           <div class="field" style="margin-bottom:0;margin-top:10px">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
@@ -1610,7 +1610,7 @@ function renderMista(){
     const opts=MISTA_OPCOES.map(([v,l])=>`<option value="${v}" ${v===dd.perfil?'selected':''}>${l}</option>`).join('');
     host.innerHTML+=`<div class="mista-row">
       <div class="mista-line">
-        <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="mistaVal${k}" class="money has-prefix calc-trigger" min="0" step="100" value="${dd.val}" placeholder="receita"></div>
+        <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="decimal" id="mistaVal${k}" class="money has-prefix calc-trigger" min="0" step="100" value="${dd.val}" placeholder=""></div>
         <select id="mistaPerfil${k}" onchange="mistaPerfilChange(${k})">${opts}</select>
         <div class="mista-ratecell">
           <span class="mista-ratelbl"><span id="mistaRateLbl${k}">imposto</span><span class="tip tip-l" id="mistaRateTip${k}" data-tip="">i</span></span>
