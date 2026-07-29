@@ -373,6 +373,18 @@
         </div>
 
         <div id="painelGradeSemanal" style="width:100%;">
+          <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
+            <input type="checkbox" id="replicarSegSex" checked style="width:auto; cursor:pointer;">
+            <label for="replicarSegSex" style="cursor:pointer; font-size:11.5px; color:var(--tinta); font-weight:bold;">
+              Repetir horário de Segunda em Terça a Sexta automaticamente
+            </label>
+            <button type="button" id="btnReplicarAgora" style="margin-left:auto; padding:4px 10px; font-size:10.5px;">Copiar segunda agora</button>
+          </div>
+          <p class="hint" style="margin-top:-4px; margin-bottom:8px;">
+            Com a repetição ativa, qualquer alteração na <b>Segunda</b> é copiada em tempo real para Terça–Sexta.
+            Sábado e Domingo nunca são replicados — preencha-os manualmente. Se quiser um dia da semana diferente
+            dos demais, desmarque a repetição antes de editá-lo (senão a próxima alteração na Segunda o sobrescreve).
+          </p>
           <div class="tabela-scroll">
             <table style="min-width:520px;">
               <thead>
@@ -476,6 +488,14 @@
           <div class="alerta-legal" id="alertaDsrAtraso"></div>
         </div>
 
+        <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--pauta);">
+          <div style="display:flex; align-items:center; gap:7px;">
+            <input type="checkbox" id="naoComputarIntra" style="width:auto; cursor:pointer;">
+            <label for="naoComputarIntra" style="cursor:pointer; font-weight:bold; color:var(--tinta); font-size:12px;">Exceção: não computar pagamento do intervalo suprimido (somente alertar)</label>
+          </div>
+          <div class="alerta-legal" id="alertaNaoComputarIntra"></div>
+        </div>
+
         <div class="contadores">
           <span class="chip">Úteis <b id="chipUteis">—</b></span>
           <span class="chip">DSR/Feriados <b id="chipDSR">—</b></span>
@@ -491,7 +511,6 @@
     <div class="acoes" style="margin-top:0; margin-bottom:8px;">
       <button type="button" id="btnPadrao">Preencher dias úteis</button>
       <button type="button" id="btnLimparHorarios">Limpar tudo</button>
-      <button type="button" id="btnTeste">Dados de teste</button>
       <button type="button" id="btnSalvarRascunho" title="Baixa um arquivo .json com todo o preenchimento atual">Salvar rascunho</button>
       <button type="button" id="btnCarregarRascunho" title="Restaura um rascunho salvo anteriormente">Carregar rascunho</button>
       <input type="file" id="inputRascunho" accept=".json,application/json" style="display:none;">
@@ -535,7 +554,7 @@
         <div class="res tom-soma"><div class="rotulo" id="lblBhExcedente">HE excedente 2h/dia</div><div class="valor" id="vBhExcedente">00:00</div><div class="sub">Acima do limite diário — pagamento obrigatório</div></div>
         <div class="res tom-soma"><div class="rotulo">HE 100% (dom/feriado)</div><div class="valor" id="vBhHE100">00:00</div><div class="sub">Não compensável em banco 1:1 — paga em folha</div></div>
         <div class="res tom-soma"><div class="rotulo">Adicional noturno</div><div class="valor" id="vBhNoturno">00:00</div></div>
-        <div class="res tom-atencao"><div class="rotulo">Intervalo suprimido +50%</div><div class="valor" id="vBhIntra">00:00</div><div class="sub">Art. 71, §4º CLT — indenizatório</div></div>
+        <div class="res tom-atencao"><div class="rotulo">Intervalo suprimido +50%</div><div class="valor" id="vBhIntra">00:00</div><div class="sub" id="vBhIntraSub">Art. 71, §4º CLT — indenizatório</div></div>
       </div>
     </div>
 
@@ -919,6 +938,20 @@ if (typeof document !== "undefined"){
   });
   document.getElementById("dsrAtrasoTolerancia").addEventListener("input", atualizarRegua);
 
+  const naoComputarIntra = document.getElementById("naoComputarIntra");
+  const alertaNaoComputarIntra = document.getElementById("alertaNaoComputarIntra");
+
+  naoComputarIntra.addEventListener("change", () => {
+    alertaNaoComputarIntra.style.display = naoComputarIntra.checked ? "block" : "none";
+    if (naoComputarIntra.checked){
+      alertaNaoComputarIntra.innerHTML = `<b>Atenção — isso não remove a obrigação legal:</b> o intervalo suprimido continuará sendo ` +
+        `<u>detectado e alertado</u> em cada dia e no resumo do fechamento, mas o valor devido (art. 71, §4º, CLT — período ` +
+        `suprimido + 50%) deixará de ser somado à apuração e de ser exportado no TXT Prosol. Use apenas quando o pagamento ` +
+        `for tratado por fora desta ferramenta — a exposição trabalhista do cliente permanece a mesma.`;
+    }
+    atualizarRegua();
+  });
+
   function tipoPorDiaSemana(dow){
     if (dow === 0) return "domingo";
     if (dow === 6) return "sabado";
@@ -1095,7 +1128,8 @@ if (typeof document !== "undefined"){
       tipoAtividade: regimeNoturno.value,
       usarDsrAtraso: usarDsrAtraso.checked,
       dsrAtrasoTolerancia: Math.max(0, hhmmParaMin(document.getElementById("dsrAtrasoTolerancia").value) || 0),
-      dsrAtrasoClausula: document.getElementById("dsrAtrasoClausula").value.trim()
+      dsrAtrasoClausula: document.getElementById("dsrAtrasoClausula").value.trim(),
+      pagarIntra: !naoComputarIntra.checked
     };
   }
 
@@ -1217,13 +1251,20 @@ if (typeof document !== "undefined"){
     const alertaIntra = document.getElementById("alertaIntra");
     if (R.tot.intra > 0){
       alertaIntra.style.display = "block";
-      alertaIntra.innerHTML = `<b>Intervalo intrajornada suprimido em ${diasComIntra} dia(s):</b> total de ${minParaHHMM(R.tot.intra)} suprimidos. ` +
-        `Pelo art. 71, §4º, da CLT, o período suprimido é devido com acréscimo de 50% (natureza indenizatória). Valor incluído na apuração.`;
+      if (cfg.pagarIntra){
+        alertaIntra.innerHTML = `<b>Intervalo intrajornada suprimido em ${diasComIntra} dia(s):</b> total de ${minParaHHMM(R.tot.intra)} suprimidos. ` +
+          `Pelo art. 71, §4º, da CLT, o período suprimido é devido com acréscimo de 50% (natureza indenizatória). Valor incluído na apuração.`;
+      } else {
+        alertaIntra.innerHTML = `<b>Intervalo intrajornada suprimido em ${diasComIntra} dia(s):</b> total de ${minParaHHMM(R.tot.intra)} suprimidos ` +
+          `(equivalente a ${minParaHHMM(R.tot.intra * 1.5)} com o acréscimo de 50% do art. 71, §4º, CLT). ` +
+          `<b>Este valor NÃO foi incluído na apuração nem na exportação</b>, conforme a exceção ativada — a obrigação legal permanece, apenas não está sendo calculada aqui.`;
+      }
     } else {
       alertaIntra.style.display = "none";
     }
 
-    const intraCom50 = R.tot.intra * 1.5;
+    const intraDetectadoCom50 = R.tot.intra * 1.5;
+    const intraCom50 = cfg.pagarIntra ? intraDetectadoCom50 : 0;
 
     if (cfg.usarBH) {
       document.getElementById("resBancoHoras").style.display = "block";
@@ -1244,6 +1285,9 @@ if (typeof document !== "undefined"){
       document.getElementById("vBhHE100").textContent = minParaHHMM(R.bh.pago100);
       document.getElementById("vBhNoturno").textContent = minParaHHMM(R.tot.noturno);
       document.getElementById("vBhIntra").textContent = minParaHHMM(intraCom50);
+      document.getElementById("vBhIntraSub").textContent = cfg.pagarIntra
+        ? "Art. 71, §4º CLT — indenizatório"
+        : (R.tot.intra > 0 ? `Detectado ${minParaHHMM(intraDetectadoCom50)}, mas não pago (exceção ativa)` : "Art. 71, §4º CLT — indenizatório");
       document.getElementById("vBhFaltas").textContent = minParaHHMM(R.tot.faltas);
       {
         const partesSub = [];
@@ -1291,8 +1335,11 @@ if (typeof document !== "undefined"){
           ` · ${R.semanasComAtrasoDSR} semana(s) por atraso (cláusula CCT/ACT)`;
       }
       if (R.tot.intra > 0){
-        document.getElementById("resIntraDec").textContent +=
-          ` · ${minParaHHMM(R.tot.intra)} suprimidos × 1,5`;
+        if (cfg.pagarIntra){
+          document.getElementById("resIntraDec").textContent += ` · ${minParaHHMM(R.tot.intra)} suprimidos × 1,5`;
+        } else {
+          document.getElementById("resIntraDec").textContent = `Detectado ${minParaHHMM(intraDetectadoCom50)} — não pago (exceção ativa)`;
+        }
       }
 
       const outros = Object.keys(R.tot.extrasPorPct).filter(k => +k !== cfg.hePadrao && +k !== 100);
@@ -1374,6 +1421,7 @@ if (typeof document !== "undefined"){
     ids.forEach(id => campos[id] = document.getElementById(id).value);
     campos.usarBH = usarBH.checked;
     campos.usarDsrAtraso = usarDsrAtraso.checked;
+    campos.naoComputarIntra = naoComputarIntra.checked;
     return { versao: 4, salvoEm: new Date().toISOString(), campos, grade, linhas };
   }
 
@@ -1409,6 +1457,17 @@ if (typeof document !== "undefined"){
               `do DSR por <u>falta injustificada</u>. Estender o desconto para atrasos exige previsão expressa e válida em CCT/ACT ` +
               `ou regulamento interno registrado. Preencha a norma que autoriza para manter rastro de auditoria e submeta à revisão ` +
               `jurídica antes de aplicar — cláusulas desse tipo podem ser questionadas judicialmente.`;
+          }
+          return;
+        }
+        if (id === "naoComputarIntra"){
+          naoComputarIntra.checked = !!c[id];
+          if (naoComputarIntra.checked){
+            alertaNaoComputarIntra.style.display = "block";
+            alertaNaoComputarIntra.innerHTML = `<b>Atenção — isso não remove a obrigação legal:</b> o intervalo suprimido continuará sendo ` +
+              `<u>detectado e alertado</u> em cada dia e no resumo do fechamento, mas o valor devido (art. 71, §4º, CLT — período ` +
+              `suprimido + 50%) deixará de ser somado à apuração e de ser exportado no TXT Prosol. Use apenas quando o pagamento ` +
+              `for tratado por fora desta ferramenta — a exposição trabalhista do cliente permanece a mesma.`;
           }
           return;
         }
@@ -1560,7 +1619,7 @@ if (typeof document !== "undefined"){
       const clausula = (cfg.dsrAtrasoClausula || "S/ REF").toUpperCase().substring(0, 25 - "DESC DSR ATRASO ".length);
       linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSRDesc"), minToDec(R.dsrPerdidoAtrasoMin), 0, ("DESC DSR ATRASO " + clausula).substring(0, 25)));
     }
-    if (R.tot.intra > 0) {
+    if (cfg.pagarIntra && R.tot.intra > 0) {
       linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evIntra"), minToDec(R.tot.intra), 50, "INTERV SUPRIMIDO ART71"));
     }
 
@@ -1576,36 +1635,6 @@ if (typeof document !== "undefined"){
     link.download = "CARTAO.TXT";
     link.click();
     URL.revokeObjectURL(link.href);
-  }
-
-  function carregarTeste(){
-    const inputsCarga = document.querySelectorAll("#corpoGradeSemanal .g-carga");
-    inputsCarga.forEach((inp, idx) => inp.value = idx === 5 ? "04:00" : idx === 6 ? "00:00" : "08:00");
-    atualizarTotalSemanal();
-
-    document.getElementById("hePadrao").value = "50";
-    gerarMes();
-    const lines = corpo.querySelectorAll("tr");
-
-    const cenarios = [
-      { tipo:"util",    e1:"08:00", s1:"12:00", e2:"13:00", s2:"19:00" }, // 2h extras
-      { tipo:"util",    e1:"08:15", s1:"12:00", e2:"13:00", s2:"18:00" }, // atraso + extra
-      { tipo:"util",    e1:"22:00", s1:"02:00", e2:"03:00", s2:"05:30" }, // integralmente noturno c/ prorrogação (Súmula 60, II)
-      { tipo:"feriado", e1:"08:00", s1:"12:00", e2:"",      s2:""      }, // HE 100%
-      { tipo:"util",    e1:"08:00", s1:"12:00", e2:"12:30", s2:"17:00" }, // intervalo suprimido (30 min)
-      { tipo:"falta" }                                                    // falta injustificada → perde DSR da semana
-    ];
-    cenarios.forEach((c, i) => {
-      const tr = lines[i]; if (!tr) return;
-      tr.querySelector(".c-tipo").value = c.tipo;
-      tr.className = classeLinha(c.tipo);
-      tr.querySelector(".c-e1").value = c.e1 || "";
-      tr.querySelector(".c-s1").value = c.s1 || "";
-      tr.querySelector(".c-e2").value = c.e2 || "";
-      tr.querySelector(".c-s2").value = c.s2 || "";
-    });
-    atualizarContadores();
-    atualizarRegua();
   }
 
   function configurarInterceptadorTeclado(elementoCorpo) {
@@ -1688,24 +1717,54 @@ if (typeof document !== "undefined"){
   document.getElementById("bhDataAcordo").addEventListener("change", verificarVencimentoBH);
   document.getElementById("btnPadrao").addEventListener("click", preencherPadrao);
   document.getElementById("btnLimparHorarios").addEventListener("click", limparHorarios);
-  document.getElementById("btnTeste").addEventListener("click", carregarTeste);
   document.getElementById("btnCalc").addEventListener("click", calcular);
   document.getElementById("btnExportar").addEventListener("click", exportarLayoutProsol);
   document.getElementById("btnSalvarRascunho").addEventListener("click", salvarRascunho);
   document.getElementById("btnCarregarRascunho").addEventListener("click", () => document.getElementById("inputRascunho").click());
   document.getElementById("inputRascunho").addEventListener("change", carregarRascunho);
 
+  function recalcularCargaLinha(tr){
+    const e1 = hhmmParaMin(tr.querySelector(".g-e1").value);
+    const s1 = hhmmParaMin(tr.querySelector(".g-s1").value);
+    const e2 = hhmmParaMin(tr.querySelector(".g-e2").value);
+    const s2 = hhmmParaMin(tr.querySelector(".g-s2").value);
+    const mins = duracaoIntervalo(e1, s1) + duracaoIntervalo(e2, s2);
+    tr.querySelector(".g-carga").value = minParaHHMM(mins);
+  }
+
+  function replicarSegundaParaSemana(){
+    const trSeg = document.querySelector('#corpoGradeSemanal tr[data-dow="1"]');
+    if (!trSeg) return;
+    const vals = {
+      e1: trSeg.querySelector(".g-e1").value, s1: trSeg.querySelector(".g-s1").value,
+      e2: trSeg.querySelector(".g-e2").value, s2: trSeg.querySelector(".g-s2").value
+    };
+    [2, 3, 4, 5].forEach(dow => {
+      const tr = document.querySelector(`#corpoGradeSemanal tr[data-dow="${dow}"]`);
+      if (!tr) return;
+      tr.querySelector(".g-e1").value = vals.e1;
+      tr.querySelector(".g-s1").value = vals.s1;
+      tr.querySelector(".g-e2").value = vals.e2;
+      tr.querySelector(".g-s2").value = vals.s2;
+      recalcularCargaLinha(tr);
+    });
+    // Sábado e Domingo (dow 6 e 0) nunca são tocados — preenchimento sempre manual
+    atualizarTotalSemanal();
+    atualizarRegua();
+  }
+
+  document.getElementById("btnReplicarAgora").addEventListener("click", replicarSegundaParaSemana);
+
   document.querySelectorAll("#corpoGradeSemanal input[type='time']").forEach(inp => {
     inp.addEventListener("input", () => {
       const tr = inp.closest("tr");
-      const e1 = hhmmParaMin(tr.querySelector(".g-e1").value);
-      const s1 = hhmmParaMin(tr.querySelector(".g-s1").value);
-      const e2 = hhmmParaMin(tr.querySelector(".g-e2").value);
-      const s2 = hhmmParaMin(tr.querySelector(".g-s2").value);
-
-      const mins = duracaoIntervalo(e1, s1) + duracaoIntervalo(e2, s2);
-      tr.querySelector(".g-carga").value = minParaHHMM(mins);
+      recalcularCargaLinha(tr);
       atualizarTotalSemanal();
+
+      const chkReplicar = document.getElementById("replicarSegSex");
+      if (chkReplicar.checked && tr.dataset.dow === "1"){
+        replicarSegundaParaSemana();
+      }
       atualizarRegua();
     });
   });
