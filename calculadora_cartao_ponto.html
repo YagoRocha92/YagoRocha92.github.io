@@ -33,6 +33,8 @@
     --fita-cinza:#EEF0F2;       /* folga */
     --fita-verde:#EAF4EB;       /* abonado */
     --fita-falta:#F6D5D3;       /* falta injustificada */
+    --fita-domtrab:#DCEEE1;     /* domingo trabalhado (escala de revezamento) */
+    --fita-folgadsr:#E4E0F2;    /* folga que substitui o DSR da semana */
     --foco:#3B82C4;
     --raio:6px;
     --mono:"Consolas","SFMono-Regular","Menlo","Liberation Mono",monospace;
@@ -176,8 +178,11 @@
   tr.linha-folga td{ background:var(--fita-cinza); }
   tr.linha-justificada td{ background:var(--fita-verde); }
   tr.linha-falta td{ background:var(--fita-falta); }
+  tr.linha-domtrab td{ background:var(--fita-domtrab); }
+  tr.linha-folgadsr td{ background:var(--fita-folgadsr); }
   tr.linha-sabado:hover td, tr.linha-dsr:hover td, tr.linha-folga:hover td,
-  tr.linha-justificada:hover td, tr.linha-falta:hover td{ filter:brightness(.985); }
+  tr.linha-justificada:hover td, tr.linha-falta:hover td,
+  tr.linha-domtrab:hover td, tr.linha-folgadsr:hover td{ filter:brightness(.985); }
 
   td input, td select{
     width:100%; padding:3px 4px; border:1px solid var(--pauta); border-radius:3px;
@@ -336,6 +341,89 @@
     #regua .r-acao{ margin-left:0; width:100%; }
     body{ padding-bottom:128px; }
   }
+  /* ================= IMPRESSÃO / PDF (retrato, até 2 páginas) ================= */
+  @media print {
+    @page { size: A4 portrait; margin: 10mm; }
+
+    html, body{ background:#fff !important; padding-bottom:0 !important; font-size:9.5px !important; color:#000; }
+
+    header{ display:none !important; }
+    #regua{ display:none !important; }
+    .no-print, #painel1B, .acoes, .hint, .alerta-legal, #inputRascunho{ display:none !important; }
+
+    #printHeader{
+      display:flex !important; justify-content:space-between; align-items:flex-end;
+      margin-bottom:8px; padding-bottom:5px; border-bottom:2px solid #000;
+    }
+    #printHeader h1{ font-size:14px !important; font-weight:bold; margin:0 !important; }
+    #printHeader .meta{ font-size:9.5px !important; text-align:right; line-height:1.5; }
+
+    .wrap{ max-width:none !important; padding:0 !important; }
+    .layout-topo{ margin-top:0 !important; margin-bottom:8px !important; gap:8px !important; }
+    .col-a{ flex:1 1 100% !important; }
+
+    .painel{
+      box-shadow:none !important; border:1px solid #999 !important;
+      padding:6px 8px !important; margin-bottom:6px !important;
+    }
+    /* Painel 1 (jornada semanal) fica junto — mas a seção 2 (cartão do mês) pode
+       fluir livremente por mais de uma página, já que o mês inteiro raramente cabe
+       numa só folha em retrato com letra legível. */
+    #painelGradeSemanal, .layout-topo{ page-break-inside:avoid; }
+
+    .painel h2{
+      font-size:10px !important; padding-bottom:4px !important; margin-bottom:5px !important;
+      border-bottom:1px solid #999 !important;
+    }
+    .painel h2 .num{ padding:0 4px !important; background:#000 !important; color:#fff !important; }
+
+    /* Grade semanal (painel 1) compacta */
+    #painelGradeSemanal table{ min-width:0 !important; }
+    #painelGradeSemanal th{ padding:2px 4px !important; font-size:7.5px !important; }
+    #painelGradeSemanal td{ padding:2px 4px !important; }
+    #corpoGradeSemanal input{ height:15px !important; font-size:8px !important; padding:1px !important; border:none !important; background:transparent !important; }
+    #painelGradeSemanal tfoot td{ padding:3px 4px !important; font-size:9px !important; }
+
+    /* Cartão mensal (seção 2) — flui por até 2 páginas, cabeçalho repete em cada uma */
+    #tabelaPonto{ min-width:0 !important; width:100% !important; }
+    #tabelaPonto thead{ display:table-header-group; }
+    #tabelaPonto tbody{ display:table-row-group; }
+    #tabelaPonto th{ padding:3px 4px !important; font-size:7.5px !important; }
+    #tabelaPonto td{ padding:1px 4px !important; }
+    #tabelaPonto th:last-child, #tabelaPonto td:last-child{ display:none !important; } /* coluna Ações */
+    td.cel-dia{ padding-left:10px !important; }
+    td.cel-dia::before{ display:none !important; }
+    td.cel-dia .dnum{ font-size:8.5px !important; }
+    td.cel-dia .dsem{ font-size:7.5px !important; min-width:20px !important; }
+    td input[type="time"], td select{
+      height:15px !important; font-size:8px !important; padding:0 1px !important;
+      border:none !important; background:transparent !important; text-align:left !important;
+    }
+    td .saldo{ font-size:7.5px !important; }
+    td .flag-intra{ font-size:6.5px !important; padding:0 2px !important; }
+    tr{ page-break-inside:avoid; }
+
+    /* Apuração (seção 3) — mantém junto, evita começar em uma página e continuar sozinha na outra */
+    #resultados, #resBancoHoras{ page-break-inside:avoid; }
+    .grupo-resultado{ margin-bottom:6px !important; }
+    .grupo-titulo{ font-size:7.5px !important; margin-bottom:4px !important; }
+    .grupo-titulo .marcador{ width:6px !important; height:6px !important; }
+    .cards-res{ gap:5px !important; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)) !important; }
+    .res{ min-height:0 !important; padding:4px 6px !important; border:1px solid #ccc !important; border-left-width:2px !important; }
+    .res .rotulo{ font-size:7px !important; }
+    .res .valor{ font-size:12px !important; margin-top:1px !important; }
+    .res .sub{ font-size:7px !important; padding-top:2px !important; }
+
+    .dsr-destaque{
+      background:#eee !important; color:#000 !important; padding:6px 9px !important; margin-top:6px !important;
+      border:1px solid #999 !important;
+    }
+    .dsr-destaque .valor{ font-size:14px !important; }
+    .dsr-destaque .rotulo{ font-size:7.5px !important; }
+    .dsr-destaque .formula{ font-size:7.5px !important; }
+
+    #resOutros{ display:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -357,23 +445,31 @@
 <main>
 <div class="wrap">
 
+  <div id="printHeader" style="display:none;"></div>
+
   <div class="layout-topo">
     <div class="col-a">
       <section class="painel" style="height:100%;">
         <h2><span class="num">1</span> Período e Jornada Semanal Contratual</h2>
-        <div class="grid" style="margin-bottom:10px;">
+        <div class="grid" style="margin-bottom:6px;">
           <div class="campo">
             <label for="mesRef">Mês de referência</label>
             <input type="month" id="mesRef">
+          </div>
+          <div class="campo">
+            <label for="diaFechamento">Dia de fechamento (opcional)</label>
+            <input type="number" id="diaFechamento" min="1" max="31" placeholder="Ex.: 25"
+                   title="Em branco = calendário cheio (dia 1 ao último dia do mês). Preenchido, ex. 25, fecha do dia 26 do mês anterior ao dia 25 do mês de referência.">
           </div>
           <div class="campo">
             <label for="hePadrao">% HE padrão (úteis)</label>
             <input type="number" id="hePadrao" value="50" min="0" max="400">
           </div>
         </div>
+        <p class="hint" id="lblPeriodoApurado" style="margin-bottom:10px;"></p>
 
         <div id="painelGradeSemanal" style="width:100%;">
-          <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
+          <div class="no-print" style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
             <input type="checkbox" id="replicarSegSex" checked style="width:auto; cursor:pointer;">
             <label for="replicarSegSex" style="cursor:pointer; font-size:11.5px; color:var(--tinta); font-weight:bold;">
               Repetir horário de Segunda em Terça a Sexta automaticamente
@@ -420,7 +516,7 @@
       </section>
     </div>
 
-    <div class="col-b">
+    <div class="col-b no-print" id="painel1B">
       <section class="painel" style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <h2><span class="num">1B</span> Integração Prosol e Adicional Noturno</h2>
@@ -502,6 +598,8 @@
           <span class="chip">Dias no mês <b id="chipTotal">—</b></span>
           <span class="chip chip-falta" id="chipFaltasBox" style="display:none;">Faltas injust. <b id="chipFaltas">0</b></span>
         </div>
+        <div class="alerta-legal" id="alertaDsrDuplicado"></div>
+        <div class="alerta-legal" id="alertaDomingoSemCompensacao"></div>
       </section>
     </div>
   </div>
@@ -515,6 +613,14 @@
       <button type="button" id="btnCarregarRascunho" title="Restaura um rascunho salvo anteriormente">Carregar rascunho</button>
       <input type="file" id="inputRascunho" accept=".json,application/json" style="display:none;">
     </div>
+    <p class="hint" style="margin-bottom:8px;">
+      <b>Escala de revezamento</b> (ex.: folga fixa na quinta + alguns domingos trabalhados por mês): marque a
+      folga semanal fixa (a quinta, no exemplo) como <b>"Folga — Substitui o DSR da semana"</b> — ela quem conta
+      como descanso remunerado. Nos domingos em que houver trabalho, use <b>"Domingo Trabalhado (escala)"</b>
+      (paga como jornada comum, não como HE 100% automático — preencha a carga desse dia na grade da seção 1).
+      <b>Nos domingos de folga extra, use "Folga" — nunca "Domingo/DSR"</b>: esse último também soma no contador
+      de DSR e faz a semana contar dois descansos remunerados em vez de um, inflando o reflexo do DSR indevidamente.
+    </p>
     <div class="tabela-scroll">
       <table id="tabelaPonto">
         <thead>
@@ -627,6 +733,7 @@
     <div class="r-item" id="rgBancoBox" style="display:none;"><span class="r-lbl">Banco (saldo)</span><span class="r-val" id="rgBanco">00:00</span></div>
     <div class="r-acao">
       <button type="button" id="btnCalc" class="primario">Fechar o mês</button>
+      <button type="button" id="btnGerarPDF">Gerar PDF do ponto</button>
       <button type="button" id="btnExportar" class="exportar">Exportar TXT Prosol</button>
     </div>
   </div>
@@ -747,7 +854,7 @@ function apurarDia(dia, cfg){
   const cargaDia = cfg.jornadas[dia.dow].carga;
   const padraoDia = cfg.jornadas[dia.dow].padrao;
 
-  if (dia.tipo === "util" || dia.tipo === "sabado"){
+  if (dia.tipo === "util" || dia.tipo === "sabado" || dia.tipo === "domingo_trabalhado"){
     const r = aplicarTolerancia(marcas, padraoDia);
     marcas = r.marcas; notaTol = r.dentro;
   }
@@ -763,7 +870,10 @@ function apurarDia(dia, cfg){
 
   const jornada = trabalhado + (noturnosFictos - noturnosTotais);
 
-  const pctDia = (dia.tipo === "domingo" || dia.tipo === "feriado" || dia.tipo === "folga") ? 100 : cfg.hePadrao;
+  // domingo_trabalhado: dia normal de trabalho dentro da escala (paga como jornada comum, não 100% automático).
+  // folga_dsr: é o descanso semanal remunerado da semana; se ainda assim houver horas lançadas nela,
+  // isso é uma violação do próprio DSR e deve ser pago a 100%, como qualquer DSR trabalhado.
+  const pctDia = (dia.tipo === "domingo" || dia.tipo === "feriado" || dia.tipo === "folga" || dia.tipo === "folga_dsr") ? 100 : cfg.hePadrao;
 
   const res = { normais:0, extras:0, atraso:0, falta:0, intra:0,
                 adicionalNoturno:noturnosFictos, prorrogacaoNoturna: not.prorrogados > 0,
@@ -786,7 +896,7 @@ function apurarDia(dia, cfg){
     }
   }
 
-  if (dia.tipo === "util" || dia.tipo === "sabado"){
+  if (dia.tipo === "util" || dia.tipo === "sabado" || dia.tipo === "domingo_trabalhado"){
     let saldo = jornada - cargaDia;
     if (!notaTol && (!padraoDia || padraoDia.some(v => v == null)) && Math.abs(saldo) <= TOL_DIARIA){
       saldo = 0;
@@ -830,7 +940,7 @@ function apurarPeriodo(dias, cfg){
     }
 
     if (r.extras > 0){
-      if (cfg.usarBH && (d.tipo === "util" || d.tipo === "sabado")){
+      if (cfg.usarBH && (d.tipo === "util" || d.tipo === "sabado" || d.tipo === "domingo_trabalhado")){
         const paraBanco = Math.min(r.extras, LIMITE_HE_BANCO_DIA);
         bh.creditos += paraBanco;
         const exc = r.extras - paraBanco;
@@ -964,6 +1074,8 @@ if (typeof document !== "undefined"){
     if (tipo === "folga") return "linha-folga";
     if (tipo === "justificada") return "linha-justificada";
     if (tipo === "falta") return "linha-falta";
+    if (tipo === "domingo_trabalhado") return "linha-domtrab";
+    if (tipo === "folga_dsr") return "linha-folgadsr";
     return "";
   }
 
@@ -978,8 +1090,10 @@ if (typeof document !== "undefined"){
       <option value="util">Dia Útil</option>
       <option value="sabado">Sábado</option>
       <option value="domingo">Domingo / DSR</option>
+      <option value="domingo_trabalhado">Domingo Trabalhado (escala)</option>
       <option value="feriado">Feriado</option>
       <option value="folga">Folga</option>
+      <option value="folga_dsr">Folga — Substitui o DSR da semana</option>
       <option value="justificada">Falta Justificada / Atestado</option>
       <option value="falta">Falta Injustificada</option>`;
 
@@ -1028,17 +1142,54 @@ if (typeof document !== "undefined"){
     });
   }
 
+  function formatarDataBR(d){
+    return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
+  }
+
+  /* Calcula o período apurado (início/fim reais) a partir do mês de referência
+     e do dia de fechamento configurado. Sem dia de fechamento (campo vazio),
+     usa o calendário cheio (dia 1 ao último dia do mês). */
+  function calcularPeriodoFechamento(mesRefVal){
+    const [ano, mes] = (mesRefVal || "").split("-").map(Number);
+    if (!ano || !mes) return null;
+
+    const diaFechInput = parseInt(document.getElementById("diaFechamento").value, 10);
+    if (diaFechInput && diaFechInput >= 1 && diaFechInput <= 31){
+      const diasNoMesRef = new Date(ano, mes, 0).getDate();
+      const diaFimClamp = Math.min(diaFechInput, diasNoMesRef);
+      const fim = new Date(ano, mes - 1, diaFimClamp);
+
+      const diasNoMesAnterior = new Date(ano, mes - 1, 0).getDate();
+      const diaInicioClamp = Math.min(diaFechInput + 1, diasNoMesAnterior);
+      const inicio = new Date(ano, mes - 2, diaInicioClamp);
+
+      return { inicio, fim, custom: true };
+    }
+    return { inicio: new Date(ano, mes - 1, 1), fim: new Date(ano, mes, 0), custom: false };
+  }
+
+  function atualizarLabelPeriodo(){
+    const p = calcularPeriodoFechamento(mesRef.value);
+    const el = document.getElementById("lblPeriodoApurado");
+    if (!p){ el.textContent = ""; return; }
+    el.innerHTML = p.custom
+      ? `Período apurado: <b>${formatarDataBR(p.inicio)}</b> a <b>${formatarDataBR(p.fim)}</b> (fechamento customizado)`
+      : `Período apurado: <b>${formatarDataBR(p.inicio)}</b> a <b>${formatarDataBR(p.fim)}</b> (calendário cheio)`;
+  }
+
   function gerarMes(){
-    const [ano, mes] = mesRef.value.split("-").map(Number);
-    if (!ano || !mes) return;
+    const periodo = calcularPeriodoFechamento(mesRef.value);
+    if (!periodo) return;
     corpo.innerHTML = "";
-    const feriados = feriadosNacionais(ano);
-    const totalDias = new Date(ano, mes, 0).getDate();
-    for (let dia = 1; dia <= totalDias; dia++){
-      const dow = new Date(ano, mes - 1, dia).getDay();
-      const chave = ano + "-" + String(mes).padStart(2,"0") + "-" + String(dia).padStart(2,"0");
+
+    const cursor = new Date(periodo.inicio);
+    while (cursor <= periodo.fim){
+      const dow = cursor.getDay();
+      const feriados = feriadosNacionais(cursor.getFullYear());
+      const chave = cursor.getFullYear() + "-" + String(cursor.getMonth()+1).padStart(2,"0") + "-" + String(cursor.getDate()).padStart(2,"0");
       const dados = feriados.has(chave) && dow !== 0 ? { tipo: "feriado" } : undefined;
-      novaLinha(dia, mes, dow, dados);
+      novaLinha(cursor.getDate(), cursor.getMonth()+1, dow, dados);
+      cursor.setDate(cursor.getDate() + 1);
     }
     atualizarContadores();
     atualizarRegua();
@@ -1051,9 +1202,11 @@ if (typeof document !== "undefined"){
     corpo.querySelectorAll(".c-tipo").forEach(sel => {
       total++;
       if (sel.value === "falta"){ uteis++; faltas++; }
-      else if (sel.value === "util" || sel.value === "sabado" || sel.value === "justificada" || sel.value === "folga") {
+      else if (sel.value === "util" || sel.value === "sabado" || sel.value === "justificada" ||
+               sel.value === "folga" || sel.value === "domingo_trabalhado") {
         uteis++;
       } else {
+        // domingo, feriado e folga_dsr caem aqui — todos representam descanso remunerado da semana
         dsr++;
       }
     });
@@ -1068,6 +1221,59 @@ if (typeof document !== "undefined"){
     const boxF = document.getElementById("chipFaltasBox");
     boxF.style.display = c.faltas > 0 ? "inline-block" : "none";
     document.getElementById("chipFaltas").textContent = c.faltas;
+    verificarDsrDuplicado();
+  }
+
+  /* Auditoria semanal de DSR — detecta duas situações de risco em escalas de revezamento:
+     1) Semana com mais de um dia contando como DSR (domingo, feriado ou folga_dsr) — duplica o
+        descanso remunerado, geralmente porque um domingo de folga extra foi marcado como
+        "Domingo/DSR" em vez de "Folga".
+     2) Semana com "Domingo Trabalhado (escala)" mas SEM nenhum dia de DSR — ou seja, o domingo foi
+        trabalhado sem folga compensatória naquela semana. Pela Súmula 146 do TST, esse domingo deveria
+        ser pago em dobro (dia inteiro), não como hora extra padrão — o sistema paga como HE padrão
+        pressupondo compensação; sem ela, o cálculo fica incorreto e precisa de ajuste manual.
+  */
+  function verificarDsrDuplicado(){
+    const alertaDup = document.getElementById("alertaDsrDuplicado");
+    let alertaSemComp = document.getElementById("alertaDomingoSemCompensacao");
+
+    let semana = 0;
+    const dsrPorSemana = {};
+    const domTrabPorSemana = {};
+    corpo.querySelectorAll("tr").forEach(tr => {
+      const tipo = tr.querySelector(".c-tipo").value;
+      const dow = parseInt(tr.dataset.dow);
+      if (tipo === "domingo" || tipo === "feriado" || tipo === "folga_dsr"){
+        dsrPorSemana[semana] = (dsrPorSemana[semana] || 0) + 1;
+      }
+      if (tipo === "domingo_trabalhado"){
+        domTrabPorSemana[semana] = (domTrabPorSemana[semana] || 0) + 1;
+      }
+      if (dow === 0) semana++;
+    });
+
+    const semanasDuplicadas = Object.values(dsrPorSemana).filter(n => n > 1).length;
+    if (semanasDuplicadas > 0){
+      alertaDup.style.display = "block";
+      alertaDup.innerHTML = `<b>${semanasDuplicadas} semana(s) com mais de um dia contando como DSR.</b> ` +
+        `Isso costuma acontecer em escala de revezamento quando um domingo de folga extra fica marcado como ` +
+        `"Domingo/DSR" em vez de "Folga" — cada semana só deve ter um descanso remunerado. Revise os tipos de dia.`;
+    } else {
+      alertaDup.style.display = "none";
+    }
+
+    const semanasSemCompensacao = Object.keys(domTrabPorSemana).filter(s => !dsrPorSemana[s]).length;
+    if (alertaSemComp){
+      if (semanasSemCompensacao > 0){
+        alertaSemComp.style.display = "block";
+        alertaSemComp.innerHTML = `<b>${semanasSemCompensacao} semana(s) com "Domingo Trabalhado" sem nenhuma folga de DSR na mesma semana.</b> ` +
+          `Pela Súmula 146 do TST, domingo trabalhado sem compensação na semana deve ser pago em <u>dobro (o dia inteiro)</u>, ` +
+          `não como hora extra padrão — que é o que este sistema calcula para "Domingo Trabalhado". Garanta a folga compensatória naquela ` +
+          `semana ou troque o tipo do dia para "Domingo/DSR" comum, para que o sistema pague em dobro corretamente.`;
+      } else {
+        alertaSemComp.style.display = "none";
+      }
+    }
   }
 
   function atualizarTotalSemanal() {
@@ -1222,6 +1428,7 @@ if (typeof document !== "undefined"){
 
       if (r.trabalhado === 0){
         if (r.statusEspecial === "folga") { el.textContent = "FOLGA"; el.className = "saldo zero"; }
+        else if (r.statusEspecial === "folga_dsr") { el.textContent = "FOLGA (DSR da semana)"; el.className = "saldo pos"; }
         else if (r.statusEspecial === "justificada") { el.textContent = "ABONADO / ATESTADO"; el.className = "saldo pos"; }
         else { el.textContent = "—"; el.className = "saldo zero"; }
         return;
@@ -1229,7 +1436,7 @@ if (typeof document !== "undefined"){
 
       if (r.extras > 0){
         let rotulo;
-        if (cfg.usarBH && (r.tipo === "util" || r.tipo === "sabado")){
+        if (cfg.usarBH && (r.tipo === "util" || r.tipo === "sabado" || r.tipo === "domingo_trabalhado")){
           rotulo = "+" + minParaHHMM(r.paraBanco || r.extras) + " Banco";
           if (r.excedente > 0) rotulo += " / +" + minParaHHMM(r.excedente) + " pago";
         } else if (cfg.usarBH){
@@ -1237,7 +1444,8 @@ if (typeof document !== "undefined"){
         } else {
           rotulo = "+" + minParaHHMM(r.extras) + " HE " + r.pct + "%";
         }
-        el.innerHTML = rotulo + (r.notaTol ? " · padr" : "") + (r.prorrogacaoNoturna ? " · S60" : "") + flagIntra;
+        const marcadorEscala = r.tipo === "domingo_trabalhado" ? " · dom. escala" : (r.tipo === "folga_dsr" ? " · ⚠ DSR trabalhado" : "");
+        el.innerHTML = rotulo + (r.notaTol ? " · padr" : "") + (r.prorrogacaoNoturna ? " · S60" : "") + marcadorEscala + flagIntra;
         el.className = "saldo pos";
       } else if (r.atraso > 0){
         el.innerHTML = "−" + minParaHHMM(r.atraso) + (cfg.usarBH ? " Banco" : " atraso") + flagIntra;
@@ -1414,7 +1622,7 @@ if (typeof document !== "undefined"){
         e2: tr.querySelector(".c-e2").value, s2: tr.querySelector(".c-s2").value
       });
     });
-    const ids = ["mesRef","hePadrao","regimeNoturno","pEmpresa","pFuncCod","pFuncNome",
+    const ids = ["mesRef","diaFechamento","hePadrao","regimeNoturno","pEmpresa","pFuncCod","pFuncNome",
                  "evHEPadrao","evHE100","evNoturno","evAtrasos","evDSR","evFaltas","evDSRDesc","evIntra",
                  "bhAnterior","bhTipoAnterior","bhDataAcordo","dsrAtrasoTolerancia","dsrAtrasoClausula"];
     const campos = {};
@@ -1484,6 +1692,7 @@ if (typeof document !== "undefined"){
         tr.querySelector(".g-carga").value = minParaHHMM(mins);
       });
       atualizarTotalSemanal();
+      atualizarLabelPeriodo();
       gerarMes();
       const trs = corpo.querySelectorAll("tr");
       (dados.linhas || []).forEach((l, i) => {
@@ -1531,10 +1740,9 @@ if (typeof document !== "undefined"){
   }
 
   function obterDataFechamento(mesRefVal) {
-    const [ano, mes] = mesRefVal.split("-").map(Number);
-    if (!ano || !mes) return "00000000";
-    const ultimoDia = new Date(ano, mes, 0).getDate();
-    return String(ultimoDia).padStart(2, "0") + String(mes).padStart(2, "0") + String(ano);
+    const p = calcularPeriodoFechamento(mesRefVal);
+    if (!p) return "00000000";
+    return String(p.fim.getDate()).padStart(2, "0") + String(p.fim.getMonth()+1).padStart(2, "0") + String(p.fim.getFullYear());
   }
 
   function gerarLinhaProsol(cfg, dataFechamento, codEvento, horasDec, pctAcrescimo, descEvento) {
@@ -1713,12 +1921,28 @@ if (typeof document !== "undefined"){
   const hoje = new Date();
   mesRef.value = hoje.getFullYear() + "-" + String(hoje.getMonth() + 1).padStart(2,"0");
 
-  mesRef.addEventListener("change", () => { gerarMes(); verificarVencimentoBH(); });
+  mesRef.addEventListener("change", () => { atualizarLabelPeriodo(); gerarMes(); verificarVencimentoBH(); });
+  document.getElementById("diaFechamento").addEventListener("input", () => { atualizarLabelPeriodo(); gerarMes(); verificarVencimentoBH(); });
   document.getElementById("bhDataAcordo").addEventListener("change", verificarVencimentoBH);
   document.getElementById("btnPadrao").addEventListener("click", preencherPadrao);
   document.getElementById("btnLimparHorarios").addEventListener("click", limparHorarios);
   document.getElementById("btnCalc").addEventListener("click", calcular);
   document.getElementById("btnExportar").addEventListener("click", exportarLayoutProsol);
+  document.getElementById("btnGerarPDF").addEventListener("click", () => {
+    calcular();
+    const periodo = calcularPeriodoFechamento(mesRef.value);
+    const nome = document.getElementById("pFuncNome").value || "—";
+    const cod = document.getElementById("pFuncCod").value || "—";
+    const empresa = document.getElementById("pEmpresa").value || "—";
+    const periodoTxt = periodo ? `${formatarDataBR(periodo.inicio)} a ${formatarDataBR(periodo.fim)}` : "—";
+    document.getElementById("printHeader").innerHTML = `
+      <h1>Cartão de Ponto — VR Moraes</h1>
+      <div class="meta">
+        <b>${nome}</b> · matrícula ${cod} · empresa ${empresa}<br>
+        Período apurado: <b>${periodoTxt}</b>
+      </div>`;
+    setTimeout(() => window.print(), 50);
+  });
   document.getElementById("btnSalvarRascunho").addEventListener("click", salvarRascunho);
   document.getElementById("btnCarregarRascunho").addEventListener("click", () => document.getElementById("inputRascunho").click());
   document.getElementById("inputRascunho").addEventListener("change", carregarRascunho);
@@ -1769,6 +1993,7 @@ if (typeof document !== "undefined"){
     });
   });
 
+  atualizarLabelPeriodo();
   gerarMes();
   atualizarTotalSemanal();
 }
