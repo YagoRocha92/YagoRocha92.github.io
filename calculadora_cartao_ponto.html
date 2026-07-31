@@ -514,13 +514,13 @@
             <div class="bloco-excecao info-ativo no-print" id="blocoReplicar">
               <div class="cabecalho-excecao">
                 <input type="checkbox" id="replicarSegSex" checked>
-                <label for="replicarSegSex">Repetir horário de Segunda em Terça a Sexta automaticamente</label>
+                <label for="replicarSegSex">Repetir horário de Segunda automaticamente</label>
                 <span class="selo-status" id="seloReplicar">Ativo</span>
                 <button type="button" id="btnReplicarAgora" style="padding:4px 10px; font-size:10.5px;">Copiar agora</button>
               </div>
             </div>
             <p class="hint no-print" style="margin-top:6px; margin-bottom:8px;">
-              Com a repetição ativa, qualquer alteração na <b>Segunda</b> é copiada em tempo real para Terça–Sexta.
+              Com a repetição ativa, qualquer alteração na <b>Segunda-Feira</b> é copiada em tempo real para os demais dias.
               Sábado e Domingo nunca são replicados — preencha-os manualmente. Se quiser um dia da semana diferente
               dos demais, desmarque a repetição antes de editá-lo (senão a próxima alteração na Segunda o sobrescreve).
               Use o botão <b>×</b> em cada linha para limpar só aquele dia.
@@ -539,11 +539,11 @@
                   </tr>
                 </thead>
                 <tbody id="corpoGradeSemanal">
-                  <tr data-dow="1"><td style="padding-left:10px; text-align:left;"><b>Segunda</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="2"><td style="padding-left:10px; text-align:left;"><b>Terça</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="3"><td style="padding-left:10px; text-align:left;"><b>Quarta</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="4"><td style="padding-left:10px; text-align:left;"><b>Quinta</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="5"><td style="padding-left:10px; text-align:left;"><b>Sexta</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="1"><td style="padding-left:10px; text-align:left;"><b>Segunda-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="2"><td style="padding-left:10px; text-align:left;"><b>Terça-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="3"><td style="padding-left:10px; text-align:left;"><b>Quarta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="4"><td style="padding-left:10px; text-align:left;"><b>Quinta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="5"><td style="padding-left:10px; text-align:left;"><b>Sexta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
                   <tr data-dow="6"><td style="padding-left:10px; text-align:left;"><b>Sábado</b></td><td><input type="text" class="g-carga" value="04:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value=""></td><td><input type="time" class="g-s2" value=""></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
                   <tr data-dow="0"><td style="padding-left:10px; text-align:left;"><b>Domingo</b></td><td><input type="text" class="g-carga" value="00:00" readonly></td><td><input type="time" class="g-e1" value=""></td><td><input type="time" class="g-s1" value=""></td><td><input type="time" class="g-e2" value=""></td><td><input type="time" class="g-s2" value=""></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
                 </tbody>
@@ -556,7 +556,7 @@
                 </tfoot>
               </table>
             </div>
-            <p class="hint">Feriados <b>nacionais</b> entram automaticamente ao gerar o mês (inclui Paixão de Cristo, calculada pela Páscoa). Feriados <b>estaduais e municipais</b> devem ser ajustados manualmente na coluna Tipo de Dia.</p>
+            <p class="hint">Feriados <b>nacionais</b> entram automaticamente ao gerar o mês. Feriados <b>estaduais e municipais</b> devem ser ajustados manualmente na coluna Tipo de Dia.</p>
           </div>
         </div>
       </section>
@@ -581,13 +581,13 @@
           <div class="grid" style="margin-top:8px;">
             <div class="campo"><label for="pEmpresa">Empresa *</label><input type="text" id="pEmpresa" value="0001" maxlength="4"></div>
             <div class="campo"><label for="pFuncCod">Cód. func. *</label><input type="text" id="pFuncCod" value="000000001" maxlength="9"></div>
-            <div class="campo extra-largo"><label for="pFuncNome">Nome do trabalhador</label><input type="text" id="pFuncNome" value="FUNCIONARIO EXEMPLO" maxlength="40" style="font-family:var(--ui);"></div>
+            <div class="campo extra-largo"><label for="pFuncNome">Nome do trabalhador</label><input type="text" id="pFuncNome" value="" maxlength="40" style="font-family:var(--ui);"></div>
           </div>
 
           <div class="subsecao-titulo">Códigos de evento (Prosol)</div>
           <div class="grade-eventos">
-            <div class="campo"><label for="evHEPadrao">EV HE pad.</label><input type="text" id="evHEPadrao" value="0101" maxlength="4"></div>
-            <div class="campo"><label for="evHE100">EV HE 100%</label><input type="text" id="evHE100" value="0102" maxlength="4"></div>
+            <div class="campo"><label for="evHEPadrao">EV H.E Padrão</label><input type="text" id="evHEPadrao" value="0101" maxlength="4"></div>
+            <div class="campo"><label for="evHE100">EV H.E 100%</label><input type="text" id="evHE100" value="0102" maxlength="4"></div>
             <div class="campo"><label for="evNoturno">EV ad. not.</label><input type="text" id="evNoturno" value="0120" maxlength="4"></div>
             <div class="campo"><label for="evAtrasos">EV atrasos</label><input type="text" id="evAtrasos" value="0205" maxlength="4"></div>
             <div class="campo"><label for="evDSR">EV ref. DSR</label><input type="text" id="evDSR" value="0150" maxlength="4"></div>
