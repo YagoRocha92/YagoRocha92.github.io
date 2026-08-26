@@ -514,7 +514,7 @@
             <div class="campo">
               <label for="feriasIni">Férias — início (opcional)</label>
               <input type="date" id="feriasIni"
-                     title="Dias dentro do período de férias são marcados automaticamente, saem da apuração e dos divisores de dias úteis e DSR.">
+                     title="Dias dentro do período de férias são marcados automaticamente e saem da apuração; nos divisores do reflexo do DSR, continuam contando pela classificação de calendário (domingo de férias segue no multiplicador).">
             </div>
             <div class="campo">
               <label for="feriasFim">Férias — fim</label>
@@ -716,8 +716,8 @@
       de DSR e faz a semana contar dois descansos remunerados em vez de um, inflando o reflexo do DSR indevidamente.
       <b>Feriado trabalhado com compensação prevista em CCT:</b> marque o feriado como <b>"Feriado Compensado (CCT)"</b>
       e o dia da folga como <b>"Folga Compensatória (feriado)"</b> — o sistema pareia os dois na janela de ±15 dias e
-      aponta pendências com prazo-limite. <b>Férias:</b> informe o período na seção 1; os dias são marcados sozinhos e
-      saem da apuração e dos divisores.
+      aponta pendências com prazo-limite. <b>Férias:</b> informe o período na seção 1; os dias são marcados sozinhos e saem da apuração —
+      nos divisores do reflexo do DSR, porém, seguem contando pela classificação de calendário do dia.
     </p>
     <div class="tabela-scroll">
       <table id="tabelaPonto">
@@ -1352,13 +1352,19 @@ if (typeof document !== "undefined"){
     return "";
   }
 
-  /* Férias: dia fora da apuração — horários são limpos e bloqueados. */
-  function ajustarInputsPorTipo(tr){
+  /* Férias: dia fora da apuração — horários são limpos e bloqueados.
+     Demais tipos de NÃO-TRABALHO (folgas, faltas, abono): ao selecionar o
+     tipo, horários residuais do preenchimento em massa são limpos — eram a
+     causa de folga compensatória "não gozada" falsa e de HE indevidas.
+     Se realmente houve trabalho no dia de folga, lance os horários DEPOIS
+     de marcar o tipo: aí a violação é detectada de propósito. */
+  const TIPOS_SEM_TRABALHO = ["ferias","folga","folga_comp","folga_dsr","justificada","falta"];
+  function ajustarInputsPorTipo(tr, limparResiduais){
     const tipo = tr.querySelector(".c-tipo").value;
     const bloquear = tipo === "ferias";
     tr.querySelectorAll("input[type=time]").forEach(i => {
       i.disabled = bloquear;
-      if (bloquear) i.value = "";
+      if (bloquear || (limparResiduais && TIPOS_SEM_TRABALHO.includes(tipo))) i.value = "";
     });
   }
 
@@ -1368,6 +1374,10 @@ if (typeof document !== "undefined"){
     const tr = document.createElement("tr");
     tr.className = classeLinha(tipo);
     tr.dataset.dow = dow;
+    // Classificação de CALENDÁRIO do dia (útil/sábado/domingo/feriado) — não
+    // muda quando o usuário troca o tipo; usada nos divisores do reflexo
+    // quando o dia cai em férias.
+    tr.dataset.tipoCalendario = (d.tipo === "feriado") ? "feriado" : tipoPorDiaSemana(dow);
     if (dataISO) tr.dataset.dataIso = dataISO;
 
     const optionsHtml = `
@@ -1408,7 +1418,7 @@ if (typeof document !== "undefined"){
 
     selTipo.addEventListener("change", () => {
       tr.className = classeLinha(selTipo.value);
-      ajustarInputsPorTipo(tr);
+      ajustarInputsPorTipo(tr, true);
       atualizarContadores();
       atualizarRegua();
     });
@@ -1550,11 +1560,22 @@ if (typeof document !== "undefined"){
     if (!silencioso){ atualizarContadores(); atualizarRegua(); }
   }
 
+  /* Divisores do reflexo do DSR (Lei 605/49): usam as constantes do MÊS.
+     Dias de férias saem da APURAÇÃO (nada é trabalhado/descontado), mas
+     continuam contando nos divisores pela sua classificação de CALENDÁRIO —
+     um domingo dentro das férias segue no multiplicador de DSR, e um dia
+     útil de férias segue no divisor de dias úteis. É a prática padrão dos
+     sistemas de folha: férias não alteram a razão do mês. */
   function contarDias(){
     let uteis = 0, dsr = 0, total = 0, faltas = 0, ferias = 0;
-    corpo.querySelectorAll(".c-tipo").forEach(sel => {
+    corpo.querySelectorAll("tr").forEach(tr => {
+      const sel = tr.querySelector(".c-tipo");
       total++;
-      if (sel.value === "ferias"){ ferias++; }               // fora dos divisores: período fora da disposição do empregador
+      if (sel.value === "ferias"){
+        ferias++;
+        const cal = tr.dataset.tipoCalendario || "util";
+        if (cal === "domingo" || cal === "feriado") dsr++; else uteis++;
+      }
       else if (sel.value === "falta"){ uteis++; faltas++; }
       else if (sel.value === "util" || sel.value === "sabado" || sel.value === "justificada" ||
                sel.value === "folga" || sel.value === "folga_comp" || sel.value === "domingo_trabalhado") {
@@ -1600,7 +1621,12 @@ if (typeof document !== "undefined"){
     corpo.querySelectorAll("tr").forEach(tr => {
       const tipo = tr.querySelector(".c-tipo").value;
       const dow = parseInt(tr.dataset.dow);
-      if (tipo === "domingo" || tipo === "feriado" || tipo === "feriado_comp" || tipo === "folga_dsr"){
+      /* CORREÇÃO — só DOMINGO e FOLGA-DSR contam na auditoria de duplicidade:
+         feriado (comum ou compensado) é descanso próprio, previsto no
+         calendário, e convive normalmente com o domingo da mesma semana.
+         Antes, toda semana com feriado nacional disparava o alerta falso
+         de "mais de um DSR na semana". */
+      if (tipo === "domingo" || tipo === "folga_dsr"){
         dsrPorSemana[semana] = (dsrPorSemana[semana] || 0) + 1;
       }
       if (tipo === "domingo_trabalhado"){
