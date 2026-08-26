@@ -214,8 +214,14 @@
   tr.linha-falta td{ background:var(--fita-falta); }
   tr.linha-domtrab td{ background:var(--fita-domtrab); }
   tr.linha-folgadsr td{ background:var(--fita-folgadsr); }
+  tr.linha-ferias td{ background:#E4EBF3; }
+  tr.linha-ferias input[type=time]{ opacity:.4; }
+  tr.linha-folgacomp td{ background:var(--fita-cinza); box-shadow:inset 3px 0 0 var(--carimbo-verde); }
+  tr.linha-fercomp td{ background:var(--fita-rosa); box-shadow:inset 3px 0 0 var(--carimbo-ambar); }
+  .saldo.pend{ color:var(--carimbo-ambar); }
   tr.linha-sabado:hover td, tr.linha-dsr:hover td, tr.linha-folga:hover td,
-  tr.linha-justificada:hover td, tr.linha-falta:hover td,
+  tr.linha-justificada:hover td, tr.linha-falta:hover td, tr.linha-ferias:hover td,
+  tr.linha-folgacomp:hover td, tr.linha-fercomp:hover td,
   tr.linha-domtrab:hover td, tr.linha-folgadsr:hover td{ filter:brightness(.985); }
 
   td input, td select{
@@ -505,6 +511,15 @@
               <label for="hePadrao">% HE padrão (úteis)</label>
               <input type="number" id="hePadrao" value="50" min="0" max="400">
             </div>
+            <div class="campo">
+              <label for="feriasIni">Férias — início (opcional)</label>
+              <input type="date" id="feriasIni"
+                     title="Dias dentro do período de férias são marcados automaticamente, saem da apuração e dos divisores de dias úteis e DSR.">
+            </div>
+            <div class="campo">
+              <label for="feriasFim">Férias — fim</label>
+              <input type="date" id="feriasFim">
+            </div>
           </div>
           <p class="hint" id="lblPeriodoApurado" style="margin-bottom:4px;"></p>
 
@@ -520,9 +535,10 @@
               </div>
             </div>
             <p class="hint no-print" style="margin-top:6px; margin-bottom:8px;">
-              Com a repetição ativa, qualquer alteração na <b>Segunda-Feira</b> é copiada em tempo real para os demais dias.
-              Sábado e Domingo nunca são replicados — preencha-os manualmente. Se quiser um dia da semana diferente
-              dos demais, desmarque a repetição antes de editá-lo (senão a próxima alteração na Segunda o sobrescreve).
+              Com a repetição ativa, qualquer alteração na <b>Segunda-Feira</b> é copiada em tempo real para Ter–Sex.
+              Sábado e Domingo nunca são replicados automaticamente — use o botão <b>⚡</b> da linha para copiar o
+              horário da Segunda para aquele dia num clique, ou preencha manualmente. Se quiser um dia diferente dos
+              demais, desmarque a repetição antes de editá-lo (senão a próxima alteração na Segunda o sobrescreve).
               Use o botão <b>×</b> em cada linha para limpar só aquele dia.
             </p>
             <div class="tabela-scroll">
@@ -540,12 +556,12 @@
                 </thead>
                 <tbody id="corpoGradeSemanal">
                   <tr data-dow="1"><td style="padding-left:10px; text-align:left;"><b>Segunda-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="2"><td style="padding-left:10px; text-align:left;"><b>Terça-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="3"><td style="padding-left:10px; text-align:left;"><b>Quarta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="4"><td style="padding-left:10px; text-align:left;"><b>Quinta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="5"><td style="padding-left:10px; text-align:left;"><b>Sexta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="6"><td style="padding-left:10px; text-align:left;"><b>Sábado</b></td><td><input type="text" class="g-carga" value="04:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value=""></td><td><input type="time" class="g-s2" value=""></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
-                  <tr data-dow="0"><td style="padding-left:10px; text-align:left;"><b>Domingo</b></td><td><input type="text" class="g-carga" value="00:00" readonly></td><td><input type="time" class="g-e1" value=""></td><td><input type="time" class="g-s1" value=""></td><td><input type="time" class="g-e2" value=""></td><td><input type="time" class="g-s2" value=""></td><td class="no-print"><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="2"><td style="padding-left:10px; text-align:left;"><b>Terça-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha btn-fast fast-grade" title="Copiar o horário da Segunda-Feira para este dia">⚡</button><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="3"><td style="padding-left:10px; text-align:left;"><b>Quarta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha btn-fast fast-grade" title="Copiar o horário da Segunda-Feira para este dia">⚡</button><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="4"><td style="padding-left:10px; text-align:left;"><b>Quinta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha btn-fast fast-grade" title="Copiar o horário da Segunda-Feira para este dia">⚡</button><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="5"><td style="padding-left:10px; text-align:left;"><b>Sexta-Feira</b></td><td><input type="text" class="g-carga" value="08:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value="13:00"></td><td><input type="time" class="g-s2" value="17:00"></td><td class="no-print"><button type="button" class="btn-linha btn-fast fast-grade" title="Copiar o horário da Segunda-Feira para este dia">⚡</button><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="6"><td style="padding-left:10px; text-align:left;"><b>Sábado</b></td><td><input type="text" class="g-carga" value="04:00" readonly></td><td><input type="time" class="g-e1" value="08:00"></td><td><input type="time" class="g-s1" value="12:00"></td><td><input type="time" class="g-e2" value=""></td><td><input type="time" class="g-s2" value=""></td><td class="no-print"><button type="button" class="btn-linha btn-fast fast-grade" title="Copiar o horário da Segunda-Feira para este dia">⚡</button><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
+                  <tr data-dow="0"><td style="padding-left:10px; text-align:left;"><b>Domingo</b></td><td><input type="text" class="g-carga" value="00:00" readonly></td><td><input type="time" class="g-e1" value=""></td><td><input type="time" class="g-s1" value=""></td><td><input type="time" class="g-e2" value=""></td><td><input type="time" class="g-s2" value=""></td><td class="no-print"><button type="button" class="btn-linha btn-fast fast-grade" title="Copiar o horário da Segunda-Feira para este dia">⚡</button><button type="button" class="btn-linha limpar limpar-grade" title="Limpar este dia">×</button></td></tr>
                 </tbody>
                 <tfoot>
                   <tr style="background:var(--papel-sombra); font-weight:bold;">
@@ -672,6 +688,7 @@
             <span class="chip">Úteis <b id="chipUteis">—</b></span>
             <span class="chip">DSR/Feriados <b id="chipDSR">—</b></span>
             <span class="chip">Dias no mês <b id="chipTotal">—</b></span>
+            <span class="chip" id="chipFeriasBox" style="display:none;">Férias <b id="chipFerias">0</b></span>
             <span class="chip chip-falta" id="chipFaltasBox" style="display:none;">Faltas injust. <b id="chipFaltas">0</b></span>
           </div>
           <div class="alerta-legal" id="alertaDsrDuplicado"></div>
@@ -697,6 +714,10 @@
       (paga como jornada comum, não como HE 100% automático — preencha a carga desse dia na grade da seção 1).
       <b>Nos domingos de folga extra, use "Folga" — nunca "Domingo/DSR"</b>: esse último também soma no contador
       de DSR e faz a semana contar dois descansos remunerados em vez de um, inflando o reflexo do DSR indevidamente.
+      <b>Feriado trabalhado com compensação prevista em CCT:</b> marque o feriado como <b>"Feriado Compensado (CCT)"</b>
+      e o dia da folga como <b>"Folga Compensatória (feriado)"</b> — o sistema pareia os dois na janela de ±15 dias e
+      aponta pendências com prazo-limite. <b>Férias:</b> informe o período na seção 1; os dias são marcados sozinhos e
+      saem da apuração e dos divisores.
     </p>
     <div class="tabela-scroll">
       <table id="tabelaPonto">
@@ -716,6 +737,19 @@
       </table>
     </div>
     <div class="alerta-legal" id="alertaIntra"></div>
+  </section>
+
+  <section class="painel" id="painelCompensacao" style="display:none;" aria-live="polite">
+    <h2><span class="num">✓</span> Compensação de Feriados Trabalhados (CCT)</h2>
+    <div id="painelCompensacaoCorpo" style="font-size:12.5px; line-height:1.8;"></div>
+    <p class="hint">
+      Regra convencional: feriado trabalhado deve ser compensado com folga em até <b>15 dias antes ou depois</b>,
+      sem prejuízo da folga semanal; não compensado no prazo, paga-se <b>em dobro</b> (Súmula 146 TST).
+      É <b>vedado</b> lançar essas horas em banco de horas (§ 4º da cláusula) — a calculadora as mantém fora do banco
+      e fora das horas extras. Se a folga não sair até o prazo-limite, troque o tipo do dia para
+      <b>"Feriado"</b> na competência do estouro, para que as horas sejam pagas a 100% com os reflexos.
+      Trabalho noturno em feriado compensado continua gerando adicional noturno normalmente.
+    </p>
   </section>
 
   <section class="painel" id="resBancoHoras" aria-live="polite">
@@ -836,6 +870,20 @@ function hhmmParaMin(s){
   return sinal * (h * 60 + mi);
 }
 
+/* Parser de DURAÇÃO (HH:MM sem teto de 23h59, aceita sinal) — para campos que
+   representam quantidades de horas, não marcações de relógio: saldo anterior do
+   banco de horas ("30:00" é válido) e tolerâncias. CORREÇÃO: antes, esses campos
+   passavam por hhmmParaMin, que rejeita h > 23, e um saldo de banco acima de
+   24h era silenciosamente tratado como 00:00. */
+function duracaoHHMMParaMin(s){
+  if (!s) return null;
+  const m = /^([-+]?)(\d{1,4}):(\d{2})$/.exec(s.trim());
+  if (!m) return null;
+  const mi = +m[3];
+  if (mi > 59) return null;
+  return (m[1] === "-" ? -1 : 1) * (+m[2] * 60 + mi);
+}
+
 function minParaHHMM(min){
   const neg = min < 0;
   let m = Math.round(Math.abs(min));
@@ -844,6 +892,52 @@ function minParaHHMM(min){
 }
 
 function minParaDecimal(min){ return Math.round((min / 60) * 10000) / 10000; }
+
+/* ===== Compensação de feriados (regra da CCT): helpers de data ===== */
+const JANELA_COMP = 15;   // dias antes/depois para compensar feriado trabalhado
+
+/** Diferença em dias entre duas datas ISO "AAAA-MM-DD" (b - a). */
+function diffDias(aISO, bISO){
+  const [ay,am,ad] = aISO.split("-").map(Number);
+  const [by,bm,bd] = bISO.split("-").map(Number);
+  return Math.round((Date.UTC(by,bm-1,bd) - Date.UTC(ay,am-1,ad)) / 86400000);
+}
+
+/** Soma n dias a uma data ISO e devolve "dd/mm/aaaa". */
+function dataMaisDias(iso, n){
+  const [y,m,d] = iso.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m-1, d + n));
+  return String(dt.getUTCDate()).padStart(2,"0") + "/" + String(dt.getUTCMonth()+1).padStart(2,"0") + "/" + dt.getUTCFullYear();
+}
+
+/**
+ * PAREAMENTO FERIADO COMPENSADO x FOLGA COMPENSATÓRIA (janela ±15 dias).
+ * Cada folga quita um único feriado; os feriados são percorridos em ordem
+ * cronológica e vinculados à primeira folga livre dentro da janela.
+ * Folga compensatória com horários lançados não conta (folga não gozada).
+ */
+function parearCompensacoes(dias){
+  const feriados = [];
+  const folgas = [];
+  dias.forEach((d, i) => {
+    if (!d.dataISO) return;
+    if (d.tipo === "feriado_comp") feriados.push({ i, dataISO:d.dataISO });
+    if (d.tipo === "folga_comp" && d.e1 == null && d.s1 == null && d.e2 == null && d.s2 == null){
+      folgas.push({ i, dataISO:d.dataISO, usada:false });
+    }
+  });
+  const status = {};   // índice do dia -> { ok, folgaISO?, limite }
+  for (const f of feriados){
+    const folga = folgas.find(g => !g.usada && Math.abs(diffDias(f.dataISO, g.dataISO)) <= JANELA_COMP);
+    if (folga){
+      folga.usada = true;
+      status[f.i] = { ok:true, folgaISO:folga.dataISO, limite:dataMaisDias(f.dataISO, JANELA_COMP) };
+    } else {
+      status[f.i] = { ok:false, limite:dataMaisDias(f.dataISO, JANELA_COMP) };
+    }
+  }
+  return status;
+}
 
 function duracaoIntervalo(entrada, saida){
   if (entrada == null || saida == null) return 0;
@@ -906,6 +1000,19 @@ function apurarNoturno(ints, tipoAtividade){
         break;
       }
     }
+    /* CORREÇÃO — a S.60-II exige jornada CUMPRIDA INTEGRALMENTE no período
+       noturno e então prorrogada (o caso clássico 22h–5h que avança madrugada
+       adentro). Sem este filtro, um turno matutino iniciado entre 0h e 5h
+       (ex.: 04:00–13:00) disparava a prorrogação e recebia adicional noturno
+       + hora reduzida sobre a jornada inteira. Critério objetivo adotado:
+       a prorrogação só é devida se os minutos noturnos reais representarem
+       ao menos metade da jornada (jornada essencialmente noturna). Casos de
+       fronteira (ex.: início às 3h) merecem análise individual — ajuste o
+       critério se a jurisprudência aplicável ao caso indicar outra leitura. */
+    if (prorrogados > 0){
+      const totalTrabalhado = ints.reduce((acc, [a, b]) => acc + (b - a), 0);
+      if (reais < totalTrabalhado - reais) prorrogados = 0;
+    }
   }
   return { reais, prorrogados };
 }
@@ -925,6 +1032,14 @@ function aplicarTolerancia(marcas, padrao){
 }
 
 function apurarDia(dia, cfg){
+  // FÉRIAS: dia fora da disposição do empregador — nada é apurado,
+  // mesmo que haja horários lançados por engano.
+  if (dia.tipo === "ferias"){
+    return { normais:0, extras:0, atraso:0, falta:0, intra:0, compensar:0,
+             adicionalNoturno:0, prorrogacaoNoturna:false, pct:cfg.hePadrao,
+             notaTol:false, trabalhado:0, jornada:0, statusEspecial:dia.tipo, tipo:dia.tipo };
+  }
+
   let marcas = [dia.e1, dia.s1, dia.e2, dia.s2];
   let notaTol = false;
 
@@ -950,9 +1065,11 @@ function apurarDia(dia, cfg){
   // domingo_trabalhado: dia normal de trabalho dentro da escala (paga como jornada comum, não 100% automático).
   // folga_dsr: é o descanso semanal remunerado da semana; se ainda assim houver horas lançadas nela,
   // isso é uma violação do próprio DSR e deve ser pago a 100%, como qualquer DSR trabalhado.
-  const pctDia = (dia.tipo === "domingo" || dia.tipo === "feriado" || dia.tipo === "folga" || dia.tipo === "folga_dsr") ? 100 : cfg.hePadrao;
+  // folga_comp com horas lançadas: a folga compensatória não foi gozada — as horas são pagas a 100%
+  // e a folga deixa de quitar o feriado vinculado (ver parearCompensacoes).
+  const pctDia = (dia.tipo === "domingo" || dia.tipo === "feriado" || dia.tipo === "folga" || dia.tipo === "folga_dsr" || dia.tipo === "folga_comp") ? 100 : cfg.hePadrao;
 
-  const res = { normais:0, extras:0, atraso:0, falta:0, intra:0,
+  const res = { normais:0, extras:0, atraso:0, falta:0, intra:0, compensar:0,
                 adicionalNoturno:noturnosFictos, prorrogacaoNoturna: not.prorrogados > 0,
                 pct: pctDia, notaTol, trabalhado, jornada, statusEspecial: dia.tipo, tipo: dia.tipo };
 
@@ -962,7 +1079,7 @@ function apurarDia(dia, cfg){
     return res;
   }
 
-  if (trabalhado === 0) return res;
+  if (trabalhado === 0){ res.adicionalNoturno = 0; res.prorrogacaoNoturna = false; return res; }
 
   // Intrajornada (art. 71 CLT): jornada > 6h exige intervalo mínimo de 1h — ou o mínimo
   // reduzido por CCT/ACT (art. 611-A, III, CLT, nunca abaixo de 30 min), se configurado.
@@ -987,31 +1104,49 @@ function apurarDia(dia, cfg){
       res.normais = jornada;
       res.atraso  = -saldo;
     }
-  } else {
+  }
+  else if (dia.tipo === "feriado_comp"){
+    // FERIADO COMPENSADO (regra da CCT): as horas não viram extra, não entram
+    // no reflexo do DSR e NUNCA vão ao banco de horas (§4º da cláusula) —
+    // serão quitadas com folga em até 15 dias antes/depois; sem folga no
+    // prazo, reclassificar o dia como "Feriado" (pagamento em dobro).
+    // O adicional noturno, se houver trabalho entre 22h e 5h, permanece devido.
+    res.compensar = jornada;
+  }
+  else {
     res.extras = jornada;
   }
   return res;
 }
 
 function apurarPeriodo(dias, cfg){
-  const tot = { normais:0, atrasos:0, noturno:0, faltas:0, intra:0, extrasPorPct:{} };
+  const tot = { normais:0, atrasos:0, noturno:0, faltas:0, intra:0, extrasPorPct:{},
+                compTotal:0, compPendente:0 };
   const porDia = [];
 
   const bh = { creditos:0, excedente:0, pago100:0 };
+  const statusComp = parearCompensacoes(dias);
 
   // Perda do DSR por falta injustificada na semana (Lei 605/49, art. 6º)
   let semanaAtual = 0;
   const semanasComFalta = new Set();
   const atrasoPorSemana = {};   // exceção contratual: acumulado de atraso por semana
 
-  for (const d of dias){
+  dias.forEach((d, di) => {
     const r = apurarDia(d, cfg);
     r.semana = semanaAtual;
+    r.comp = statusComp[di] || null;
     tot.normais += r.normais;
     tot.atrasos += r.atraso;
     tot.noturno += r.adicionalNoturno;
     tot.faltas  += r.falta;
     tot.intra   += r.intra;
+
+    // Feriado compensado (CCT): fora das HE, do reflexo e do banco de horas
+    if (r.compensar > 0){
+      tot.compTotal += r.compensar;
+      if (!(r.comp && r.comp.ok)) tot.compPendente += r.compensar;
+    }
 
     if (r.falta > 0) semanasComFalta.add(semanaAtual);
     if (r.atraso > 0){
@@ -1038,7 +1173,7 @@ function apurarPeriodo(dias, cfg){
     }
     porDia.push(r);
     if (d.dow === 0) semanaAtual++;
-  }
+  });
 
   let totalExtrasPagasMin = 0;
   for (const k in tot.extrasPorPct) totalExtrasPagasMin += tot.extrasPorPct[k];
@@ -1058,14 +1193,37 @@ function apurarPeriodo(dias, cfg){
   const dsrPerdidoMin = semanasAfetadas.size * cfg.mediaDiaria;
   const dsrPerdidoAtrasoMin = semanasSoAtraso.length * cfg.mediaDiaria;
 
-  // Reflexo do DSR sobre HE pagas E adicional noturno habitual (Súmula 172 TST / Lei 605/49)
+  /* Reflexo do DSR sobre HE pagas E adicional noturno habitual (Súmula 172
+     TST / Lei 605/49 / OJ 97 SDI-1).
+     CORREÇÃO — antes, horas de HE e horas-base de adicional noturno eram
+     SOMADAS numa única quantidade exportada com percentual 0. Mas cada hora
+     de HE vale (100% + percentual) do salário-hora, enquanto cada hora
+     noturna gera apenas o adicional de 20%: uma soma simples subpaga o
+     reflexo das extras e superpaga o do noturno. Agora o reflexo é apurado
+     POR NATUREZA:
+       - HE de cada percentual: (horas HE ÷ dias úteis) × DSR, mantendo o
+         percentual da HE na rubrica (mesma semântica das linhas de HE do
+         layout de exportação);
+       - Adicional noturno: (horas noturnas × 20% ÷ dias úteis) × DSR, já
+         convertido em horas-base equivalentes (percentual 0 na exportação,
+         pois os 20% estão embutidos na quantidade).
+     Valide os códigos de evento e a valorização na parametrização da folha. */
   const heDecimal = minParaDecimal(totalExtrasPagasMin);
   const notDecimal = minParaDecimal(tot.noturno);
-  const baseReflexo = heDecimal + notDecimal;
-  const dsrHoras = cfg.diasUteis > 0 ? (baseReflexo / cfg.diasUteis) * cfg.qtdDSR : 0;
+  const reflexo = { porPct:{}, noturnoEquivMin:0, totalMin:0 };
+  if (cfg.diasUteis > 0 && cfg.qtdDSR > 0){
+    for (const k in tot.extrasPorPct){
+      const m = (tot.extrasPorPct[k] / cfg.diasUteis) * cfg.qtdDSR;
+      reflexo.porPct[k] = m;
+      reflexo.totalMin += m;
+    }
+    reflexo.noturnoEquivMin = ((tot.noturno * 0.20) / cfg.diasUteis) * cfg.qtdDSR;
+    reflexo.totalMin += reflexo.noturnoEquivMin;
+  }
+  const dsrHoras = reflexo.totalMin / 60;   // total das rubricas de reflexo, em horas
 
   return { tot, porDia, totalExtrasMin: totalExtrasPagasMin, dsrHoras, heDecimal, notDecimal,
-           bh, dsrPerdidoMin, semanasComFalta: semanasComFalta.size,
+           reflexo, bh, statusComp, dsrPerdidoMin, semanasComFalta: semanasComFalta.size,
            semanasComAtrasoDSR: semanasComAtrasoDSR.size, dsrPerdidoAtrasoMin };
 }
 
@@ -1183,6 +1341,9 @@ if (typeof document !== "undefined"){
   function classeLinha(tipo){
     if (tipo === "sabado") return "linha-sabado";
     if (tipo === "domingo" || tipo === "feriado") return "linha-dsr";
+    if (tipo === "feriado_comp") return "linha-fercomp";
+    if (tipo === "folga_comp") return "linha-folgacomp";
+    if (tipo === "ferias") return "linha-ferias";
     if (tipo === "folga") return "linha-folga";
     if (tipo === "justificada") return "linha-justificada";
     if (tipo === "falta") return "linha-falta";
@@ -1191,23 +1352,37 @@ if (typeof document !== "undefined"){
     return "";
   }
 
-  function novaLinha(diaNum, mesNum, dow, dados){
+  /* Férias: dia fora da apuração — horários são limpos e bloqueados. */
+  function ajustarInputsPorTipo(tr){
+    const tipo = tr.querySelector(".c-tipo").value;
+    const bloquear = tipo === "ferias";
+    tr.querySelectorAll("input[type=time]").forEach(i => {
+      i.disabled = bloquear;
+      if (bloquear) i.value = "";
+    });
+  }
+
+  function novaLinha(diaNum, mesNum, dow, dados, dataISO){
     const d = dados || {};
     const tipo = d.tipo || tipoPorDiaSemana(dow);
     const tr = document.createElement("tr");
     tr.className = classeLinha(tipo);
     tr.dataset.dow = dow;
+    if (dataISO) tr.dataset.dataIso = dataISO;
 
     const optionsHtml = `
       <option value="util">Dia Útil</option>
       <option value="sabado">Sábado</option>
       <option value="domingo">Domingo / DSR</option>
       <option value="domingo_trabalhado">Domingo Trabalhado (escala)</option>
-      <option value="feriado">Feriado</option>
+      <option value="feriado">Feriado (paga em dobro)</option>
+      <option value="feriado_comp">Feriado Compensado (CCT)</option>
+      <option value="folga_comp">Folga Compensatória (feriado)</option>
       <option value="folga">Folga</option>
       <option value="folga_dsr">Folga — Substitui o DSR da semana</option>
       <option value="justificada">Falta Justificada / Atestado</option>
-      <option value="falta">Falta Injustificada</option>`;
+      <option value="falta">Falta Injustificada</option>
+      <option value="ferias">Férias</option>`;
 
     tr.innerHTML = `
       <td class="cel-dia">
@@ -1233,11 +1408,13 @@ if (typeof document !== "undefined"){
 
     selTipo.addEventListener("change", () => {
       tr.className = classeLinha(selTipo.value);
+      ajustarInputsPorTipo(tr);
       atualizarContadores();
       atualizarRegua();
     });
 
     tr.querySelector(".btn-fast").addEventListener("click", () => {
+      if (tr.querySelector(".c-tipo").value === "ferias") return;   // férias não recebem horários
       const cfg = lerConfig();
       let p = cfg.jornadas[dow].rawPadrao;
       ["input.c-e1","input.c-s1","input.c-e2","input.c-s2"].forEach((classe, idx) => {
@@ -1271,9 +1448,16 @@ if (typeof document !== "undefined"){
       const diaFimClamp = Math.min(diaFechInput, diasNoMesRef);
       const fim = new Date(ano, mes - 1, diaFimClamp);
 
+      /* CORREÇÃO — o início do período é o dia SEGUINTE ao fechamento do mês
+         anterior (com o fechamento anterior também limitado ao último dia
+         daquele mês). Antes, fechamento no dia 31 gerava início em 31/mês
+         anterior (dia que já pertencia ao período anterior, duplicando-o);
+         agora, fech. 31 em agosto -> período 01/08 a 31/08, e fech. 30 com
+         fevereiro no meio -> fevereiro fecha em 28 e março inicia em 01/03.
+         new Date normaliza o overflow de dia para o mês seguinte. */
       const diasNoMesAnterior = new Date(ano, mes - 1, 0).getDate();
-      const diaInicioClamp = Math.min(diaFechInput + 1, diasNoMesAnterior);
-      const inicio = new Date(ano, mes - 2, diaInicioClamp);
+      const fimPeriodoAnterior = Math.min(diaFechInput, diasNoMesAnterior);
+      const inicio = new Date(ano, mes - 2, fimPeriodoAnterior + 1);
 
       return { inicio, fim, custom: true };
     }
@@ -1289,40 +1473,98 @@ if (typeof document !== "undefined"){
       : `Período apurado: <b>${formatarDataBR(p.inicio)}</b> a <b>${formatarDataBR(p.fim)}</b> (calendário cheio)`;
   }
 
-  function gerarMes(){
+  /* Guarda contra perda de dados: regenerar o período descarta os horários
+     lançados. Se houver lançamentos, pede confirmação; ao cancelar, os campos
+     de mês/fechamento voltam ao valor anterior e nada é apagado. */
+  let ultimoMesRef = "";
+  let ultimoDiaFech = "";
+
+  function temHorariosLancados(){
+    return Array.from(corpo.querySelectorAll("input[type=time]")).some(i => i.value);
+  }
+
+  function gerarMes(forcar){
     const periodo = calcularPeriodoFechamento(mesRef.value);
     if (!periodo) return;
+
+    if (!forcar && temHorariosLancados()){
+      const ok = confirm("Alterar o mês/fechamento regenera o período e descarta os horários já lançados.\nDeseja continuar? (use \"Salvar rascunho\" antes, se precisar)");
+      if (!ok){
+        mesRef.value = ultimoMesRef;
+        document.getElementById("diaFechamento").value = ultimoDiaFech;
+        atualizarLabelPeriodo();
+        return;
+      }
+    }
+    ultimoMesRef = mesRef.value;
+    ultimoDiaFech = document.getElementById("diaFechamento").value;
+
     corpo.innerHTML = "";
 
+    const feriadosPorAno = {};   // cache: calcula a Páscoa uma vez por ano, não por dia
     const cursor = new Date(periodo.inicio);
     while (cursor <= periodo.fim){
       const dow = cursor.getDay();
-      const feriados = feriadosNacionais(cursor.getFullYear());
-      const chave = cursor.getFullYear() + "-" + String(cursor.getMonth()+1).padStart(2,"0") + "-" + String(cursor.getDate()).padStart(2,"0");
-      const dados = feriados.has(chave) && dow !== 0 ? { tipo: "feriado" } : undefined;
-      novaLinha(cursor.getDate(), cursor.getMonth()+1, dow, dados);
+      const anoCursor = cursor.getFullYear();
+      if (!feriadosPorAno[anoCursor]) feriadosPorAno[anoCursor] = feriadosNacionais(anoCursor);
+      const chave = anoCursor + "-" + String(cursor.getMonth()+1).padStart(2,"0") + "-" + String(cursor.getDate()).padStart(2,"0");
+      const dados = feriadosPorAno[anoCursor].has(chave) && dow !== 0 ? { tipo: "feriado" } : undefined;
+      novaLinha(cursor.getDate(), cursor.getMonth()+1, dow, dados, chave);
       cursor.setDate(cursor.getDate() + 1);
     }
+    aplicarFerias(true);   // reaplica o período de férias informado, se cair no período gerado
     atualizarContadores();
     atualizarRegua();
     document.getElementById("resultados").style.display = "none";
     document.getElementById("resBancoHoras").style.display = "none";
+    document.getElementById("painelCompensacao").style.display = "none";
+  }
+
+  /* Marca como Férias os dias dentro do período informado; ao sair do
+     intervalo, devolve a classificação de calendário (inclusive feriado
+     nacional, quando for o caso). Atenção: a marcação de férias prevalece
+     sobre classificações manuais dentro do intervalo. */
+  function aplicarFerias(silencioso){
+    const ini = document.getElementById("feriasIni").value;
+    const fim = document.getElementById("feriasFim").value;
+    const feriadosPorAno = {};
+    corpo.querySelectorAll("tr").forEach(tr => {
+      const iso = tr.dataset.dataIso;
+      if (!iso) return;
+      const sel = tr.querySelector(".c-tipo");
+      const dentro = ini && fim && iso >= ini && iso <= fim;   // comparação ISO é lexicográfica
+      if (dentro && sel.value !== "ferias"){
+        sel.value = "ferias";
+        tr.className = classeLinha("ferias");
+        ajustarInputsPorTipo(tr);
+      } else if (!dentro && sel.value === "ferias"){
+        const ano = +iso.slice(0,4);
+        if (!feriadosPorAno[ano]) feriadosPorAno[ano] = feriadosNacionais(ano);
+        const dow = parseInt(tr.dataset.dow);
+        const tipoPadrao = (feriadosPorAno[ano].has(iso) && dow !== 0) ? "feriado" : tipoPorDiaSemana(dow);
+        sel.value = tipoPadrao;
+        tr.className = classeLinha(tipoPadrao);
+        ajustarInputsPorTipo(tr);
+      }
+    });
+    if (!silencioso){ atualizarContadores(); atualizarRegua(); }
   }
 
   function contarDias(){
-    let uteis = 0, dsr = 0, total = 0, faltas = 0;
+    let uteis = 0, dsr = 0, total = 0, faltas = 0, ferias = 0;
     corpo.querySelectorAll(".c-tipo").forEach(sel => {
       total++;
-      if (sel.value === "falta"){ uteis++; faltas++; }
+      if (sel.value === "ferias"){ ferias++; }               // fora dos divisores: período fora da disposição do empregador
+      else if (sel.value === "falta"){ uteis++; faltas++; }
       else if (sel.value === "util" || sel.value === "sabado" || sel.value === "justificada" ||
-               sel.value === "folga" || sel.value === "domingo_trabalhado") {
+               sel.value === "folga" || sel.value === "folga_comp" || sel.value === "domingo_trabalhado") {
         uteis++;
       } else {
-        // domingo, feriado e folga_dsr caem aqui — todos representam descanso remunerado da semana
+        // domingo, feriado, feriado_comp e folga_dsr caem aqui — descanso remunerado da semana
         dsr++;
       }
     });
-    return { uteis, dsr, total, faltas };
+    return { uteis, dsr, total, faltas, ferias };
   }
 
   function atualizarContadores(){
@@ -1333,6 +1575,9 @@ if (typeof document !== "undefined"){
     const boxF = document.getElementById("chipFaltasBox");
     boxF.style.display = c.faltas > 0 ? "inline-block" : "none";
     document.getElementById("chipFaltas").textContent = c.faltas;
+    const boxFer = document.getElementById("chipFeriasBox");
+    boxFer.style.display = c.ferias > 0 ? "inline-block" : "none";
+    document.getElementById("chipFerias").textContent = c.ferias;
     verificarDsrDuplicado();
   }
 
@@ -1355,7 +1600,7 @@ if (typeof document !== "undefined"){
     corpo.querySelectorAll("tr").forEach(tr => {
       const tipo = tr.querySelector(".c-tipo").value;
       const dow = parseInt(tr.dataset.dow);
-      if (tipo === "domingo" || tipo === "feriado" || tipo === "folga_dsr"){
+      if (tipo === "domingo" || tipo === "feriado" || tipo === "feriado_comp" || tipo === "folga_dsr"){
         dsrPorSemana[semana] = (dsrPorSemana[semana] || 0) + 1;
       }
       if (tipo === "domingo_trabalhado"){
@@ -1428,7 +1673,7 @@ if (typeof document !== "undefined"){
     let saldoAntMin = 0;
     if (usarBH.checked) {
       const rawBH = document.getElementById("bhAnterior").value;
-      saldoAntMin = Math.abs(hhmmParaMin(rawBH) || 0);
+      saldoAntMin = Math.abs(duracaoHHMMParaMin(rawBH) || 0);
       if (document.getElementById("bhTipoAnterior").value === "debito") {
         saldoAntMin = -saldoAntMin;
       }
@@ -1445,7 +1690,7 @@ if (typeof document !== "undefined"){
       mediaDiaria: Math.round(cargaSemanal / 6),
       tipoAtividade: regimeNoturno.value,
       usarDsrAtraso: usarDsrAtraso.checked,
-      dsrAtrasoTolerancia: Math.max(0, hhmmParaMin(document.getElementById("dsrAtrasoTolerancia").value) || 0),
+      dsrAtrasoTolerancia: Math.max(0, duracaoHHMMParaMin(document.getElementById("dsrAtrasoTolerancia").value) || 0),
       dsrAtrasoClausula: document.getElementById("dsrAtrasoClausula").value.trim(),
       pagarIntra: !naoComputarIntra.checked,
       intervaloMinimo: usarIntervaloReduzido.checked
@@ -1461,6 +1706,7 @@ if (typeof document !== "undefined"){
       dias.push({
         tipo: tr.querySelector(".c-tipo").value,
         dow: parseInt(tr.dataset.dow),
+        dataISO: tr.dataset.dataIso || null,
         e1: hhmmParaMin(tr.querySelector(".c-e1").value),
         s1: hhmmParaMin(tr.querySelector(".c-s1").value),
         e2: hhmmParaMin(tr.querySelector(".c-e2").value),
@@ -1521,7 +1767,8 @@ if (typeof document !== "undefined"){
   function calcular(){
     const cfg = lerConfig();
     verificarVencimentoBH();
-    const R = apurarPeriodo(lerDias(), cfg);
+    const diasLidos = lerDias();
+    const R = apurarPeriodo(diasLidos, cfg);
 
     let diasComIntra = 0;
     corpo.querySelectorAll("tr").forEach((tr, i) => {
@@ -1536,6 +1783,27 @@ if (typeof document !== "undefined"){
         return;
       }
 
+      if (r.statusEspecial === "ferias"){
+        el.textContent = "FÉRIAS";
+        el.className = "saldo zero";
+        return;
+      }
+
+      if (r.statusEspecial === "feriado_comp"){
+        if (r.trabalhado === 0){
+          el.textContent = "Feriado compensado — sem horários lançados";
+          el.className = "saldo pend";
+        } else if (r.comp && r.comp.ok){
+          el.innerHTML = minParaHHMM(r.compensar) + " compensadas ✓ (folga " + r.comp.folgaISO.slice(8,10) + "/" + r.comp.folgaISO.slice(5,7) + ")" +
+            (r.prorrogacaoNoturna ? " · S60" : "");
+          el.className = "saldo pos";
+        } else {
+          el.innerHTML = minParaHHMM(r.compensar) + " a compensar — <b>folga até " + (r.comp ? r.comp.limite : "?") + "</b>";
+          el.className = "saldo pend";
+        }
+        return;
+      }
+
       let flagIntra = "";
       if (r.intra > 0){
         diasComIntra++;
@@ -1544,6 +1812,7 @@ if (typeof document !== "undefined"){
 
       if (r.trabalhado === 0){
         if (r.statusEspecial === "folga") { el.textContent = "FOLGA"; el.className = "saldo zero"; }
+        else if (r.statusEspecial === "folga_comp") { el.textContent = "FOLGA COMPENSATÓRIA (feriado)"; el.className = "saldo pos"; }
         else if (r.statusEspecial === "folga_dsr") { el.textContent = "FOLGA (DSR da semana)"; el.className = "saldo pos"; }
         else if (r.statusEspecial === "justificada") { el.textContent = "ABONADO / ATESTADO"; el.className = "saldo pos"; }
         else { el.textContent = "—"; el.className = "saldo zero"; }
@@ -1560,7 +1829,9 @@ if (typeof document !== "undefined"){
         } else {
           rotulo = "+" + minParaHHMM(r.extras) + " HE " + r.pct + "%";
         }
-        const marcadorEscala = r.tipo === "domingo_trabalhado" ? " · dom. escala" : (r.tipo === "folga_dsr" ? " · ⚠ DSR trabalhado" : "");
+        const marcadorEscala = r.tipo === "domingo_trabalhado" ? " · dom. escala"
+          : (r.tipo === "folga_dsr" ? " · ⚠ DSR trabalhado"
+          : (r.tipo === "folga_comp" ? " · ⚠ folga não gozada (não quita feriado)" : ""));
         el.innerHTML = rotulo + (r.notaTol ? " · padr" : "") + (r.prorrogacaoNoturna ? " · S60" : "") + marcadorEscala + flagIntra;
         el.className = "saldo pos";
       } else if (r.atraso > 0){
@@ -1573,6 +1844,7 @@ if (typeof document !== "undefined"){
     });
 
     const alertaIntra = document.getElementById("alertaIntra");
+    preencherPainelCompensacao(R, diasLidos);
     const baseLegal = cfg.intervaloMinimo < 60
       ? `mínimo de ${cfg.intervaloMinimo} min reduzido por CCT/ACT (art. 611-A, III, CLT)`
       : `mínimo de 1h (art. 71, CLT)`;
@@ -1625,10 +1897,8 @@ if (typeof document !== "undefined"){
           ? partesSub.join(" · ") + " — descontado em folha, não no banco"
           : "Descontado em folha, não no banco";
       }
-      document.getElementById("vBhDSR").textContent = minParaHHMM(R.dsrHoras * 60);
-      document.getElementById("vBhDSRFormula").innerHTML =
-        `Fórmula: <strong>((HE pagas + Ad. Noturno) ÷ dias úteis) × (domingos + feriados)</strong><br>` +
-        `= ((${R.heDecimal.toFixed(4).replace(".", ",")} + ${R.notDecimal.toFixed(4).replace(".", ",")}) h ÷ ${cfg.diasUteis}) × ${cfg.qtdDSR} — Súmula 172 TST`;
+      document.getElementById("vBhDSR").textContent = minParaHHMM(R.reflexo.totalMin);
+      document.getElementById("vBhDSRFormula").innerHTML = montarFormulaReflexo(R, cfg);
 
       const cardBH = document.getElementById("cardBhAtualizado");
       cardBH.className = "res destaque-final";
@@ -1678,13 +1948,10 @@ if (typeof document !== "undefined"){
           .join(" · ");
       } else boxOutros.style.display = "none";
 
-      const dsrMin = R.dsrHoras * 60;
       document.getElementById("resDSR").textContent =
-        minParaHHMM(dsrMin) + "  (≈ " + R.dsrHoras.toFixed(4).replace(".", ",") + " h)";
+        minParaHHMM(R.reflexo.totalMin) + "  (≈ " + R.dsrHoras.toFixed(4).replace(".", ",") + " h)";
 
-      document.getElementById("resDSRFormula").innerHTML =
-        `Fórmula: <strong>((HE pagas + Ad. Noturno) ÷ dias úteis) × (domingos + feriados)</strong><br>` +
-        `= ((${R.heDecimal.toFixed(4).replace(".", ",")} + ${R.notDecimal.toFixed(4).replace(".", ",")}) h ÷ ${cfg.diasUteis}) × ${cfg.qtdDSR} — Súmula 172 TST`;
+      document.getElementById("resDSRFormula").innerHTML = montarFormulaReflexo(R, cfg);
 
       document.getElementById("resultados").scrollIntoView({ behavior:"smooth", block:"start" });
     }
@@ -1692,9 +1959,55 @@ if (typeof document !== "undefined"){
     return R;
   }
 
+  /* Painel de controle da compensação de feriados (CCT): lista cada feriado
+     compensado com o vínculo da folga ou o prazo-limite pendente. Aparece
+     tanto no modo folha quanto no modo banco de horas — as horas compensáveis
+     ficam fora dos dois. */
+  function preencherPainelCompensacao(R, dias){
+    const painel = document.getElementById("painelCompensacao");
+    const corpoPainel = document.getElementById("painelCompensacaoCorpo");
+    const linhas = [];
+    const fmt = iso => iso.slice(8,10) + "/" + iso.slice(5,7) + "/" + iso.slice(0,4);
+    dias.forEach((d, i) => {
+      if (d.tipo !== "feriado_comp") return;
+      const r = R.porDia[i];
+      const rotuloDia = d.dataISO ? fmt(d.dataISO) : "(sem data)";
+      if (!r || r.trabalhado === 0){
+        linhas.push(`Feriado ${rotuloDia}: <span style="color:var(--carimbo-ambar); font-weight:bold;">sem horários lançados</span> — preencha as marcações do dia.`);
+      } else if (r.comp && r.comp.ok){
+        linhas.push(`Feriado ${rotuloDia}: ${minParaHHMM(r.compensar)} trabalhadas — <span style="color:var(--carimbo-verde); font-weight:bold;">compensadas pela folga de ${fmt(r.comp.folgaISO)}</span>.`);
+      } else {
+        linhas.push(`Feriado ${rotuloDia}: ${minParaHHMM(r.compensar)} trabalhadas — <span style="color:var(--carimbo-vermelho); font-weight:bold;">sem folga vinculada</span>. ` +
+          `Conceder folga até <b>${r.comp ? r.comp.limite : "?"}</b>; vencido o prazo, reclassifique o dia como "Feriado" para pagamento em dobro.`);
+      }
+    });
+    if (!linhas.length){ painel.style.display = "none"; corpoPainel.innerHTML = ""; return; }
+    const resumo = `<b>Total em compensação: ${minParaHHMM(R.tot.compTotal)}</b>` +
+      (R.tot.compPendente > 0
+        ? ` — <span style="color:var(--carimbo-vermelho); font-weight:bold;">${minParaHHMM(R.tot.compPendente)} ainda sem folga vinculada</span>`
+        : ` — <span style="color:var(--carimbo-verde); font-weight:bold;">todas as horas com folga vinculada ✓</span>`);
+    corpoPainel.innerHTML = resumo + "<br>" + linhas.join("<br>");
+    painel.style.display = "block";
+  }
+
   function mostrar(idValor, idDec, min){
     document.getElementById(idValor).textContent = minParaHHMM(min);
     document.getElementById(idDec).textContent = "≈ " + minParaDecimal(min).toFixed(4).replace(".", ",") + " h (decimal)";
+  }
+
+  /* Fórmula do reflexo do DSR decomposta por natureza (uma rubrica por
+     percentual de HE + uma para o adicional noturno a 20%). */
+  function montarFormulaReflexo(R, cfg){
+    const partes = [];
+    Object.keys(R.reflexo.porPct).sort((a,b) => +a - +b).forEach(k => {
+      partes.push(`HE ${k}%: (${minParaHHMM(R.tot.extrasPorPct[k])} ÷ ${cfg.diasUteis}) × ${cfg.qtdDSR} = <b>${minParaHHMM(R.reflexo.porPct[k])}</b> (rubrica a ${k}%)`);
+    });
+    if (R.reflexo.noturnoEquivMin > 0){
+      partes.push(`Ad. noturno: (${minParaHHMM(R.tot.noturno)} × 20% ÷ ${cfg.diasUteis}) × ${cfg.qtdDSR} = <b>${minParaHHMM(R.reflexo.noturnoEquivMin)}</b> (horas-base equivalentes)`);
+    }
+    if (!partes.length) return `Sem HE pagas nem adicional noturno no período — reflexo zerado.`;
+    return `Fórmula por natureza: <strong>(horas da natureza ÷ dias úteis) × (domingos + feriados)</strong> — Súmula 172 TST / OJ 97 SDI-1<br>` +
+           partes.join("<br>");
   }
 
   function preencherPadrao(){
@@ -1720,6 +2033,7 @@ if (typeof document !== "undefined"){
     document.getElementById("resultados").style.display = "none";
     document.getElementById("resBancoHoras").style.display = "none";
     document.getElementById("alertaIntra").style.display = "none";
+    document.getElementById("painelCompensacao").style.display = "none";
     atualizarRegua();
   }
 
@@ -1741,7 +2055,7 @@ if (typeof document !== "undefined"){
         e2: tr.querySelector(".c-e2").value, s2: tr.querySelector(".c-s2").value
       });
     });
-    const ids = ["mesRef","diaFechamento","hePadrao","regimeNoturno","pEmpresa","pFuncCod","pFuncNome",
+    const ids = ["mesRef","diaFechamento","hePadrao","regimeNoturno","feriasIni","feriasFim","pEmpresa","pFuncCod","pFuncNome",
                  "evHEPadrao","evHE100","evNoturno","evAtrasos","evDSR","evFaltas","evDSRDesc","evIntra",
                  "bhAnterior","bhTipoAnterior","bhDataAcordo","dsrAtrasoTolerancia","dsrAtrasoClausula",
                  "intervaloMinimoConfigurado","intervaloReduzidoClausula"];
@@ -1830,7 +2144,7 @@ if (typeof document !== "undefined"){
       });
       atualizarTotalSemanal();
       atualizarLabelPeriodo();
-      gerarMes();
+      gerarMes(true);   // regeneração explícita ao carregar rascunho — sem confirmação
       const trs = corpo.querySelectorAll("tr");
       (dados.linhas || []).forEach((l, i) => {
         const tr = trs[i]; if (!tr) return;
@@ -1838,6 +2152,7 @@ if (typeof document !== "undefined"){
         tr.className = classeLinha(l.tipo);
         tr.querySelector(".c-e1").value = l.e1; tr.querySelector(".c-s1").value = l.s1;
         tr.querySelector(".c-e2").value = l.e2; tr.querySelector(".c-s2").value = l.s2;
+        ajustarInputsPorTipo(tr);
       });
       atualizarContadores();
       atualizarRegua();
@@ -1911,8 +2226,32 @@ if (typeof document !== "undefined"){
     const dataFechamento = obterDataFechamento(mesRef.value);
     const linhasExport = [];
 
+    if (R.tot.compTotal > 0){
+      const msg = R.tot.compPendente > 0
+        ? "Há " + minParaHHMM(R.tot.compPendente) + " de feriado compensado AINDA SEM folga vinculada.\n" +
+          "Essas horas NÃO saem no TXT (aguardam a folga da janela de 15 dias).\n" +
+          "Se o prazo venceu, cancele, reclassifique o dia como \"Feriado\" e exporte novamente."
+        : "Feriados compensados no período: " + minParaHHMM(R.tot.compTotal) + " quitados por folga.\n" +
+          "Essas horas não geram evento no TXT (compensação, não pagamento).";
+      if (!confirm(msg + "\n\nContinuar a exportação?")) return;
+    }
+
     const minToDec = (min) => (min / 60);
     const ev = id => document.getElementById(id).value;
+
+    /* Reflexo do DSR por natureza: uma linha por percentual de HE (carregando
+       o percentual, como as demais linhas de HE do layout) e uma linha para o
+       adicional noturno em horas-base equivalentes (20% já embutido, pct 0). */
+    const pushReflexos = () => {
+      Object.keys(R.reflexo.porPct).sort((a,b) => +a - +b).forEach(k => {
+        if (R.reflexo.porPct[k] > 0){
+          linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSR"), minToDec(R.reflexo.porPct[k]), +k, "REFLEXO DSR HE " + k + "%"));
+        }
+      });
+      if (R.reflexo.noturnoEquivMin > 0){
+        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSR"), minToDec(R.reflexo.noturnoEquivMin), 0, "REFLEXO DSR AD NOT 20%"));
+      }
+    };
 
     if (cfg.usarBH) {
       if (R.bh.creditos > 0) {
@@ -1930,9 +2269,7 @@ if (typeof document !== "undefined"){
       if (R.tot.noturno > 0) {
         linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evNoturno"), minToDec(R.tot.noturno), 0, "ADICIONAL NOTURNO"));
       }
-      if (R.dsrHoras > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSR"), R.dsrHoras, 0, "REFLEXO DSR HE E NOT"));
-      }
+      pushReflexos();
     } else {
       const hePadraoMin = R.tot.extrasPorPct[cfg.hePadrao] || 0;
       if (hePadraoMin > 0) {
@@ -1948,9 +2285,7 @@ if (typeof document !== "undefined"){
       if (R.tot.atrasos > 0) {
         linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evAtrasos"), minToDec(R.tot.atrasos), 0, "ATRASOS"));
       }
-      if (R.dsrHoras > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSR"), R.dsrHoras, 0, "REFLEXO DSR HE E NOT"));
-      }
+      pushReflexos();
     }
 
     if (R.tot.faltas > 0) {
@@ -2059,7 +2394,11 @@ if (typeof document !== "undefined"){
   mesRef.value = hoje.getFullYear() + "-" + String(hoje.getMonth() + 1).padStart(2,"0");
 
   mesRef.addEventListener("change", () => { atualizarLabelPeriodo(); gerarMes(); verificarVencimentoBH(); });
-  document.getElementById("diaFechamento").addEventListener("input", () => { atualizarLabelPeriodo(); gerarMes(); verificarVencimentoBH(); });
+  document.getElementById("feriasIni").addEventListener("change", () => aplicarFerias());
+  document.getElementById("feriasFim").addEventListener("change", () => aplicarFerias());
+  /* CORREÇÃO: era "input" — regenerava (e apagava) a tabela a cada tecla
+     digitada no dia de fechamento. "change" só dispara ao concluir a edição. */
+  document.getElementById("diaFechamento").addEventListener("change", () => { atualizarLabelPeriodo(); gerarMes(); verificarVencimentoBH(); });
   document.getElementById("bhDataAcordo").addEventListener("change", verificarVencimentoBH);
   document.getElementById("btnPadrao").addEventListener("click", preencherPadrao);
   document.getElementById("btnLimparHorarios").addEventListener("click", limparHorarios);
@@ -2115,6 +2454,24 @@ if (typeof document !== "undefined"){
   }
 
   document.getElementById("btnReplicarAgora").addEventListener("click", replicarSegundaParaSemana);
+
+  /* ⚡ por linha na grade semanal: copia o horário da Segunda-Feira para
+     aquele dia (inclusive Sábado e Domingo, que a replicação automática
+     nunca toca) e recalcula a carga da linha e o total semanal. */
+  document.querySelectorAll("#corpoGradeSemanal .fast-grade").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const trSeg = document.querySelector('#corpoGradeSemanal tr[data-dow="1"]');
+      const tr = btn.closest("tr");
+      if (!trSeg || !tr) return;
+      [".g-e1",".g-s1",".g-e2",".g-s2"].forEach(c => {
+        tr.querySelector(c).value = trSeg.querySelector(c).value;
+      });
+      recalcularCargaLinha(tr);
+      atualizarTotalSemanal();
+      atualizarRegua();
+    });
+  });
+
 
   const replicarSegSex = document.getElementById("replicarSegSex");
   replicarSegSex.addEventListener("change", () => {
