@@ -824,8 +824,9 @@
     <p class="hint">
       Regra convencional: feriado trabalhado deve ser compensado com folga em até <b>15 dias antes ou depois</b>,
       sem prejuízo da folga semanal; não compensado no prazo, paga-se <b>em dobro</b> (Súmula 146 TST).
-      É <b>vedado</b> lançar essas horas em banco de horas (§ 4º da cláusula) — a calculadora as mantém fora do banco
-      e fora das horas extras. Se a folga não sair até o prazo-limite, troque o tipo do dia para
+      A folga de um dia quita <b>até a jornada normal do dia</b>; o que exceder a jornada é pago como
+      <b>HE 100%</b> (Súmula 146 TST), com reflexo no DSR. É <b>vedado</b> lançar as horas compensáveis em banco de
+      horas (§ 4º da cláusula) — a calculadora as mantém fora do banco e fora das horas extras. Se a folga não sair até o prazo-limite, troque o tipo do dia para
       <b>"Feriado"</b> na competência do estouro, para que as horas sejam pagas a 100% com os reflexos.
       Trabalho noturno em feriado compensado continua gerando adicional noturno normalmente.
     </p>
@@ -1223,12 +1224,23 @@ function apurarDia(dia, cfg){
     }
   }
   else if (dia.tipo === "feriado_comp"){
-    // FERIADO COMPENSADO (regra da CCT): as horas não viram extra, não entram
-    // no reflexo do DSR e NUNCA vão ao banco de horas (§4º da cláusula) —
-    // serão quitadas com folga em até 15 dias antes/depois; sem folga no
-    // prazo, reclassificar o dia como "Feriado" (pagamento em dobro).
+    // FERIADO COMPENSADO (regra da CCT): a folga de UM dia quita UMA jornada
+    // normal de trabalho — a compensação alcança até a jornada de referência
+    // do dia (carga da grade para aquele dia da semana; se o feriado cair em
+    // dia sem jornada na grade, a média diária). O que EXCEDER a jornada é
+    // trabalho extraordinário em feriado e é pago como HE 100% (Súmula 146
+    // TST), com reflexo no DSR. A parte compensada não vira extra, não entra
+    // no reflexo e NUNCA vai ao banco de horas (§4º da cláusula). Sem folga
+    // no prazo de 15 dias, reclassificar o dia como "Feriado" (dobro).
     // O adicional noturno, se houver trabalho entre 22h e 5h, permanece devido.
-    res.compensar = jornada;
+    const refComp = cargaDia > 0 ? cargaDia : cfg.mediaDiaria;
+    if (jornada > refComp){
+      res.compensar = refComp;
+      res.extras = jornada - refComp;
+      res.pct = 100;
+    } else {
+      res.compensar = jornada;
+    }
   }
   else {
     res.extras = jornada;
@@ -1939,13 +1951,16 @@ if (typeof document !== "undefined"){
         if (r.trabalhado === 0){
           el.textContent = "Feriado compensado — sem horários lançados";
           el.className = "saldo pend";
-        } else if (r.comp && r.comp.ok){
-          el.innerHTML = minParaHHMM(r.compensar) + " compensadas ✓ (folga " + r.comp.folgaISO.slice(8,10) + "/" + r.comp.folgaISO.slice(5,7) + ")" +
-            (r.prorrogacaoNoturna ? " · S60" : "");
-          el.className = "saldo pos";
         } else {
-          el.innerHTML = minParaHHMM(r.compensar) + " a compensar — <b>folga até " + (r.comp ? r.comp.limite : "?") + "</b>";
-          el.className = "saldo pend";
+          const exc = r.extras > 0 ? " + " + minParaHHMM(r.extras) + " HE 100%" : "";
+          if (r.comp && r.comp.ok){
+            el.innerHTML = minParaHHMM(r.compensar) + " compensadas ✓ (folga " + r.comp.folgaISO.slice(8,10) + "/" + r.comp.folgaISO.slice(5,7) + ")" + exc +
+              (r.prorrogacaoNoturna ? " · S60" : "");
+            el.className = "saldo pos";
+          } else {
+            el.innerHTML = minParaHHMM(r.compensar) + " a compensar — <b>folga até " + (r.comp ? r.comp.limite : "?") + "</b>" + exc;
+            el.className = "saldo pend";
+          }
         }
         return;
       }
@@ -2121,10 +2136,12 @@ if (typeof document !== "undefined"){
       if (!r || r.trabalhado === 0){
         linhas.push(`Feriado ${rotuloDia}: <span style="color:var(--carimbo-ambar); font-weight:bold;">sem horários lançados</span> — preencha as marcações do dia.`);
       } else if (r.comp && r.comp.ok){
-        linhas.push(`Feriado ${rotuloDia}: ${minParaHHMM(r.compensar)} trabalhadas — <span style="color:var(--carimbo-verde); font-weight:bold;">compensadas pela folga de ${fmt(r.comp.folgaISO)}</span>.`);
+        const exc = r.extras > 0 ? ` Excedente da jornada: <b>${minParaHHMM(r.extras)}</b> pago como HE 100% (Súmula 146 TST).` : "";
+        linhas.push(`Feriado ${rotuloDia}: ${minParaHHMM(r.compensar)} compensadas — <span style="color:var(--carimbo-verde); font-weight:bold;">quitadas pela folga de ${fmt(r.comp.folgaISO)}</span>.${exc}`);
       } else {
-        linhas.push(`Feriado ${rotuloDia}: ${minParaHHMM(r.compensar)} trabalhadas — <span style="color:var(--carimbo-vermelho); font-weight:bold;">sem folga vinculada</span>. ` +
-          `Conceder folga até <b>${r.comp ? r.comp.limite : "?"}</b>; vencido o prazo, reclassifique o dia como "Feriado" para pagamento em dobro.`);
+        const exc = r.extras > 0 ? ` Excedente da jornada: <b>${minParaHHMM(r.extras)}</b> já pago como HE 100%.` : "";
+        linhas.push(`Feriado ${rotuloDia}: ${minParaHHMM(r.compensar)} a compensar — <span style="color:var(--carimbo-vermelho); font-weight:bold;">sem folga vinculada</span>. ` +
+          `Conceder folga até <b>${r.comp ? r.comp.limite : "?"}</b>; vencido o prazo, reclassifique o dia como "Feriado" para pagamento em dobro.${exc}`);
       }
     });
     if (!linhas.length){ painel.style.display = "none"; corpoPainel.innerHTML = ""; return; }
@@ -2858,9 +2875,10 @@ if (typeof document !== "undefined"){
     if (tipo === "falta") return "Falta (−" + minParaHHMM(r.falta) + ")";
     if (tipo === "feriado_comp"){
       if (r.trabalhado === 0) return "sem horários";
-      return r.comp && r.comp.ok
+      const exc = r.extras > 0 ? " + " + minParaHHMM(r.extras) + " HE 100%" : "";
+      return (r.comp && r.comp.ok
         ? minParaHHMM(r.compensar) + " compensadas ✓ (folga " + r.comp.folgaISO.slice(8,10) + "/" + r.comp.folgaISO.slice(5,7) + ")"
-        : minParaHHMM(r.compensar) + " a compensar até " + (r.comp ? r.comp.limite : "?");
+        : minParaHHMM(r.compensar) + " a compensar até " + (r.comp ? r.comp.limite : "?")) + exc;
     }
     if (r.trabalhado === 0){
       if (tipo === "folga_comp") return "Folga compensatória";
