@@ -385,8 +385,77 @@
     body{ padding-bottom:128px; }
   }
   /* ================= IMPRESSÃO / PDF (retrato, até 2 páginas) ================= */
+  /* ---- Modal de seleção de colaboradores para impressão ---- */
+  #modalImpressao{
+    display:none; position:fixed; inset:0; z-index:9000;
+    background:rgba(20,24,30,.45); align-items:center; justify-content:center;
+  }
+  #modalImpressao.aberto{ display:flex; }
+  #modalImpressao .caixa{
+    background:#fff; border-radius:8px; padding:18px 20px; width:min(440px, 92vw);
+    max-height:80vh; overflow:auto; box-shadow:0 8px 30px rgba(0,0,0,.25);
+  }
+  #modalImpressao h3{ margin:0 0 10px; font-size:14px; }
+  #modalImpressao label.opcao{
+    display:flex; gap:8px; align-items:center; padding:7px 6px; border-radius:5px;
+    cursor:pointer; font-size:13px;
+  }
+  #modalImpressao label.opcao:hover{ background:#F0F3F7; }
+  #modalImpressao .rodape-modal{ display:flex; gap:8px; justify-content:flex-end; margin-top:14px; }
+
+  /* ---- Área de impressão (invisível na tela) ---- */
+  #areaImpressao{ display:none; }
+
   @media print {
     @page { size: A4 portrait; margin: 10mm; }
+
+    /* Impressão de colaboradores selecionados: só a área dedicada sai no papel */
+    body.print-colabs > *:not(#areaImpressao){ display:none !important; }
+    body.print-colabs #areaImpressao{ display:block !important; }
+    #areaImpressao{ font-size:9.5px; color:#000; font-family:inherit; }
+    #areaImpressao .pag-colab{ page-break-after:always; }
+    #areaImpressao .pag-colab:last-child{ page-break-after:auto; }
+    #areaImpressao .cab-colab{
+      display:flex; justify-content:space-between; align-items:flex-end;
+      border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:8px;
+    }
+    #areaImpressao .cab-colab h1{ font-size:13px; margin:0; }
+    #areaImpressao .cab-colab .meta{ font-size:9px; text-align:right; line-height:1.5; }
+    #areaImpressao h2{ font-size:10.5px; margin:8px 0 4px; text-transform:uppercase; letter-spacing:.4px; }
+    #areaImpressao table{ width:100%; border-collapse:collapse; }
+    #areaImpressao th, #areaImpressao td{
+      border:1px solid #888; padding:2px 4px; text-align:center; font-size:8.8px;
+    }
+    #areaImpressao th{ background:#E8ECF1 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    #areaImpressao td.dia{ text-align:left; white-space:nowrap; }
+    #areaImpressao tr.nao-trab td{ background:#F3F5F8 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    #areaImpressao .grupo-print{ margin-top:6px; }
+    #areaImpressao .grupo-print .titulo-grupo{
+      font-size:9px; font-weight:bold; text-transform:uppercase; letter-spacing:.5px;
+      border-bottom:1px solid #999; padding-bottom:2px; margin-bottom:4px;
+    }
+    #areaImpressao .cards-print{ display:flex; flex-wrap:wrap; gap:4px; }
+    #areaImpressao .card-print{
+      border:1px solid #999; border-radius:3px; padding:4px 8px; min-width:118px; flex:1 1 auto;
+      page-break-inside:avoid;
+    }
+    #areaImpressao .card-print .rot{ font-size:7.8px; text-transform:uppercase; letter-spacing:.3px; color:#333; }
+    #areaImpressao .card-print .val{ font-size:12px; font-weight:bold; font-variant-numeric:tabular-nums; }
+    #areaImpressao .card-print .sub{ font-size:7.4px; color:#444; line-height:1.35; }
+    #areaImpressao .destaque-print{
+      border:2px solid #000; border-radius:4px; padding:6px 10px; margin-top:7px;
+      display:flex; gap:16px; align-items:flex-start; page-break-inside:avoid;
+    }
+    #areaImpressao .destaque-print .rot{ font-size:8px; text-transform:uppercase; letter-spacing:.5px; font-weight:bold; }
+    #areaImpressao .destaque-print .val{ font-size:14px; font-weight:bold; font-variant-numeric:tabular-nums; }
+    #areaImpressao .destaque-print .formula-print{ font-size:8px; line-height:1.6; flex:1; }
+    #areaImpressao .obs{ font-size:8.6px; margin-top:4px; line-height:1.5; }
+    #areaImpressao .assinaturas{
+      display:flex; gap:40px; margin-top:26px; justify-content:space-between;
+    }
+    #areaImpressao .assinaturas div{
+      flex:1; border-top:1px solid #000; text-align:center; font-size:8.8px; padding-top:3px;
+    }
 
     html, body{ background:#fff !important; padding-bottom:0 !important; font-size:9.5px !important; color:#000; }
 
@@ -656,7 +725,7 @@
           <div class="bloco-excecao" id="blocoIntervaloReduzido">
             <div class="cabecalho-excecao">
               <input type="checkbox" id="usarIntervaloReduzido">
-              <label for="usarIntervaloReduzido">Intervalo intrajornada mínimo reduzido (CCT/ACT, art. 611-A, III)</label>
+              <label for="usarIntervaloReduzido">Intervalo intrajornada mínimo reduzido (CCT/ACT, art. 611-A, III) — <b>individual: vale só para o colaborador selecionado</b></label>
               <span class="selo-status" id="seloIntervaloReduzido">Desativado</span>
             </div>
             <div id="painelIntervaloReduzido" class="grid" style="display:none; margin-top:8px;">
@@ -700,6 +769,16 @@
 
   <section class="painel">
     <h2><span class="num">2</span> Lançamento do Cartão de Ponto</h2>
+    <div class="bloco-excecao info-ativo no-print" id="blocoColab" style="margin-bottom:8px;">
+      <div class="cabecalho-excecao" style="flex-wrap:wrap; gap:6px 10px;">
+        <label style="font-weight:bold;">Colaborador:</label>
+        <select id="selColab" style="min-width:230px; padding:5px 8px;"></select>
+        <button type="button" id="btnColabNovo" style="padding:4px 10px; font-size:10.5px;" title="Cria um novo colaborador copiando a jornada semanal do atual (cartão em branco)">+ Novo</button>
+        <button type="button" id="btnColabDuplicar" style="padding:4px 10px; font-size:10.5px;" title="Duplica o colaborador atual com cartão, férias e banco">⧉ Duplicar</button>
+        <button type="button" id="btnColabRemover" style="padding:4px 10px; font-size:10.5px;" title="Remove o colaborador atual">✕ Remover</button>
+        <span style="font-size:10.5px; color:var(--lapis);">Nome e matrícula ficam na seção de exportação — o rascunho salva a empresa inteira num único arquivo.</span>
+      </div>
+    </div>
     <div class="acoes" style="margin-top:0; margin-bottom:8px;">
       <button type="button" id="btnPadrao">Preencher dias úteis</button>
       <button type="button" id="btnLimparHorarios">Limpar tudo</button>
@@ -750,6 +829,24 @@
       <b>"Feriado"</b> na competência do estouro, para que as horas sejam pagas a 100% com os reflexos.
       Trabalho noturno em feriado compensado continua gerando adicional noturno normalmente.
     </p>
+  </section>
+
+  <section class="painel" id="painelConsolidado" style="display:none;" aria-live="polite">
+    <h2><span class="num">Σ</span> Fechamento Consolidado — Todos os Colaboradores</h2>
+    <div class="tabela-scroll">
+      <table style="min-width:900px;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding-left:10px;">Colaborador</th>
+            <th>Normais</th><th id="thConsHE">HE padrão</th><th>HE 100%</th><th>Ad. noturno</th>
+            <th>Atrasos</th><th>Faltas</th><th>Interv. supr. +50%</th><th>DSR perdido</th><th>Reflexo DSR</th>
+            <th id="thConsBanco" style="display:none;">Banco (saldo)</th><th>Feriado a compensar</th>
+          </tr>
+        </thead>
+        <tbody id="corpoConsolidado"></tbody>
+      </table>
+    </div>
+    <p class="hint" id="consolidadoRodape"></p>
   </section>
 
   <section class="painel" id="resBancoHoras" aria-live="polite">
@@ -846,9 +943,29 @@
       <button type="button" id="btnCalc" class="primario">Fechar o mês</button>
       <button type="button" id="btnGerarPDF">Gerar PDF do ponto</button>
       <button type="button" id="btnExportar" class="exportar">Exportar TXT Prosol</button>
+      <button type="button" id="btnCalcTodos" title="Apura todos os colaboradores e mostra o quadro consolidado">Fechar todos</button>
+      <button type="button" id="btnExportarTodos" class="exportar" title="Gera um único TXT Prosol com os eventos de todos os colaboradores">TXT (todos)</button>
     </div>
   </div>
 </div>
+
+<div id="modalImpressao" class="no-print" role="dialog" aria-modal="true" aria-labelledby="tituloModalImp">
+  <div class="caixa">
+    <h3 id="tituloModalImp">Imprimir cartão de ponto</h3>
+    <p style="font-size:11.5px; color:#5A6472; margin:0 0 10px;">
+      Selecione os colaboradores. Sai apenas o cartão de ponto e a apuração de cada um, uma folha por colaborador.
+    </p>
+    <label class="opcao" style="border-bottom:1px solid #E2E7EE; margin-bottom:4px;">
+      <input type="checkbox" id="impTodos"> <b>Todos os colaboradores</b>
+    </label>
+    <div id="listaImpressao"></div>
+    <div class="rodape-modal">
+      <button type="button" id="btnImpCancelar">Cancelar</button>
+      <button type="button" id="btnImpImprimir" class="exportar">Imprimir</button>
+    </div>
+  </div>
+</div>
+<div id="areaImpressao"></div>
 
 <script>
 "use strict";
@@ -1498,7 +1615,9 @@ if (typeof document !== "undefined"){
     if (!periodo) return;
 
     if (!forcar && temHorariosLancados()){
-      const ok = confirm("Alterar o mês/fechamento regenera o período e descarta os horários já lançados.\nDeseja continuar? (use \"Salvar rascunho\" antes, se precisar)");
+      const ok = confirm("Alterar o mês/fechamento regenera o período e descarta os horários já lançados" +
+        (colaboradores.length > 1 ? " de TODOS os " + colaboradores.length + " colaboradores" : "") +
+        ".\nDeseja continuar? (use \"Salvar rascunho\" antes, se precisar)");
       if (!ok){
         mesRef.value = ultimoMesRef;
         document.getElementById("diaFechamento").value = ultimoDiaFech;
@@ -1508,6 +1627,7 @@ if (typeof document !== "undefined"){
     }
     ultimoMesRef = mesRef.value;
     ultimoDiaFech = document.getElementById("diaFechamento").value;
+    if (!forcar) colaboradores.forEach((c, i) => { if (i !== colabAtivo && c) c.linhas = null; });
 
     corpo.innerHTML = "";
 
@@ -1790,7 +1910,7 @@ if (typeof document !== "undefined"){
     }
   }
 
-  function calcular(){
+  function calcular(rolarAte = true){
     const cfg = lerConfig();
     verificarVencimentoBH();
     const diasLidos = lerDias();
@@ -1932,7 +2052,7 @@ if (typeof document !== "undefined"){
       else if (vAtualizado < 0) cardBH.classList.add("tom-desconto");
       else cardBH.classList.add("tom-info");
 
-      document.getElementById("resBancoHoras").scrollIntoView({ behavior:"smooth", block:"start" });
+      if (rolarAte && document.getElementById("resBancoHoras").scrollIntoView) document.getElementById("resBancoHoras").scrollIntoView({ behavior:"smooth", block:"start" });
 
     } else {
       document.getElementById("resBancoHoras").style.display = "none";
@@ -1979,7 +2099,7 @@ if (typeof document !== "undefined"){
 
       document.getElementById("resDSRFormula").innerHTML = montarFormulaReflexo(R, cfg);
 
-      document.getElementById("resultados").scrollIntoView({ behavior:"smooth", block:"start" });
+      if (rolarAte && document.getElementById("resultados").scrollIntoView) document.getElementById("resultados").scrollIntoView({ behavior:"smooth", block:"start" });
     }
     atualizarRegua();
     return R;
@@ -2060,51 +2180,362 @@ if (typeof document !== "undefined"){
     document.getElementById("resBancoHoras").style.display = "none";
     document.getElementById("alertaIntra").style.display = "none";
     document.getElementById("painelCompensacao").style.display = "none";
+    document.getElementById("painelConsolidado").style.display = "none";   // ficaria desatualizado
     atualizarRegua();
+  }
+
+  /* =====================================================================
+     MÚLTIPLOS COLABORADORES
+     A tela edita sempre UM colaborador (o ativo); os demais ficam
+     serializados em memória. "Fechar todos" e "TXT (todos)" apuram cada
+     um por um caminho de cálculo puro (sem tocar a tela), com a mesma
+     lógica do colaborador ativo. O rascunho JSON guarda a empresa toda.
+     ===================================================================== */
+  let colaboradores = [];
+  let colabAtivo = 0;
+
+  function serializarColabAtual(){
+    const grade = [];
+    document.querySelectorAll("#corpoGradeSemanal tr").forEach(tr => {
+      grade.push({ dow: tr.dataset.dow,
+        e1: tr.querySelector(".g-e1").value, s1: tr.querySelector(".g-s1").value,
+        e2: tr.querySelector(".g-e2").value, s2: tr.querySelector(".g-s2").value });
+    });
+    const linhas = [];
+    corpo.querySelectorAll("tr").forEach(tr => {
+      linhas.push({ tipo: tr.querySelector(".c-tipo").value,
+        e1: tr.querySelector(".c-e1").value, s1: tr.querySelector(".c-s1").value,
+        e2: tr.querySelector(".c-e2").value, s2: tr.querySelector(".c-s2").value });
+    });
+    return {
+      nome: document.getElementById("pFuncNome").value,
+      cod: document.getElementById("pFuncCod").value,
+      feriasIni: document.getElementById("feriasIni").value,
+      feriasFim: document.getElementById("feriasFim").value,
+      bhAnterior: document.getElementById("bhAnterior").value,
+      bhTipoAnterior: document.getElementById("bhTipoAnterior").value,
+      usarIntervaloReduzido: document.getElementById("usarIntervaloReduzido").checked,
+      intervaloMinimoConfigurado: document.getElementById("intervaloMinimoConfigurado").value,
+      intervaloReduzidoClausula: document.getElementById("intervaloReduzidoClausula").value,
+      grade, linhas
+    };
+  }
+
+  function aplicarColab(c){
+    document.getElementById("pFuncNome").value = c.nome || "";
+    document.getElementById("pFuncCod").value = c.cod || "";
+    document.getElementById("feriasIni").value = c.feriasIni || "";
+    document.getElementById("feriasFim").value = c.feriasFim || "";
+    document.getElementById("bhAnterior").value = c.bhAnterior || "";
+    document.getElementById("bhTipoAnterior").value = c.bhTipoAnterior || "credito";
+    document.getElementById("intervaloMinimoConfigurado").value = c.intervaloMinimoConfigurado || "30";
+    document.getElementById("intervaloReduzidoClausula").value = c.intervaloReduzidoClausula || "";
+    const chkIntRed = document.getElementById("usarIntervaloReduzido");
+    if (chkIntRed.checked !== !!c.usarIntervaloReduzido){
+      chkIntRed.checked = !!c.usarIntervaloReduzido;
+      chkIntRed.dispatchEvent(new Event("change", { bubbles: true }));   // atualiza selo/painel do bloco
+    }
+    (c.grade || []).forEach(g => {
+      const tr = document.querySelector(`#corpoGradeSemanal tr[data-dow="${g.dow}"]`);
+      if (!tr) return;
+      tr.querySelector(".g-e1").value = g.e1; tr.querySelector(".g-s1").value = g.s1;
+      tr.querySelector(".g-e2").value = g.e2; tr.querySelector(".g-s2").value = g.s2;
+      recalcularCargaLinha(tr);
+    });
+    atualizarTotalSemanal();
+    gerarMes(true);
+    const trs = corpo.querySelectorAll("tr");
+    if (c.linhas && c.linhas.length === trs.length){
+      c.linhas.forEach((l, i) => {
+        const tr = trs[i];
+        tr.querySelector(".c-tipo").value = l.tipo;
+        tr.className = classeLinha(l.tipo);
+        tr.querySelector(".c-e1").value = l.e1; tr.querySelector(".c-s1").value = l.s1;
+        tr.querySelector(".c-e2").value = l.e2; tr.querySelector(".c-s2").value = l.s2;
+        ajustarInputsPorTipo(tr);
+      });
+    }
+    atualizarContadores();
+    atualizarRegua();
+  }
+
+  function rotuloColab(c, i){
+    const nome = (c.nome || "").trim() || ("Colaborador " + (i + 1));
+    return nome + (c.cod ? " (" + c.cod + ")" : "");
+  }
+
+  function reconstruirSeletor(){
+    const sel = document.getElementById("selColab");
+    sel.innerHTML = "";
+    colaboradores.forEach((c, i) => {
+      const opt = document.createElement("option");
+      opt.value = i; opt.textContent = rotuloColab(c, i);
+      sel.appendChild(opt);
+    });
+    sel.value = colabAtivo;
+  }
+
+  /* Se a apuração estava na tela, refazê-la para o colaborador recém-
+     selecionado — o quadro 3, o extrato do banco e o painel de Compensação
+     de Feriados (CCT) acompanham a troca sem exigir novo "Fechar". */
+  function refazerApuracaoSeVisivel(tinhaConsolidado, tinhaApuracao){
+    if (tinhaConsolidado) calcularTodos(false);
+    else if (tinhaApuracao) calcular(false);
+  }
+
+  function trocarColab(novoIdx){
+    if (novoIdx === colabAtivo) return;
+    const tinhaConsolidado = document.getElementById("painelConsolidado").style.display === "block";
+    const tinhaApuracao = document.getElementById("resultados").style.display === "block" ||
+                          document.getElementById("resBancoHoras").style.display === "block";
+    colaboradores[colabAtivo] = serializarColabAtual();
+    colabAtivo = novoIdx;
+    aplicarColab(colaboradores[colabAtivo]);
+    reconstruirSeletor();
+    refazerApuracaoSeVisivel(tinhaConsolidado, tinhaApuracao);
+  }
+
+  /* ---------- Apuração pura (sem tocar a tela) ---------- */
+
+  function lerConfigEmpresa(){
+    return {
+      hePadrao: +document.getElementById("hePadrao").value || 50,
+      usarBH: usarBH.checked,
+      tipoAtividade: regimeNoturno.value,
+      usarDsrAtraso: usarDsrAtraso.checked,
+      dsrAtrasoTolerancia: Math.max(0, duracaoHHMMParaMin(document.getElementById("dsrAtrasoTolerancia").value) || 0),
+      dsrAtrasoClausula: document.getElementById("dsrAtrasoClausula").value.trim(),
+      pagarIntra: !naoComputarIntra.checked,
+      intervaloMinimo: usarIntervaloReduzido.checked
+        ? Math.min(60, Math.max(30, +document.getElementById("intervaloMinimoConfigurado").value || 60))
+        : 60,
+      intervaloReduzidoClausula: document.getElementById("intervaloReduzidoClausula").value.trim()
+    };
+  }
+
+  function jornadasDeGrade(grade){
+    const jornadas = {};
+    for (let d = 0; d < 7; d++) jornadas[d] = { carga:0, padrao:null, rawPadrao:["","","",""] };
+    let cargaSemanal = 0;
+    (grade || []).forEach(g => {
+      const pad = [hhmmParaMin(g.e1), hhmmParaMin(g.s1), hhmmParaMin(g.e2), hhmmParaMin(g.s2)];
+      const carga = duracaoIntervalo(pad[0], pad[1]) + duracaoIntervalo(pad[2], pad[3]);
+      cargaSemanal += carga;
+      jornadas[+g.dow] = { carga, padrao: pad.every(v => v != null) ? pad : null,
+                           rawPadrao: [g.e1, g.s1, g.e2, g.s2] };
+    });
+    return { jornadas, cargaSemanal, mediaDiaria: Math.round(cargaSemanal / 6) };
+  }
+
+  /* Reconstrói os dias do período para um colaborador serializado, com as
+     MESMAS regras de gerarMes (feriados nacionais automáticos) e de
+     contarDias (divisores com férias pela classificação de calendário). */
+  function montarDiasDeColab(c){
+    const periodo = calcularPeriodoFechamento(mesRef.value);
+    if (!periodo) return null;
+    const feriadosPorAno = {};
+    const dias = [], meta = [];
+    const cursor = new Date(periodo.inicio);
+    let i = 0;
+    const linhasOk = c.linhas && (() => {
+      let n = 0; const cur = new Date(periodo.inicio);
+      while (cur <= periodo.fim){ n++; cur.setDate(cur.getDate() + 1); }
+      return c.linhas.length === n;
+    })();
+    while (cursor <= periodo.fim){
+      const dow = cursor.getDay();
+      const ano = cursor.getFullYear();
+      if (!feriadosPorAno[ano]) feriadosPorAno[ano] = feriadosNacionais(ano);
+      const iso = ano + "-" + String(cursor.getMonth()+1).padStart(2,"0") + "-" + String(cursor.getDate()).padStart(2,"0");
+      const tipoCal = (feriadosPorAno[ano].has(iso) && dow !== 0) ? "feriado" : tipoPorDiaSemana(dow);
+      const l = linhasOk ? c.linhas[i] : null;
+      const tipo = l ? l.tipo : tipoCal;
+      dias.push({ tipo, dow, dataISO: iso,
+        e1: hhmmParaMin(l ? l.e1 : ""), s1: hhmmParaMin(l ? l.s1 : ""),
+        e2: hhmmParaMin(l ? l.e2 : ""), s2: hhmmParaMin(l ? l.s2 : "") });
+      meta.push({ tipo, tipoCal });
+      cursor.setDate(cursor.getDate() + 1);
+      i++;
+    }
+    let uteis = 0, dsr = 0, faltas = 0, ferias = 0;
+    meta.forEach(m => {
+      if (m.tipo === "ferias"){
+        ferias++;
+        if (m.tipoCal === "domingo" || m.tipoCal === "feriado") dsr++; else uteis++;
+      }
+      else if (m.tipo === "falta"){ uteis++; faltas++; }
+      else if (["util","sabado","justificada","folga","folga_comp","domingo_trabalhado"].includes(m.tipo)) uteis++;
+      else dsr++;
+    });
+    return { dias, contagem: { uteis, dsr, faltas, ferias, total: meta.length } };
+  }
+
+  function apurarColab(c){
+    const emp = lerConfigEmpresa();
+    // Exceção de intervalo reduzido é INDIVIDUAL (art. 611-A, III):
+    // sobrepõe o valor lido do DOM com o do colaborador serializado.
+    emp.intervaloMinimo = c.usarIntervaloReduzido
+      ? Math.min(60, Math.max(30, +c.intervaloMinimoConfigurado || 60))
+      : 60;
+    emp.intervaloReduzidoClausula = (c.intervaloReduzidoClausula || "").trim();
+    const jg = jornadasDeGrade(c.grade);
+    const md = montarDiasDeColab(c);
+    if (!md) return null;
+    let bhAnt = 0;
+    if (emp.usarBH){
+      bhAnt = Math.abs(duracaoHHMMParaMin(c.bhAnterior) || 0);
+      if (c.bhTipoAnterior === "debito") bhAnt = -bhAnt;
+    }
+    const cfg = Object.assign({}, emp, jg,
+      { diasUteis: md.contagem.uteis, qtdDSR: md.contagem.dsr, bhAnterior: bhAnt });
+    return { R: apurarPeriodo(md.dias, cfg), cfg };
+  }
+
+  /* ---------- Fechamento consolidado ---------- */
+
+  function calcularTodos(rolarAte = true){
+    colaboradores[colabAtivo] = serializarColabAtual();
+    // Renderiza também a apuração detalhada do colaborador ativo na tela
+    // (quadro 3 / extrato do banco e painel de compensação de feriados),
+    // como no "Fechar o mês" — o consolidado entra logo abaixo.
+    calcular(false);   // sem rolagem — a página rola até o consolidado
+    const emp = lerConfigEmpresa();
+    const tb = document.getElementById("corpoConsolidado");
+    tb.innerHTML = "";
+    document.getElementById("thConsHE").textContent = "HE " + emp.hePadrao + "%";
+    document.getElementById("thConsBanco").style.display = emp.usarBH ? "" : "none";
+
+    const soma = { normais:0, hePad:0, he100:0, not:0, atr:0, fal:0, dsrP:0, refl:0, banco:0, compPend:0, intra:0, intraDetectado:0 };
+    colaboradores.forEach((c, i) => {
+      const a = apurarColab(c);
+      if (!a) return;
+      const R = a.R;
+      const hePad = R.tot.extrasPorPct[emp.hePadrao] || 0;
+      const he100 = emp.usarBH ? R.bh.pago100 : (R.tot.extrasPorPct[100] || 0);
+      const banco = emp.usarBH ? (a.cfg.bhAnterior + R.bh.creditos - R.tot.atrasos) : 0;
+      soma.normais += R.tot.normais; soma.hePad += (emp.usarBH ? R.bh.excedente : hePad);
+      soma.he100 += he100; soma.not += R.tot.noturno; soma.atr += R.tot.atrasos;
+      const intra50 = emp.pagarIntra ? R.tot.intra * 1.5 : 0;
+      soma.fal += R.tot.faltas; soma.dsrP += R.dsrPerdidoMin; soma.refl += R.reflexo.totalMin;
+      soma.banco += banco; soma.compPend += R.tot.compPendente;
+      soma.intra += intra50; soma.intraDetectado += R.tot.intra * 1.5;
+
+      const tr = document.createElement("tr");
+      const tdBanco = emp.usarBH ? `<td>${minParaHHMM(banco)}</td>` : `<td style="display:none;"></td>`;
+      const compTxt = R.tot.compTotal > 0
+        ? (R.tot.compPendente > 0
+            ? `<span style="color:var(--carimbo-vermelho); font-weight:bold;">${minParaHHMM(R.tot.compPendente)} pendente</span>`
+            : `<span style="color:var(--carimbo-verde);">${minParaHHMM(R.tot.compTotal)} ✓</span>`)
+        : "—";
+      tr.innerHTML = `<td style="text-align:left; padding-left:10px;"><b>${rotuloColab(c, i)}</b></td>` +
+        `<td>${minParaHHMM(R.tot.normais)}</td>` +
+        `<td>${minParaHHMM(emp.usarBH ? R.bh.excedente : hePad)}${emp.usarBH && R.bh.creditos > 0 ? `<br><span style="font-size:10px; color:var(--lapis);">banco +${minParaHHMM(R.bh.creditos)}</span>` : ""}</td>` +
+        `<td>${minParaHHMM(he100)}</td><td>${minParaHHMM(R.tot.noturno)}</td>` +
+        `<td>${minParaHHMM(R.tot.atrasos)}</td><td>${minParaHHMM(R.tot.faltas)}</td>` +
+        `<td>${emp.pagarIntra ? minParaHHMM(intra50) : (R.tot.intra > 0 ? `<span style="color:var(--carimbo-ambar);" title="Detectado ${minParaHHMM(R.tot.intra * 1.5)}, não pago (exceção ativa)">${minParaHHMM(R.tot.intra * 1.5)}*</span>` : "00:00")}</td>` +
+        `<td>${minParaHHMM(R.dsrPerdidoMin)}</td><td>${minParaHHMM(R.reflexo.totalMin)}</td>` +
+        tdBanco + `<td>${compTxt}</td>`;
+      tb.appendChild(tr);
+    });
+    const trT = document.createElement("tr");
+    trT.style.fontWeight = "bold"; trT.style.borderTop = "2px solid var(--tinta)";
+    trT.innerHTML = `<td style="text-align:left; padding-left:10px;">TOTAL (${colaboradores.length})</td>` +
+      `<td>${minParaHHMM(soma.normais)}</td><td>${minParaHHMM(soma.hePad)}</td>` +
+      `<td>${minParaHHMM(soma.he100)}</td><td>${minParaHHMM(soma.not)}</td>` +
+      `<td>${minParaHHMM(soma.atr)}</td><td>${minParaHHMM(soma.fal)}</td>` +
+      `<td>${emp.pagarIntra ? minParaHHMM(soma.intra) : (soma.intraDetectado > 0 ? minParaHHMM(soma.intraDetectado) + "*" : "00:00")}</td>` +
+      `<td>${minParaHHMM(soma.dsrP)}</td><td>${minParaHHMM(soma.refl)}</td>` +
+      (emp.usarBH ? `<td>${minParaHHMM(soma.banco)}</td>` : `<td style="display:none;"></td>`) +
+      `<td>${soma.compPend > 0 ? minParaHHMM(soma.compPend) + " pendente" : "—"}</td>`;
+    tb.appendChild(trT);
+
+    document.getElementById("consolidadoRodape").textContent =
+      "Valores por colaborador com jornada, férias e banco individuais; parâmetros de empresa (percentuais, exceções, período) comuns a todos. " +
+      "Intervalo suprimido já com o acréscimo de 50% do art. 71, §4º, CLT (indenizatório). " +
+      (emp.pagarIntra ? "" : "* Detectado mas NÃO somado à apuração nem exportado — exceção \"não computar\" ativa. ") +
+      "Selecione um colaborador acima para ver o detalhamento dia a dia.";
+    const painel = document.getElementById("painelConsolidado");
+    painel.style.display = "block";
+    if (rolarAte && painel.scrollIntoView) painel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function exportarTodos(){
+    colaboradores[colabAtivo] = serializarColabAtual();
+    const dataFechamento = obterDataFechamento(mesRef.value);
+    const linhasExport = [];
+    const pendentes = [];
+    colaboradores.forEach((c, i) => {
+      const a = apurarColab(c);
+      if (!a) return;
+      if (a.R.tot.compPendente > 0) pendentes.push(rotuloColab(c, i) + ": " + minParaHHMM(a.R.tot.compPendente));
+      const cod = c.cod || String(i + 1);
+      const nome = (c.nome || "").trim() || ("COLABORADOR " + (i + 1));
+      montarLinhasProsol(a.R, a.cfg, dataFechamento, cod, nome).forEach(l => linhasExport.push(l));
+    });
+    if (pendentes.length){
+      const ok = confirm("Feriado compensado sem folga vinculada (horas FORA do TXT):\n" +
+        pendentes.join("\n") + "\n\nSe algum prazo venceu, reclassifique o dia como \"Feriado\" antes de exportar.\n\nContinuar?");
+      if (!ok) return;
+    }
+    if (!linhasExport.length){ alert("Nenhum evento com movimentação de horas em nenhum colaborador."); return; }
+    const textoCompleto = linhasExport.join("\r\n") + "\r\n";
+    baixarArquivo("CARTAO.TXT", textoCompleto, "text/plain;charset=utf-8");
+  }
+
+  /* Download robusto: âncora anexada ao documento e revogação adiada da
+     URL do blob — revogar imediatamente após o click() cancela o download
+     em alguns navegadores (Firefox/Safari). Erros aparecem em alerta em
+     vez de falhar em silêncio. */
+  function baixarArquivo(nomeArquivo, conteudo, mime){
+    try {
+      const blob = new Blob([conteudo], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = nomeArquivo;
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 2000);
+      return true;
+    } catch (e){
+      alert("Não foi possível gerar o download de \"" + nomeArquivo + "\": " + e.message);
+      return false;
+    }
   }
 
   /* ===== Rascunho: exportar / importar JSON ===== */
   function coletarRascunho(){
-    const grade = [];
-    document.querySelectorAll("#corpoGradeSemanal tr").forEach(tr => {
-      grade.push({
-        dow: tr.dataset.dow,
-        e1: tr.querySelector(".g-e1").value, s1: tr.querySelector(".g-s1").value,
-        e2: tr.querySelector(".g-e2").value, s2: tr.querySelector(".g-s2").value
-      });
-    });
-    const linhas = [];
-    corpo.querySelectorAll("tr").forEach(tr => {
-      linhas.push({
-        tipo: tr.querySelector(".c-tipo").value,
-        e1: tr.querySelector(".c-e1").value, s1: tr.querySelector(".c-s1").value,
-        e2: tr.querySelector(".c-e2").value, s2: tr.querySelector(".c-s2").value
-      });
-    });
-    const ids = ["mesRef","diaFechamento","hePadrao","regimeNoturno","feriasIni","feriasFim","pEmpresa","pFuncCod","pFuncNome",
+    colaboradores[colabAtivo] = serializarColabAtual();
+    const ids = ["mesRef","diaFechamento","hePadrao","regimeNoturno","pEmpresa",
                  "evHEPadrao","evHE100","evNoturno","evAtrasos","evDSR","evFaltas","evDSRDesc","evIntra",
-                 "bhAnterior","bhTipoAnterior","bhDataAcordo","dsrAtrasoTolerancia","dsrAtrasoClausula",
-                 "intervaloMinimoConfigurado","intervaloReduzidoClausula"];
+                 "bhDataAcordo","dsrAtrasoTolerancia","dsrAtrasoClausula",
+                 ];
     const campos = {};
     ids.forEach(id => campos[id] = document.getElementById(id).value);
     campos.usarBH = usarBH.checked;
     campos.usarDsrAtraso = usarDsrAtraso.checked;
     campos.naoComputarIntra = naoComputarIntra.checked;
-    campos.usarIntervaloReduzido = usarIntervaloReduzido.checked;
-    return { versao: 5, salvoEm: new Date().toISOString(), campos, grade, linhas };
+
+    return { versao: 6, salvoEm: new Date().toISOString(), campos,
+             colaboradores: colaboradores, ativo: colabAtivo };
   }
 
   function salvarRascunho(){
-    const dados = coletarRascunho();
-    const nome = "rascunho_ponto_" +
-      (document.getElementById("pFuncCod").value || "func") + "_" +
+    let dados;
+    try {
+      dados = coletarRascunho();
+    } catch (e){
+      alert("Erro ao montar o rascunho: " + e.message);
+      return;
+    }
+    const nome = "rascunho_ponto_empresa" +
+      (document.getElementById("pEmpresa").value || "") + "_" +
       (mesRef.value || "mes") + ".json";
-    const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = nome;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    baixarArquivo(nome, JSON.stringify(dados, null, 2), "application/json;charset=utf-8");
   }
 
   function aplicarRascunho(dados){
@@ -2159,29 +2590,27 @@ if (typeof document !== "undefined"){
         const el = document.getElementById(id);
         if (el) el.value = c[id];
       });
-      (dados.grade || []).forEach(g => {
-        const tr = document.querySelector(`#corpoGradeSemanal tr[data-dow="${g.dow}"]`);
-        if (!tr) return;
-        tr.querySelector(".g-e1").value = g.e1; tr.querySelector(".g-s1").value = g.s1;
-        tr.querySelector(".g-e2").value = g.e2; tr.querySelector(".g-s2").value = g.s2;
-        const mins = duracaoIntervalo(hhmmParaMin(g.e1), hhmmParaMin(g.s1)) +
-                     duracaoIntervalo(hhmmParaMin(g.e2), hhmmParaMin(g.s2));
-        tr.querySelector(".g-carga").value = minParaHHMM(mins);
-      });
-      atualizarTotalSemanal();
       atualizarLabelPeriodo();
-      gerarMes(true);   // regeneração explícita ao carregar rascunho — sem confirmação
-      const trs = corpo.querySelectorAll("tr");
-      (dados.linhas || []).forEach((l, i) => {
-        const tr = trs[i]; if (!tr) return;
-        tr.querySelector(".c-tipo").value = l.tipo;
-        tr.className = classeLinha(l.tipo);
-        tr.querySelector(".c-e1").value = l.e1; tr.querySelector(".c-s1").value = l.s1;
-        tr.querySelector(".c-e2").value = l.e2; tr.querySelector(".c-s2").value = l.s2;
-        ajustarInputsPorTipo(tr);
-      });
-      atualizarContadores();
-      atualizarRegua();
+      if (dados.versao >= 6 && Array.isArray(dados.colaboradores) && dados.colaboradores.length){
+        colaboradores = dados.colaboradores;
+        colabAtivo = Math.min(dados.ativo || 0, colaboradores.length - 1);
+      } else {
+        // Compatibilidade com rascunhos antigos (um único colaborador):
+        // campos por-funcionário vinham no bloco global; grade/linhas na raiz.
+        colaboradores = [{
+          nome: c.pFuncNome || "", cod: c.pFuncCod || "",
+          feriasIni: c.feriasIni || "", feriasFim: c.feriasFim || "",
+          bhAnterior: c.bhAnterior || "", bhTipoAnterior: c.bhTipoAnterior || "credito",
+          usarIntervaloReduzido: !!c.usarIntervaloReduzido,
+          intervaloMinimoConfigurado: c.intervaloMinimoConfigurado || "30",
+          intervaloReduzidoClausula: c.intervaloReduzidoClausula || "",
+          grade: dados.grade || [], linhas: dados.linhas || null
+        }];
+        colabAtivo = 0;
+      }
+      aplicarColab(colaboradores[colabAtivo]);
+      reconstruirSeletor();
+      document.getElementById("painelConsolidado").style.display = "none";
       alert("Rascunho carregado com sucesso" + (dados.salvoEm ? " (salvo em " + new Date(dados.salvoEm).toLocaleString("pt-BR") + ")" : "") + ".");
     } catch (e){
       alert("Não foi possível ler o rascunho: " + e.message);
@@ -2223,16 +2652,18 @@ if (typeof document !== "undefined"){
     return String(p.fim.getDate()).padStart(2, "0") + String(p.fim.getMonth()+1).padStart(2, "0") + String(p.fim.getFullYear());
   }
 
-  function gerarLinhaProsol(cfg, dataFechamento, codEvento, horasDec, pctAcrescimo, descEvento) {
+  function gerarLinhaProsol(cfg, dataFechamento, codEvento, horasDec, pctAcrescimo, descEvento, funcCod, funcNome) {
+    if (funcCod === undefined) funcCod = document.getElementById("pFuncCod").value;
+    if (funcNome === undefined) funcNome = document.getElementById("pFuncNome").value;
     let linha = "";
     linha += formatarProsol(document.getElementById("pEmpresa").value, 4, "N");
-    linha += formatarProsol(document.getElementById("pFuncCod").value, 9, "N");
+    linha += formatarProsol(funcCod, 9, "N");
     linha += formatarProsol(codEvento, 4, "N");
     linha += formatarProsol(horasDec, 9, "N", 2);
     linha += formatarProsol("", 13, "N");
     linha += formatarProsol(dataFechamento, 8, "N");
     linha += formatarProsol(pctAcrescimo, 9, "N", 4);
-    linha += formatarProsol(document.getElementById("pFuncNome").value, 40, "C");
+    linha += formatarProsol(funcNome, 40, "C");
     linha += formatarProsol("", 3, "N");
     linha += formatarProsol("", 5, "N");
     linha += formatarProsol("", 5, "N");
@@ -2244,13 +2675,63 @@ if (typeof document !== "undefined"){
     return linha;
   }
 
+  /* Monta todas as linhas de eventos Prosol de UM colaborador a partir da
+     apuração R e da configuração cfg (usada tanto na exportação individual
+     quanto na consolidada de todos os colaboradores). */
+  function montarLinhasProsol(R, cfg, dataFechamento, funcCod, funcNome) {
+    const linhasExport = [];
+    const minToDec = (min) => (min / 60);
+    const ev = id => document.getElementById(id).value;
+    const push = (codEv, horasDec, pct, desc) =>
+      linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, codEv, horasDec, pct, desc, funcCod, funcNome));
+
+    /* Reflexo do DSR por natureza (mesma semântica das linhas de HE). */
+    const pushReflexos = () => {
+      Object.keys(R.reflexo.porPct).sort((a,b) => +a - +b).forEach(k => {
+        if (R.reflexo.porPct[k] > 0){
+          push(ev("evDSR"), minToDec(R.reflexo.porPct[k]), +k, "REFLEXO DSR HE " + k + "%");
+        }
+      });
+      if (R.reflexo.noturnoEquivMin > 0){
+        push(ev("evDSR"), minToDec(R.reflexo.noturnoEquivMin), 0, "REFLEXO DSR AD NOT 20%");
+      }
+    };
+
+    if (cfg.usarBH) {
+      if (R.bh.creditos > 0)  push(ev("evHEPadrao"), minToDec(R.bh.creditos), 0, "CREDITO BANCO HORAS");
+      if (R.tot.atrasos > 0)  push(ev("evAtrasos"), minToDec(R.tot.atrasos), 0, "DEBITO BANCO HORAS");
+      if (R.bh.excedente > 0) push(ev("evHEPadrao"), minToDec(R.bh.excedente), cfg.hePadrao, "HE EXCED 2H DIA " + cfg.hePadrao + "%");
+      if (R.bh.pago100 > 0)   push(ev("evHE100"), minToDec(R.bh.pago100), 100, "HE 100% DOM FERIADO");
+      if (R.tot.noturno > 0)  push(ev("evNoturno"), minToDec(R.tot.noturno), 0, "ADICIONAL NOTURNO");
+      pushReflexos();
+    } else {
+      const hePadraoMin = R.tot.extrasPorPct[cfg.hePadrao] || 0;
+      if (hePadraoMin > 0)    push(ev("evHEPadrao"), minToDec(hePadraoMin), cfg.hePadrao, "HE JORNADA " + cfg.hePadrao + "%");
+      const he100Min = R.tot.extrasPorPct[100] || 0;
+      if (he100Min > 0)       push(ev("evHE100"), minToDec(he100Min), 100, "HE EXTRA 100%");
+      if (R.tot.noturno > 0)  push(ev("evNoturno"), minToDec(R.tot.noturno), 0, "ADICIONAL NOTURNO");
+      if (R.tot.atrasos > 0)  push(ev("evAtrasos"), minToDec(R.tot.atrasos), 0, "ATRASOS");
+      pushReflexos();
+    }
+
+    if (R.tot.faltas > 0) push(ev("evFaltas"), minToDec(R.tot.faltas), 0, "FALTAS INJUSTIFICADAS");
+    const dsrPorFaltaMin = R.dsrPerdidoMin - R.dsrPerdidoAtrasoMin;
+    if (dsrPorFaltaMin > 0) push(ev("evDSRDesc"), minToDec(dsrPorFaltaMin), 0, "DESC DSR LEI 605-49");
+    if (R.dsrPerdidoAtrasoMin > 0) {
+      const clausula = (cfg.dsrAtrasoClausula || "S/ REF").toUpperCase().substring(0, 25 - "DESC DSR ATRASO ".length);
+      push(ev("evDSRDesc"), minToDec(R.dsrPerdidoAtrasoMin), 0, ("DESC DSR ATRASO " + clausula).substring(0, 25));
+    }
+    if (cfg.pagarIntra && R.tot.intra > 0) push(ev("evIntra"), minToDec(R.tot.intra), 50, "INTERV SUPRIMIDO ART71");
+
+    return linhasExport;
+  }
+
   function exportarLayoutProsol() {
     const R = calcular();
     if (!R) return;
 
     const cfg = lerConfig();
     const dataFechamento = obterDataFechamento(mesRef.value);
-    const linhasExport = [];
 
     if (R.tot.compTotal > 0){
       const msg = R.tot.compPendente > 0
@@ -2262,72 +2743,8 @@ if (typeof document !== "undefined"){
       if (!confirm(msg + "\n\nContinuar a exportação?")) return;
     }
 
-    const minToDec = (min) => (min / 60);
-    const ev = id => document.getElementById(id).value;
-
-    /* Reflexo do DSR por natureza: uma linha por percentual de HE (carregando
-       o percentual, como as demais linhas de HE do layout) e uma linha para o
-       adicional noturno em horas-base equivalentes (20% já embutido, pct 0). */
-    const pushReflexos = () => {
-      Object.keys(R.reflexo.porPct).sort((a,b) => +a - +b).forEach(k => {
-        if (R.reflexo.porPct[k] > 0){
-          linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSR"), minToDec(R.reflexo.porPct[k]), +k, "REFLEXO DSR HE " + k + "%"));
-        }
-      });
-      if (R.reflexo.noturnoEquivMin > 0){
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSR"), minToDec(R.reflexo.noturnoEquivMin), 0, "REFLEXO DSR AD NOT 20%"));
-      }
-    };
-
-    if (cfg.usarBH) {
-      if (R.bh.creditos > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evHEPadrao"), minToDec(R.bh.creditos), 0, "CREDITO BANCO HORAS"));
-      }
-      if (R.tot.atrasos > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evAtrasos"), minToDec(R.tot.atrasos), 0, "DEBITO BANCO HORAS"));
-      }
-      if (R.bh.excedente > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evHEPadrao"), minToDec(R.bh.excedente), cfg.hePadrao, "HE EXCED 2H DIA " + cfg.hePadrao + "%"));
-      }
-      if (R.bh.pago100 > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evHE100"), minToDec(R.bh.pago100), 100, "HE 100% DOM FERIADO"));
-      }
-      if (R.tot.noturno > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evNoturno"), minToDec(R.tot.noturno), 0, "ADICIONAL NOTURNO"));
-      }
-      pushReflexos();
-    } else {
-      const hePadraoMin = R.tot.extrasPorPct[cfg.hePadrao] || 0;
-      if (hePadraoMin > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evHEPadrao"), minToDec(hePadraoMin), cfg.hePadrao, "HE JORNADA " + cfg.hePadrao + "%"));
-      }
-      const he100Min = R.tot.extrasPorPct[100] || 0;
-      if (he100Min > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evHE100"), minToDec(he100Min), 100, "HE EXTRA 100%"));
-      }
-      if (R.tot.noturno > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evNoturno"), minToDec(R.tot.noturno), 0, "ADICIONAL NOTURNO"));
-      }
-      if (R.tot.atrasos > 0) {
-        linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evAtrasos"), minToDec(R.tot.atrasos), 0, "ATRASOS"));
-      }
-      pushReflexos();
-    }
-
-    if (R.tot.faltas > 0) {
-      linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evFaltas"), minToDec(R.tot.faltas), 0, "FALTAS INJUSTIFICADAS"));
-    }
-    const dsrPorFaltaMin = R.dsrPerdidoMin - R.dsrPerdidoAtrasoMin;
-    if (dsrPorFaltaMin > 0) {
-      linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSRDesc"), minToDec(dsrPorFaltaMin), 0, "DESC DSR LEI 605-49"));
-    }
-    if (R.dsrPerdidoAtrasoMin > 0) {
-      const clausula = (cfg.dsrAtrasoClausula || "S/ REF").toUpperCase().substring(0, 25 - "DESC DSR ATRASO ".length);
-      linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evDSRDesc"), minToDec(R.dsrPerdidoAtrasoMin), 0, ("DESC DSR ATRASO " + clausula).substring(0, 25)));
-    }
-    if (cfg.pagarIntra && R.tot.intra > 0) {
-      linhasExport.push(gerarLinhaProsol(cfg, dataFechamento, ev("evIntra"), minToDec(R.tot.intra), 50, "INTERV SUPRIMIDO ART71"));
-    }
+    const linhasExport = montarLinhasProsol(R, cfg, dataFechamento,
+      document.getElementById("pFuncCod").value, document.getElementById("pFuncNome").value);
 
     if (linhasExport.length === 0) {
       alert("Nenhum evento com movimentação de horas foi encontrado para exportação.");
@@ -2335,12 +2752,7 @@ if (typeof document !== "undefined"){
     }
 
     const textoCompleto = linhasExport.join("\r\n") + "\r\n";
-    const blob = new Blob([textoCompleto], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "CARTAO.TXT";
-    link.click();
-    URL.revokeObjectURL(link.href);
+    baixarArquivo("CARTAO.TXT", textoCompleto, "text/plain;charset=utf-8");
   }
 
   function configurarInterceptadorTeclado(elementoCorpo) {
@@ -2430,22 +2842,253 @@ if (typeof document !== "undefined"){
   document.getElementById("btnLimparHorarios").addEventListener("click", limparHorarios);
   document.getElementById("btnCalc").addEventListener("click", calcular);
   document.getElementById("btnExportar").addEventListener("click", exportarLayoutProsol);
-  document.getElementById("btnGerarPDF").addEventListener("click", () => {
-    calcular();
+  /* ===== Impressão de colaboradores selecionados (quadros 2 e 3) ===== */
+  const TIPO_LABEL = {
+    util:"Dia Útil", sabado:"Sábado", domingo:"Domingo / DSR",
+    domingo_trabalhado:"Domingo Trabalhado", feriado:"Feriado",
+    feriado_comp:"Feriado Compensado", folga_comp:"Folga Compensatória",
+    folga:"Folga", folga_dsr:"Folga (DSR da semana)",
+    justificada:"Abonado / Atestado", falta:"Falta Injustificada", ferias:"Férias"
+  };
+  const SEM_TRABALHO_PRINT = ["domingo","feriado","folga","folga_comp","folga_dsr","justificada","falta","ferias"];
+
+  function saldoImpressao(r, tipo){
+    if (!r) return "—";
+    if (tipo === "ferias") return "Férias";
+    if (tipo === "falta") return "Falta (−" + minParaHHMM(r.falta) + ")";
+    if (tipo === "feriado_comp"){
+      if (r.trabalhado === 0) return "sem horários";
+      return r.comp && r.comp.ok
+        ? minParaHHMM(r.compensar) + " compensadas ✓ (folga " + r.comp.folgaISO.slice(8,10) + "/" + r.comp.folgaISO.slice(5,7) + ")"
+        : minParaHHMM(r.compensar) + " a compensar até " + (r.comp ? r.comp.limite : "?");
+    }
+    if (r.trabalhado === 0){
+      if (tipo === "folga_comp") return "Folga compensatória";
+      if (tipo === "folga_dsr") return "Folga (DSR)";
+      if (tipo === "justificada") return "Abonado";
+      if (tipo === "folga") return "Folga";
+      return "—";
+    }
+    if (r.extras > 0) return "+" + minParaHHMM(r.extras) + " HE " + r.pct + "%" + (r.notaTol ? " (padrão)" : "");
+    if (r.atraso > 0) return "−" + minParaHHMM(r.atraso) + " atraso";
+    return "OK" + (r.notaTol ? " (tolerância)" : "");
+  }
+
+  function renderColabImpressao(c, idx){
+    const emp = lerConfigEmpresa();
+    const a = apurarColab(c);
     const periodo = calcularPeriodoFechamento(mesRef.value);
-    const nome = document.getElementById("pFuncNome").value || "—";
-    const cod = document.getElementById("pFuncCod").value || "—";
+    if (!a || !periodo) return "";
+    const R = a.R;
     const empresa = document.getElementById("pEmpresa").value || "—";
-    const periodoTxt = periodo ? `${formatarDataBR(periodo.inicio)} a ${formatarDataBR(periodo.fim)}` : "—";
-    document.getElementById("printHeader").innerHTML = `
-      <h1>Cartão de Ponto — VR Moraes</h1>
-      <div class="meta">
-        <b>${nome}</b> · matrícula ${cod} · empresa ${empresa}<br>
-        Período apurado: <b>${periodoTxt}</b>
-      </div>`;
-    setTimeout(() => window.print(), 50);
+    const nome = (c.nome || "").trim() || ("Colaborador " + (idx + 1));
+    const cod = c.cod || "—";
+    const periodoTxt = formatarDataBR(periodo.inicio) + " a " + formatarDataBR(periodo.fim);
+
+    // conta os dias do período e valida o alinhamento das linhas serializadas
+    let nDias = 0; { const cur = new Date(periodo.inicio); while (cur <= periodo.fim){ nDias++; cur.setDate(cur.getDate()+1); } }
+    const linhasOk = c.linhas && c.linhas.length === nDias;
+    const feriadosPorAno = {};
+
+    let linhasTabela = "";
+    const cursor = new Date(periodo.inicio);
+    for (let i = 0; i < nDias; i++){
+      const dow = cursor.getDay();
+      const ano = cursor.getFullYear();
+      if (!feriadosPorAno[ano]) feriadosPorAno[ano] = feriadosNacionais(ano);
+      const iso = ano + "-" + String(cursor.getMonth()+1).padStart(2,"0") + "-" + String(cursor.getDate()).padStart(2,"0");
+      const tipoCal = (feriadosPorAno[ano].has(iso) && dow !== 0) ? "feriado" : tipoPorDiaSemana(dow);
+      const l = linhasOk ? c.linhas[i] : null;
+      const tipo = l ? l.tipo : tipoCal;
+      const r = R.porDia[i];
+      const cls = SEM_TRABALHO_PRINT.includes(tipo) ? ' class="nao-trab"' : "";
+      linhasTabela += `<tr${cls}>` +
+        `<td class="dia"><b>${String(cursor.getDate()).padStart(2,"0")}/${String(cursor.getMonth()+1).padStart(2,"0")}</b> ${SEMANA[dow]}</td>` +
+        `<td>${TIPO_LABEL[tipo] || tipo}</td>` +
+        `<td>${l && l.e1 || ""}</td><td>${l && l.s1 || ""}</td>` +
+        `<td>${l && l.e2 || ""}</td><td>${l && l.s2 || ""}</td>` +
+        `<td style="text-align:left;">${saldoImpressao(r, tipo)}</td></tr>`;
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    // Quadro 3 fiel à tela: grupos de cards com HH:MM + decimal e o
+    // destaque do reflexo com a fórmula decomposta (montarFormulaReflexo).
+    const cardP = (rot, min, sub) =>
+      `<div class="card-print"><div class="rot">${rot}</div><div class="val">${minParaHHMM(min)}</div>` +
+      `<div class="sub">≈ ${minParaDecimal(min).toFixed(4).replace(".", ",")} h (decimal)${sub ? "<br>" + sub : ""}</div></div>`;
+    const grupoP = (titulo, cards) =>
+      `<div class="grupo-print"><div class="titulo-grupo">${titulo}</div><div class="cards-print">${cards}</div></div>`;
+
+    let quadro3 = "";
+    const hePad = R.tot.extrasPorPct[emp.hePadrao] || 0;
+    const he100 = emp.usarBH ? R.bh.pago100 : (R.tot.extrasPorPct[100] || 0);
+    const intraSub = "Art. 71, §4º CLT — indenizatório" + (!emp.pagarIntra && R.tot.intra > 0 ? " (NÃO computado — exceção ativa)" : "");
+    const dsrPerdSub = (R.semanasComFalta > 0 ? R.semanasComFalta + " semana(s) c/ falta" : "") +
+      (R.dsrPerdidoAtrasoMin > 0 ? (R.semanasComFalta > 0 ? " · " : "") + "atrasos (cláusula CCT)" : "");
+
+    if (emp.usarBH){
+      quadro3 += grupoP("Saldo do banco de horas",
+        cardP("Saldo anterior", a.cfg.bhAnterior, "") +
+        cardP("(+) Créditos do mês", R.bh.creditos, "Limitado a 2h extras/dia (art. 59 CLT)") +
+        cardP("(−) Débitos do mês", R.tot.atrasos, "") +
+        cardP("(=) Saldo atualizado", a.cfg.bhAnterior + R.bh.creditos - R.tot.atrasos, ""));
+      quadro3 += grupoP("Pagos em folha — fora do banco",
+        cardP("HE excedente 2h/dia (" + emp.hePadrao + "%)", R.bh.excedente, "Acima do limite diário — pagamento obrigatório") +
+        cardP("HE 100% (dom/feriado)", he100, "Não compensável em banco 1:1") +
+        cardP("Adicional noturno", R.tot.noturno, "") +
+        (emp.pagarIntra || R.tot.intra > 0 ? cardP("Intervalo suprimido +50%", emp.pagarIntra ? R.tot.intra * 1.5 : 0, intraSub) : ""));
+      quadro3 += grupoP("Descontos em folha — fora do banco",
+        cardP("Faltas injustificadas", R.tot.faltas, "Desconto salarial do(s) dia(s) faltado(s)") +
+        cardP("DSR perdido", R.dsrPerdidoMin, dsrPerdSub));
+    } else {
+      quadro3 += grupoP("Horas e adicionais a pagar",
+        cardP("Horas normais", R.tot.normais, "") +
+        cardP("Horas extras " + emp.hePadrao + "%", hePad, "") +
+        cardP("Horas extras 100%", he100, "") +
+        cardP("Adicional noturno", R.tot.noturno, "") +
+        (emp.pagarIntra || R.tot.intra > 0 ? cardP("Intervalo suprimido +50%", emp.pagarIntra ? R.tot.intra * 1.5 : 0, intraSub) : ""));
+      quadro3 += grupoP("Descontos do trabalhador",
+        cardP("Atrasos", R.tot.atrasos, "") +
+        cardP("Faltas injustificadas", R.tot.faltas, "") +
+        cardP("DSR perdido", R.dsrPerdidoMin, dsrPerdSub));
+    }
+
+    // outros percentuais de HE, se houver
+    const outrosPct = Object.keys(R.tot.extrasPorPct).filter(k => +k !== emp.hePadrao && k !== "100");
+    if (!emp.usarBH && outrosPct.length){
+      quadro3 += grupoP("Outros percentuais",
+        outrosPct.map(k => cardP("HE " + k + "%", R.tot.extrasPorPct[k], "")).join(""));
+    }
+
+    quadro3 += `<div class="destaque-print">
+      <div><div class="rot">Reflexo do DSR sobre HE${emp.usarBH ? " pagas" : ""} + Adicional Noturno</div>
+      <div class="val">${minParaHHMM(R.reflexo.totalMin)}  (≈ ${(R.reflexo.totalMin/60).toFixed(4).replace(".", ",")} h)</div></div>
+      <div class="formula-print">${montarFormulaReflexo(R, a.cfg)}</div>
+    </div>`;
+
+    let obs = "";
+    if (R.tot.compTotal > 0){
+      obs += R.tot.compPendente > 0
+        ? `Feriado compensado (CCT): ${minParaHHMM(R.tot.compPendente)} ainda sem folga vinculada — conceder folga na janela de 15 dias, sob pena de pagamento em dobro. `
+        : `Feriado compensado (CCT): ${minParaHHMM(R.tot.compTotal)} quitados por folga compensatória. `;
+    }
+    if (!emp.pagarIntra && R.tot.intra > 0){
+      obs += `Intervalo suprimido detectado (${minParaHHMM(R.tot.intra * 1.5)} com acréscimo) — não computado por exceção configurada. `;
+    }
+
+    return `<div class="pag-colab">
+      <div class="cab-colab">
+        <h1>Cartão de Ponto — VR Moraes</h1>
+        <div class="meta"><b>${nome}</b> · matrícula ${cod} · empresa ${empresa}<br>
+        Período apurado: <b>${periodoTxt}</b></div>
+      </div>
+      <h2>Registro de Ponto</h2>
+      <table>
+        <thead><tr><th style="width:70px;">Dia</th><th style="width:110px;">Tipo</th>
+        <th>Entrada 1</th><th>Saída 1</th><th>Entrada 2</th><th>Saída 2</th>
+        <th style="width:150px;">Saldo do dia</th></tr></thead>
+        <tbody>${linhasTabela}</tbody>
+      </table>
+      <h2>${emp.usarBH ? "Extrato Consolidado do Banco de Horas" : "Apuração Cadastrada para Folha de Pagamento"}</h2>
+      ${quadro3}
+      ${obs ? `<p class="obs">${obs}</p>` : ""}
+      <div class="assinaturas">
+        <div>Assinatura do colaborador</div>
+        <div>Assinatura do empregador</div>
+      </div>
+    </div>`;
+  }
+
+  function abrirModalImpressao(){
+    colaboradores[colabAtivo] = serializarColabAtual();
+    const lista = document.getElementById("listaImpressao");
+    lista.innerHTML = "";
+    colaboradores.forEach((c, i) => {
+      const lab = document.createElement("label");
+      lab.className = "opcao";
+      lab.innerHTML = `<input type="checkbox" class="chk-imp" value="${i}" ${i === colabAtivo ? "checked" : ""}> ${rotuloColab(c, i)}`;
+      lista.appendChild(lab);
+    });
+    document.getElementById("impTodos").checked = false;
+    document.getElementById("modalImpressao").classList.add("aberto");
+  }
+
+  function limparAreaImpressao(){
+    document.body.classList.remove("print-colabs");
+    document.getElementById("areaImpressao").innerHTML = "";
+  }
+
+  document.getElementById("btnGerarPDF").addEventListener("click", abrirModalImpressao);
+  document.getElementById("btnImpCancelar").addEventListener("click", () =>
+    document.getElementById("modalImpressao").classList.remove("aberto"));
+  document.getElementById("impTodos").addEventListener("change", (e) =>
+    document.querySelectorAll(".chk-imp").forEach(c => c.checked = e.target.checked));
+  document.getElementById("btnImpImprimir").addEventListener("click", () => {
+    const sel = [...document.querySelectorAll(".chk-imp")].filter(c => c.checked).map(c => +c.value);
+    if (!sel.length){ alert("Selecione ao menos um colaborador."); return; }
+    document.getElementById("modalImpressao").classList.remove("aberto");
+    document.getElementById("areaImpressao").innerHTML =
+      sel.map(i => renderColabImpressao(colaboradores[i], i)).join("");
+    document.body.classList.add("print-colabs");
+    setTimeout(() => window.print(), 60);
   });
+  window.addEventListener("afterprint", limparAreaImpressao);
   document.getElementById("btnSalvarRascunho").addEventListener("click", salvarRascunho);
+
+  /* ---------- Colaboradores: eventos ---------- */
+  document.getElementById("selColab").addEventListener("change", (e) => trocarColab(+e.target.value));
+
+  document.getElementById("btnColabNovo").addEventListener("click", () => {
+    colaboradores[colabAtivo] = serializarColabAtual();
+    const base = colaboradores[colabAtivo];
+    colaboradores.push({ nome:"", cod:"", feriasIni:"", feriasFim:"",
+      bhAnterior:"", bhTipoAnterior:"credito",
+      grade: JSON.parse(JSON.stringify(base.grade)),   // herda a jornada semanal
+      linhas: null });                                  // cartão em branco
+    colabAtivo = colaboradores.length - 1;
+    aplicarColab(colaboradores[colabAtivo]);
+    reconstruirSeletor();
+    document.getElementById("pFuncNome").focus();
+  });
+
+  document.getElementById("btnColabDuplicar").addEventListener("click", () => {
+    colaboradores[colabAtivo] = serializarColabAtual();
+    const copia = JSON.parse(JSON.stringify(colaboradores[colabAtivo]));
+    copia.nome = (copia.nome || "Colaborador") + " (cópia)";
+    copia.cod = "";
+    colaboradores.push(copia);
+    colabAtivo = colaboradores.length - 1;
+    aplicarColab(copia);
+    reconstruirSeletor();
+    document.getElementById("pFuncCod").focus();
+  });
+
+  document.getElementById("btnColabRemover").addEventListener("click", () => {
+    if (colaboradores.length <= 1){ alert("A empresa precisa ter ao menos um colaborador."); return; }
+    if (!confirm("Remover \"" + rotuloColab(serializarColabAtual(), colabAtivo) + "\" e todo o seu cartão?")) return;
+    const tinhaConsolidado = document.getElementById("painelConsolidado").style.display === "block";
+    const tinhaApuracao = document.getElementById("resultados").style.display === "block" ||
+                          document.getElementById("resBancoHoras").style.display === "block";
+    colaboradores.splice(colabAtivo, 1);
+    colabAtivo = Math.max(0, colabAtivo - 1);
+    aplicarColab(colaboradores[colabAtivo]);
+    reconstruirSeletor();
+    refazerApuracaoSeVisivel(tinhaConsolidado, tinhaApuracao);
+  });
+
+  // Nome/matrícula digitados refletem no seletor em tempo real
+  ["pFuncNome","pFuncCod"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      const sel = document.getElementById("selColab");
+      const opt = sel.options[colabAtivo];
+      if (opt) opt.textContent = rotuloColab({
+        nome: document.getElementById("pFuncNome").value,
+        cod: document.getElementById("pFuncCod").value }, colabAtivo);
+    });
+  });
+
+  document.getElementById("btnCalcTodos").addEventListener("click", calcularTodos);
+  document.getElementById("btnExportarTodos").addEventListener("click", exportarTodos);
   document.getElementById("btnCarregarRascunho").addEventListener("click", () => document.getElementById("inputRascunho").click());
   document.getElementById("inputRascunho").addEventListener("change", carregarRascunho);
 
@@ -2532,7 +3175,11 @@ if (typeof document !== "undefined"){
   atualizarLabelPeriodo();
   gerarMes();
   atualizarTotalSemanal();
+  colaboradores = [serializarColabAtual()];
+  colabAtivo = 0;
+  reconstruirSeletor();
 }
 </script>
+
 </body>
 </html>
