@@ -312,6 +312,26 @@
     font-size:9px; text-transform:uppercase; color:var(--lapis);
     font-weight:bold; letter-spacing:.9px; line-height:1.3;
   }
+  .info-juris{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:13px; height:13px; margin-left:4px; border-radius:50%;
+    background:var(--ambar, #B7791F); color:#fff; font-size:9px; font-weight:bold;
+    cursor:help; vertical-align:middle; position:relative; font-family:sans-serif;
+  }
+  .info-juris .tip-juris{
+    display:none; position:absolute; bottom:130%; left:50%; transform:translateX(-50%);
+    width:280px; background:#1f2933; color:#F3F5F8; text-align:left; text-transform:none;
+    letter-spacing:normal; font-weight:normal; font-size:10.5px; line-height:1.5;
+    padding:9px 11px; border-radius:6px; box-shadow:0 4px 16px rgba(0,0,0,.28);
+    z-index:50; white-space:normal;
+  }
+  .info-juris .tip-juris b{ color:#FFD98A; }
+  .info-juris:hover .tip-juris{ display:block; }
+  .info-juris .tip-juris::after{
+    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:6px solid transparent; border-top-color:#1f2933;
+  }
+  @media print { .info-juris{ display:none !important; } }
   .res .valor{
     font-family:var(--mono); font-size:19px; font-weight:bold;
     color:var(--tinta-escura); margin-top:4px; font-variant-numeric:tabular-nums;
@@ -869,7 +889,7 @@
         <div class="res tom-soma"><div class="rotulo" id="lblBhExcedente">HE excedente 2h/dia</div><div class="valor" id="vBhExcedente">00:00</div><div class="sub">Acima do limite diário — pagamento obrigatório</div></div>
         <div class="res tom-soma"><div class="rotulo">HE 100% (dom/feriado)</div><div class="valor" id="vBhHE100">00:00</div><div class="sub">Não compensável em banco 1:1 — paga em folha</div></div>
         <div class="res tom-soma"><div class="rotulo">Adicional noturno</div><div class="valor" id="vBhNoturno">00:00</div></div>
-        <div class="res tom-atencao"><div class="rotulo">Intervalo suprimido +50%</div><div class="valor" id="vBhIntra">00:00</div><div class="sub" id="vBhIntraSub">Art. 71, §4º CLT — indenizatório</div></div>
+        <div class="res tom-atencao"><div class="rotulo">Intervalo suprimido<span class="info-juris">i<span class="tip-juris"><b>Cumulação HE + intervalo suprimido</b><br>O tempo trabalhado no intervalo integra a jornada (gera HE por extrapolação) E é indenizado à parte pelo <b>art. 71, §4º, CLT</b> — sem bis in idem, pois os fatos geradores são distintos.<br><br>Base: <b>Súmula 437, I, do TST</b> (pagamento do intervalo "sem prejuízo do cômputo da jornada efetivamente trabalhada"); <b>TST, 7ª Turma</b>, que reformou o TRT-2 no caso dos 40 min trabalhados no intervalo, reconhecendo as duas parcelas por terem naturezas distintas.</span></span></div><div class="valor" id="vBhIntra">00:00</div><div class="sub" id="vBhIntraSub">Art. 71, §4º CLT — indenizatório (pago c/ +50%)</div></div>
       </div>
     </div>
 
@@ -900,7 +920,7 @@
         <div class="res tom-soma"><div class="rotulo" id="lblHEPadrao">Horas extras padrão</div><div class="valor" id="resHE50">—</div><div class="sub" id="resHE50Dec"></div></div>
         <div class="res tom-soma"><div class="rotulo">Horas extras 100%</div><div class="valor" id="resHE100">—</div><div class="sub" id="resHE100Dec"></div></div>
         <div class="res tom-soma"><div class="rotulo">Adicional noturno</div><div class="valor" id="resNoturno">—</div><div class="sub" id="resNoturnoDec"></div></div>
-        <div class="res tom-atencao"><div class="rotulo">Intervalo suprimido +50%</div><div class="valor" id="resIntra">—</div><div class="sub" id="resIntraDec">Art. 71, §4º CLT — indenizatório</div></div>
+        <div class="res tom-atencao"><div class="rotulo">Intervalo suprimido<span class="info-juris">i<span class="tip-juris"><b>Cumulação HE + intervalo suprimido</b><br>O tempo trabalhado no intervalo integra a jornada (gera HE por extrapolação) E é indenizado à parte pelo <b>art. 71, §4º, CLT</b> — sem bis in idem, pois os fatos geradores são distintos.<br><br>Base: <b>Súmula 437, I, do TST</b> (pagamento do intervalo "sem prejuízo do cômputo da jornada efetivamente trabalhada"); <b>TST, 7ª Turma</b>, que reformou o TRT-2 no caso dos 40 min trabalhados no intervalo, reconhecendo as duas parcelas por terem naturezas distintas.</span></span></div><div class="valor" id="resIntra">—</div><div class="sub" id="resIntraDec">Art. 71, §4º CLT — indenizatório (pago c/ +50%)</div></div>
       </div>
     </div>
 
@@ -935,6 +955,7 @@
     <div class="r-item"><span class="r-lbl" id="rgLblHE">HE 50%</span><span class="r-val pos" id="rgHE">00:00</span></div>
     <div class="r-item"><span class="r-lbl">HE 100%</span><span class="r-val pos" id="rgHE100">00:00</span></div>
     <div class="r-item"><span class="r-lbl">Ad. not.</span><span class="r-val ambar" id="rgNoturno">00:00</span></div>
+    <div class="r-item" id="rgIntraBox" style="display:none;"><span class="r-lbl">Interv. supr.</span><span class="r-val ambar" id="rgIntra" title="Intervalo intrajornada suprimido (base, sem acréscimo). Pago com +50% do art. 71, §4º, CLT — verba indenizatória.">00:00</span></div>
     <div class="r-item"><span class="r-lbl">Atrasos</span><span class="r-val neg" id="rgAtrasos">00:00</span></div>
     <div class="r-item"><span class="r-lbl">Faltas</span><span class="r-val neg" id="rgFaltas">00:00</span></div>
     <div class="r-item"><span class="r-lbl">DSR perdido</span><span class="r-val neg" id="rgDsrPerdido">00:00</span></div>
@@ -1211,6 +1232,14 @@ function apurarDia(dia, cfg){
   }
 
   if (dia.tipo === "util" || dia.tipo === "sabado" || dia.tipo === "domingo_trabalhado"){
+    // O tempo trabalhado dentro do intervalo PERMANECE no cômputo da jornada
+    // efetiva (podendo gerar hora extra por extrapolação) E, cumulativamente,
+    // o período suprimido é indenizado pelo art. 71, §4º da CLT. As duas
+    // parcelas têm fatos geradores distintos — não há bis in idem (Súmula 437,
+    // I, do TST: pagamento do intervalo "sem prejuízo do cômputo da jornada
+    // efetivamente trabalhada"; TST-7ªT, reforma do TRT-2, caso dos 40 min no
+    // intervalo). A HE incide sobre o excesso de jornada; a verba do intervalo,
+    // sobre o descanso não gozado. Postura mais prudente p/ o empregador.
     let saldo = jornada - cargaDia;
     if (!notaTol && (!padraoDia || padraoDia.some(v => v == null)) && Math.abs(saldo) <= TOL_DIARIA){
       saldo = 0;
@@ -1892,6 +1921,15 @@ if (typeof document !== "undefined"){
       document.getElementById("rgFaltas").textContent = minParaHHMM(R.tot.faltas);
       document.getElementById("rgDsrPerdido").textContent = minParaHHMM(R.dsrPerdidoMin);
       document.getElementById("rgDSR").textContent = minParaHHMM(R.dsrHoras * 60);
+      // intervalo suprimido: aparece na apuração parcial quando há supressão e o
+      // pagamento está ativo (com o acréscimo de 50% — art. 71, §4º)
+      const rgIntraBox = document.getElementById("rgIntraBox");
+      if (R.tot.intra > 0 && cfg.pagarIntra){
+        rgIntraBox.style.display = "";
+        document.getElementById("rgIntra").textContent = minParaHHMM(R.tot.intra);
+      } else {
+        rgIntraBox.style.display = "none";
+      }
 
       if (cfg.usarBH){
         const saldo = cfg.bhAnterior + R.bh.creditos - R.tot.atrasos;
@@ -2044,10 +2082,11 @@ if (typeof document !== "undefined"){
       document.getElementById("vBhExcedente").textContent = minParaHHMM(R.bh.excedente);
       document.getElementById("vBhHE100").textContent = minParaHHMM(R.bh.pago100);
       document.getElementById("vBhNoturno").textContent = minParaHHMM(R.tot.noturno);
-      document.getElementById("vBhIntra").textContent = minParaHHMM(intraCom50);
+      // valor principal = base sem +50%; subtexto traz a conta até o total
+      document.getElementById("vBhIntra").textContent = minParaHHMM(R.tot.intra);
       document.getElementById("vBhIntraSub").textContent = cfg.pagarIntra
-        ? "Art. 71, §4º CLT — indenizatório"
-        : (R.tot.intra > 0 ? `Detectado ${minParaHHMM(intraDetectadoCom50)}, mas não pago (exceção ativa)` : "Art. 71, §4º CLT — indenizatório");
+        ? (R.tot.intra > 0 ? `${minParaHHMM(R.tot.intra)} × 1,5 = ${minParaHHMM(intraCom50)} c/ +50% (art. 71, §4º)` : "Art. 71, §4º CLT — indenizatório (pago c/ +50%)")
+        : (R.tot.intra > 0 ? `${minParaHHMM(R.tot.intra)} × 1,5 = ${minParaHHMM(intraDetectadoCom50)} — não pago (exceção ativa)` : "Art. 71, §4º CLT — indenizatório (pago c/ +50%)");
       document.getElementById("vBhFaltas").textContent = minParaHHMM(R.tot.faltas);
       {
         const partesSub = [];
@@ -2082,7 +2121,8 @@ if (typeof document !== "undefined"){
       mostrar("resAtrasos", "resAtrasosDec", R.tot.atrasos);
       mostrar("resFaltas", "resFaltasDec", R.tot.faltas);
       mostrar("resDsrPerdido", "resDsrPerdidoDec", R.dsrPerdidoMin);
-      mostrar("resIntra", "resIntraDec", intraCom50);
+      // valor principal = horas suprimidas SEM o acréscimo; subtexto traz a conta até o total com +50%
+      document.getElementById("resIntra").textContent = minParaHHMM(R.tot.intra);
 
       if (R.semanasComFalta > 0){
         document.getElementById("resDsrPerdidoDec").textContent +=
@@ -2094,9 +2134,11 @@ if (typeof document !== "undefined"){
       }
       if (R.tot.intra > 0){
         if (cfg.pagarIntra){
-          document.getElementById("resIntraDec").textContent += ` · ${minParaHHMM(R.tot.intra)} suprimidos × 1,5`;
+          document.getElementById("resIntraDec").textContent =
+            `≈ ${minParaDecimal(R.tot.intra).toFixed(4).replace(".", ",")} h (decimal) · ${minParaHHMM(R.tot.intra)} × 1,5 = ${minParaHHMM(intraCom50)} c/ +50%`;
         } else {
-          document.getElementById("resIntraDec").textContent = `Detectado ${minParaHHMM(intraDetectadoCom50)} — não pago (exceção ativa)`;
+          document.getElementById("resIntra").textContent = minParaHHMM(R.tot.intra);
+          document.getElementById("resIntraDec").textContent = `${minParaHHMM(R.tot.intra)} × 1,5 = ${minParaHHMM(intraDetectadoCom50)} — não pago (exceção ativa)`;
         }
       }
 
