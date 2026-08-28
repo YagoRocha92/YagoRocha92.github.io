@@ -860,7 +860,7 @@
           <tr>
             <th style="text-align:left; padding-left:10px;">Colaborador</th>
             <th>Normais</th><th id="thConsHE">HE padrão</th><th>HE 100%</th><th>Ad. noturno</th>
-            <th>Atrasos</th><th>Faltas</th><th>Interv. supr. +50%</th><th>DSR perdido</th><th>Reflexo DSR</th>
+            <th>Atrasos</th><th>Faltas</th><th title="Base suprimida, sem acréscimo. Pago com +50% do art. 71, §4º — indenizatório.">Interv. supr.</th><th>DSR perdido</th><th>Reflexo DSR</th>
             <th id="thConsBanco" style="display:none;">Banco (saldo)</th><th>Feriado a compensar</th>
           </tr>
         </thead>
@@ -2474,10 +2474,10 @@ if (typeof document !== "undefined"){
       const banco = emp.usarBH ? (a.cfg.bhAnterior + R.bh.creditos - R.tot.atrasos) : 0;
       soma.normais += R.tot.normais; soma.hePad += (emp.usarBH ? R.bh.excedente : hePad);
       soma.he100 += he100; soma.not += R.tot.noturno; soma.atr += R.tot.atrasos;
-      const intra50 = emp.pagarIntra ? R.tot.intra * 1.5 : 0;
+      const intraBase = emp.pagarIntra ? R.tot.intra : 0;
       soma.fal += R.tot.faltas; soma.dsrP += R.dsrPerdidoMin; soma.refl += R.reflexo.totalMin;
       soma.banco += banco; soma.compPend += R.tot.compPendente;
-      soma.intra += intra50; soma.intraDetectado += R.tot.intra * 1.5;
+      soma.intra += intraBase; soma.intraDetectado += R.tot.intra;
 
       const tr = document.createElement("tr");
       const tdBanco = emp.usarBH ? `<td>${minParaHHMM(banco)}</td>` : `<td style="display:none;"></td>`;
@@ -2491,7 +2491,7 @@ if (typeof document !== "undefined"){
         `<td>${minParaHHMM(emp.usarBH ? R.bh.excedente : hePad)}${emp.usarBH && R.bh.creditos > 0 ? `<br><span style="font-size:10px; color:var(--lapis);">banco +${minParaHHMM(R.bh.creditos)}</span>` : ""}</td>` +
         `<td>${minParaHHMM(he100)}</td><td>${minParaHHMM(R.tot.noturno)}</td>` +
         `<td>${minParaHHMM(R.tot.atrasos)}</td><td>${minParaHHMM(R.tot.faltas)}</td>` +
-        `<td>${emp.pagarIntra ? minParaHHMM(intra50) : (R.tot.intra > 0 ? `<span style="color:var(--carimbo-ambar);" title="Detectado ${minParaHHMM(R.tot.intra * 1.5)}, não pago (exceção ativa)">${minParaHHMM(R.tot.intra * 1.5)}*</span>` : "00:00")}</td>` +
+        `<td>${emp.pagarIntra ? minParaHHMM(R.tot.intra) : (R.tot.intra > 0 ? `<span style="color:var(--carimbo-ambar);" title="Base ${minParaHHMM(R.tot.intra)} (com +50% = ${minParaHHMM(R.tot.intra * 1.5)}), não pago — exceção ativa">${minParaHHMM(R.tot.intra)}*</span>` : "00:00")}</td>` +
         `<td>${minParaHHMM(R.dsrPerdidoMin)}</td><td>${minParaHHMM(R.reflexo.totalMin)}</td>` +
         tdBanco + `<td>${compTxt}</td>`;
       tb.appendChild(tr);
@@ -2502,7 +2502,7 @@ if (typeof document !== "undefined"){
       `<td>${minParaHHMM(soma.normais)}</td><td>${minParaHHMM(soma.hePad)}</td>` +
       `<td>${minParaHHMM(soma.he100)}</td><td>${minParaHHMM(soma.not)}</td>` +
       `<td>${minParaHHMM(soma.atr)}</td><td>${minParaHHMM(soma.fal)}</td>` +
-      `<td>${emp.pagarIntra ? minParaHHMM(soma.intra) : (soma.intraDetectado > 0 ? minParaHHMM(soma.intraDetectado) + "*" : "00:00")}</td>` +
+      `<td>${emp.pagarIntra ? minParaHHMM(soma.intra) : (soma.intraDetectado > 0 ? minParaHHMM(soma.intraDetectado) + "*" : "00:00")}</td>` + /* base */
       `<td>${minParaHHMM(soma.dsrP)}</td><td>${minParaHHMM(soma.refl)}</td>` +
       (emp.usarBH ? `<td>${minParaHHMM(soma.banco)}</td>` : `<td style="display:none;"></td>`) +
       `<td>${soma.compPend > 0 ? minParaHHMM(soma.compPend) + " pendente" : "—"}</td>`;
@@ -2510,7 +2510,7 @@ if (typeof document !== "undefined"){
 
     document.getElementById("consolidadoRodape").textContent =
       "Valores por colaborador com jornada, férias e banco individuais; parâmetros de empresa (percentuais, exceções, período) comuns a todos. " +
-      "Intervalo suprimido já com o acréscimo de 50% do art. 71, §4º, CLT (indenizatório). " +
+      "Intervalo suprimido pela base (sem acréscimo); pago com +50% do art. 71, §4º, CLT — verba indenizatória. " +
       (emp.pagarIntra ? "" : "* Detectado mas NÃO somado à apuração nem exportado — exceção \"não computar\" ativa. ") +
       "Selecione um colaborador acima para ver o detalhamento dia a dia.";
     const painel = document.getElementById("painelConsolidado");
